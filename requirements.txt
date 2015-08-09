@@ -1,0 +1,5 @@
+-e git://github.com/django/django.git#egg=Django
+-e git://github.com/jamesturk/python-opencivicdata-models.git#egg=python-opencivicdata-models
+
+#django/postgres object merging
+-e git://github.com/sunlightlabs/waterfall.git#egg=waterfall
