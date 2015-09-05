@@ -1,6 +1,6 @@
 -e git://github.com/django/django.git#egg=Django
--e git://github.com/jamesturk/pupa@0.5.x#egg=pupa
--e git://github.com/jamesturk/python-opencivicdata-models.git@0.7.x#egg=python-opencivicdata-models
+-e git://github.com/opencivicdata/pupa@0.5.x#egg=pupa
+-e git://github.com/opencivicdata/python-opencivicdata-models.git@0.7.x#egg=python-opencivicdata-models
 
 #django/postgres object merging
 -e git://github.com/sunlightlabs/waterfall.git#egg=waterfall
