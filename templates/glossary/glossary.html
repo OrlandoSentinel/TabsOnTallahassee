@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+Glossary!
+<br/>
+<br/>
+
+{% for term in  all_terms %}
+    {% for key, value in term.items %}
+        {{ key }}: {{ value }}
+        <br/>
+    {% endfor %}
+{% endfor %}
+
+
+{% endblock %}
