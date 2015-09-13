@@ -4,6 +4,5 @@ from pupa.scrape import Bill
 
 class FlBillScraper(Scraper):
 
-    def scrape(self):
-        # needs to be implemented
-        pass
+    def scrape(self, session):
+        print(session)
