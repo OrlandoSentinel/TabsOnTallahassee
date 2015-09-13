@@ -6,12 +6,25 @@ Glossary!
 <br/>
 <br/>
 
-{% for term in  all_terms %}
-    {% for key, value in term.items %}
-        {{ key }}: {{ value }}
-        <br/>
-    {% endfor %}
-{% endfor %}
-
+<table class="table table-striped">
+    <caption>A glossary of terms related to the FL Legislature</caption>
+    <thead>
+        <tr>
+            <th>Term</th>
+            <th>Definition</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for term in  all_terms %}
+            {% for key, value in term.items %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+    
+</table>
 
 {% endblock %}
