@@ -16,24 +16,30 @@ class SenDetail(Page):
             type_ = 'district'
 
         address_lines = [x.strip() for x in
-                         office.xpath('following-sibling::div[1]/text()')
+                         office.xpath('following-sibling::div[1]')[0].text_content().splitlines()
                          if x.strip()]
 
         clean_address_lines = []
-        phone = None
+        fax = phone = None
         PHONE_RE = r'\(\d{3}\)\s\d{3}\-\d{4}'
+        after_phone = False
 
         for line in address_lines:
             if re.search(r'(?i)open\s+\w+day', address_lines[0]):
                 continue
+            elif 'FAX' in line:
+                fax = line.replace('FAX ', '')
+                after_phone = True
             elif re.search(PHONE_RE, line):
                 phone = line
-                break
-            else:
+                after_phone = True
+            elif not after_phone:
                 clean_address_lines.append(line)
 
         if phone:
             self.obj.add_contact_detail(type='voice', value=phone, note=type_)
+        if fax:
+            self.obj.add_contact_detail(type='fax', value=fax, note=type_)
 
         # address
         address = "\n".join(clean_address_lines)
