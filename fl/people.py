@@ -92,7 +92,6 @@ class RepList(Page):
                          "http://www.flhouse.gov/Sections/Representatives/representatives.aspx",
                          list_xpath='//div[@id="MemberListing"]/div[@class="rep_listing1"]')
 
-
     def process_list_item(self, item):
         link = item.xpath('.//div[@class="rep_style"]/a')[0]
         name = link.text_content().strip()
@@ -110,8 +109,8 @@ class RepList(Page):
         member_id = parse.parse_qs(split_url.query)['MemberId'][0]
         image = "http://www.flhouse.gov/FileStores/Web/Imaging/Member/{}.jpg".format(member_id)
 
-        rep = Person(name=name, district=district, party=party, primary_org='lower', role='Representative',
-                     image=image)
+        rep = Person(name=name, district=district, party=party, primary_org='lower',
+                     role='Representative', image=image)
         rep.add_link(leg_url)
         rep.add_source(leg_url)
         rep.add_source(self.url)
@@ -125,7 +124,8 @@ class RepList(Page):
 
 class RepDetail(Page):
     def scrape_office(self, name):
-        pieces = [x.tail.strip() for x in self.doc.xpath('//strong[text()="{}"]/following-sibling::br'.format(name))]
+        pieces = [x.tail.strip() for x in
+                  self.doc.xpath('//strong[text()="{}"]/following-sibling::br'.format(name))]
 
         if not pieces:
             # TODO: warn?

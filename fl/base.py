@@ -1,5 +1,6 @@
 import lxml.html
 
+
 class NoListItems(Exception):
     pass
 

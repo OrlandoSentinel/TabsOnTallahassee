@@ -11,8 +11,8 @@ class Florida(Jurisdiction):
     name = "Florida"
     url = "http://myflorida.com"
     scrapers = {
-        #"votes": FlVoteScraper,
-        #"bills": FlBillScraper,
+        # "votes": FlVoteScraper,
+        # "bills": FlBillScraper,
         "people": FlPersonScraper,
     }
     parties = [{'name': 'Republican'},
@@ -20,9 +20,6 @@ class Florida(Jurisdiction):
                {'name': 'Independent'}]
 
     def get_organizations(self):
-        #REQUIRED: define an organization using this format
-        #where org_name is something like Seattle City Council
-        #and classification is described here:
         legis = Organization(name="Florida Legislature", classification="legislature")
 
         upper = Organization('Florida Senate', classification='upper', parent_id=legis._id)
