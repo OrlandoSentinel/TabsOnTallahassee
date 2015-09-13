@@ -1,5 +1,5 @@
-from .models import Glossary
+from .models import Term
 from django.contrib import admin
 
 
-admin.site.register(Glossary)
+admin.site.register(Term)
