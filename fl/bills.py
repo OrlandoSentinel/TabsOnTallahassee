@@ -62,6 +62,41 @@ class BillList(Page):
 
 class BillDetail(Page):
     def process_page(self):
+        self.process_history()
+        self.process_versions()
+        self.process_analysis()
+
+    def process_versions(self):
+        try:
+            version_table = self.doc.xpath("//div[@id = 'tabBodyBillText']/table")[0]
+            for tr in version_table.xpath("tbody/tr"):
+                name = tr.xpath("string(td[1])").strip()
+                version_url = tr.xpath("td/a[1]")[0].attrib['href']
+                if version_url.endswith('PDF'):
+                    mimetype = 'application/pdf'
+                elif version_url.endswith('HTML'):
+                    mimetype = 'text/html'
+                self.obj.add_version_link(name, version_url, media_type=mimetype)
+        except IndexError:
+            self.scraper.warning("No version table for {}".format(self.obj.identifier))
+
+    def process_analysis(self):
+        try:
+            analysis_table = self.doc.xpath("//div[@id = 'tabBodyAnalyses']/table")[0]
+            for tr in analysis_table.xpath("tbody/tr"):
+                name = tr.xpath("string(td[1])").strip()
+                name += " -- " + tr.xpath("string(td[3])").strip()
+                name = re.sub(r'\s+', " ", name)
+                date = tr.xpath("string(td[4])").strip()
+                if date:
+                    name += " (%s)" % date
+                analysis_url = tr.xpath("td/a")[0].attrib['href']
+                self.obj.add_document_link(name, analysis_url)
+        except IndexError:
+            self.scraper.warning("No analysis table for {}".format(self.obj.identifier))
+
+
+    def process_history(self):
         hist_table = self.doc.xpath("//div[@id = 'tabBodyBillHistory']//table")[0]
 
         for tr in hist_table.xpath("tbody/tr"):
