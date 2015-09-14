@@ -52,7 +52,8 @@ class BillList(Page):
 
         # single sponsor for FL bills
         sponsor = re.sub(r'^(?:Rep|Sen)\.\s', "", sponsor)
-        bill.add_sponsorship(sponsor, 'primary', 'person', True)
+        for sp in sponsor.split(', '):
+            bill.add_sponsorship(sp, 'primary', 'person', True)
 
         bdp = BillDetail(self.scraper, bill_url, obj=bill)
         bdp.process_page()
