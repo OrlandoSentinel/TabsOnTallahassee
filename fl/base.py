@@ -6,16 +6,17 @@ class NoListItems(Exception):
 
 
 class Page:
-    def __init__(self, scraper, url=None, *, obj=None):
+    def __init__(self, scraper, url=None, *, obj=None, **kwargs):
         self.scraper = scraper
         if url:
             self.url = url
         self.doc = lxml.html.fromstring(scraper.get(self.url).text)
         self.doc.make_links_absolute(self.url)
         self.obj = obj
+        self.kwargs = kwargs
 
     def process_list_item(self, item):
-        pass
+        raise NotImplementedError()
 
     def yield_list(self):
         n = 0
