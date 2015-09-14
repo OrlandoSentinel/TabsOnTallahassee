@@ -50,7 +50,6 @@ class BillList(Page):
         bill = Bill(bill_id, self.kwargs['session'], title, classification=bill_type)
         bill.add_source(bill_url)
 
-        # single sponsor for FL bills
         sponsor = re.sub(r'^(?:Rep|Sen)\.\s', "", sponsor)
         for sp in sponsor.split(', '):
             bill.add_sponsorship(sp, 'primary', 'person', True)
