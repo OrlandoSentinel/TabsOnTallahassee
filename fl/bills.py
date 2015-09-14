@@ -3,11 +3,12 @@ import datetime
 from pupa.scrape import Scraper, Bill
 from .base import Page
 
+
 class StartPage(Page):
 
     def process_page(self):
         try:
-            page_count = int(self.doc.xpath("//a[contains(., 'Next')][1]/preceding::a[1]/text()")[0])
+            pages = int(self.doc.xpath("//a[contains(., 'Next')][1]/preceding::a[1]/text()")[0])
         except IndexError:
             if not self.doc.xpath('//div[@class="ListPagination"]/span'):
                 raise AssertionError("No bills found for the session")
@@ -16,9 +17,9 @@ class StartPage(Page):
             else:
                 self.scraper.warning("Pagination not used; "
                                      "make sure there're only a few bills for this session")
-            page_count = 1
+            pages = 1
 
-        for page_number in range(1, page_count + 1):
+        for page_number in range(1, pages + 1):
             page_url = (self.url + '&PageNumber={}'.format(page_number))
             blp = BillList(self.scraper, page_url, session=self.kwargs['session'])
             yield from blp.yield_list()
@@ -95,7 +96,6 @@ class BillDetail(Page):
         except IndexError:
             self.scraper.warning("No analysis table for {}".format(self.obj.identifier))
 
-
     def process_history(self):
         hist_table = self.doc.xpath("//div[@id = 'tabBodyBillHistory']//table")[0]
 
@@ -142,6 +142,7 @@ class BillDetail(Page):
 
                 self.obj.add_action(action, date, organization=actor, chamber=chamber,
                                     classification=atype)
+
 
 class FlBillScraper(Scraper):
 

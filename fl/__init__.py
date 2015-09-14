@@ -1,6 +1,5 @@
 # encoding=utf-8
 from pupa.scrape import Jurisdiction, Organization
-from .votes import FlVoteScraper
 from .bills import FlBillScraper
 from .people import FlPersonScraper
 
@@ -11,7 +10,6 @@ class Florida(Jurisdiction):
     name = "Florida"
     url = "http://myflorida.com"
     scrapers = {
-        # "votes": FlVoteScraper,
         "bills": FlBillScraper,
         "people": FlPersonScraper,
     }
@@ -20,7 +18,8 @@ class Florida(Jurisdiction):
     legislative_sessions = [
         {'name': '2011 Regular Session', 'identifier': '2011', 'classification': 'primary'},
         {'name': '2012 Regular Session', 'identifier': '2012', 'classification': 'primary'},
-        {'name': '2012 Extraordinary Apportionment Session', 'identifier': '2012B', 'classification': 'special'},
+        {'name': '2012 Extraordinary Apportionment Session', 'identifier': '2012B',
+         'classification': 'special'},
         {'name': '2013 Regular Session', 'identifier': '2013', 'classification': 'primary'},
         {'name': '2014 Regular Session', 'identifier': '2014', 'classification': 'primary'},
         {'name': '2014 Special Session A', 'identifier': '2014A', 'classification': 'special'},
