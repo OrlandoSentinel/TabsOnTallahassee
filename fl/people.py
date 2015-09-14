@@ -5,8 +5,7 @@ from .base import Page
 
 
 class SenDetail(Page):
-    def __init__(self, scraper, url, obj):
-        super().__init__(scraper, url, list_xpath='//h4[contains(text(), "Office")]', obj=obj)
+    list_xpath = '//h4[contains(text(), "Office")]'
 
     def process_list_item(self, office):
         (name, ) = office.xpath('text()')
@@ -55,10 +54,8 @@ class SenDetail(Page):
 
 
 class SenList(Page):
-    def __init__(self, scraper):
-        super().__init__(scraper,
-                         "http://www.flsenate.gov/Senators/",
-                         list_xpath="//a[contains(@href, 'Senators/s')]")
+    url = "http://www.flsenate.gov/Senators/"
+    list_xpath = "//a[contains(@href, 'Senators/s')]"
 
     def process_list_item(self, item):
         name = " ".join(item.xpath('.//text()'))
@@ -87,10 +84,8 @@ class SenList(Page):
 
 
 class RepList(Page):
-    def __init__(self, scraper):
-        super().__init__(scraper,
-                         "http://www.flhouse.gov/Sections/Representatives/representatives.aspx",
-                         list_xpath='//div[@id="MemberListing"]/div[@class="rep_listing1"]')
+    url = "http://www.flhouse.gov/Sections/Representatives/representatives.aspx"
+    list_xpath = '//div[@id="MemberListing"]/div[@class="rep_listing1"]'
 
     def process_list_item(self, item):
         link = item.xpath('.//div[@class="rep_style"]/a')[0]

@@ -6,12 +6,12 @@ class NoListItems(Exception):
 
 
 class Page:
-    def __init__(self, scraper, url, *, list_xpath=None, obj=None):
+    def __init__(self, scraper, url=None, *, obj=None):
         self.scraper = scraper
-        self.url = url
-        self.doc = lxml.html.fromstring(scraper.get(url).text)
-        self.doc.make_links_absolute(url)
-        self.list_xpath = list_xpath
+        if url:
+            self.url = url
+        self.doc = lxml.html.fromstring(scraper.get(self.url).text)
+        self.doc.make_links_absolute(self.url)
         self.obj = obj
 
     def process_list_item(self, item):
