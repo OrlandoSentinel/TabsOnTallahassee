@@ -6,7 +6,7 @@ from .base import Page, PDF, Spatula
 
 class StartPage(Page):
 
-    def process_page(self):
+    def handle_page(self):
         try:
             pages = int(self.doc.xpath("//a[contains(., 'Next')][1]/preceding::a[1]/text()")[0])
         except IndexError:
@@ -21,14 +21,14 @@ class StartPage(Page):
 
         for page_number in range(1, pages + 1):
             page_url = (self.url + '&PageNumber={}'.format(page_number))
-            yield from self.get_page(BillList, url=page_url, session=self.kwargs['session'])
+            yield from self.scrape_page_items(BillList, url=page_url, session=self.kwargs['session'])
 
 
 class BillList(Page):
     #list_xpath = "//a[contains(@href, '/Session/Bill/{}/')]".format(session)
     list_xpath = "//a[contains(@href, '/Session/Bill/')]"
 
-    def process_list_item(self, item):
+    def handle_list_item(self, item):
         bill_id = item.text.strip()
         title = item.xpath("string(../following-sibling::td[1])").strip()
         sponsor = item.xpath("string(../following-sibling::td[2])").strip()
@@ -54,13 +54,13 @@ class BillList(Page):
         for sp in sponsor.split(', '):
             bill.add_sponsorship(sp, 'primary', 'person', True)
 
-        yield from self.get_page(BillDetail, url=bill_url, obj=bill)
+        yield from self.scrape_page_items(BillDetail, url=bill_url, obj=bill)
 
         yield bill
 
 
 class BillDetail(Page):
-    def process_page(self):
+    def handle_page(self):
         self.process_history()
         self.process_versions()
         self.process_analysis()
@@ -173,7 +173,7 @@ class BillDetail(Page):
 
 
 class FloorVote(PDF):
-    def process_page(self):
+    def handle_page(self):
         MOTION_INDEX = 4
         TOTALS_INDEX = 6
         VOTE_START_INDEX = 9
@@ -253,4 +253,4 @@ class FlBillScraper(Scraper, Spatula):
 
     def scrape(self, session):
         url = "http://flsenate.gov/Session/Bills/{}?chamber=both".format(session)
-        yield from self.get_page(StartPage, url, session=session)
+        yield from self.scrape_page_items(StartPage, url, session=session)

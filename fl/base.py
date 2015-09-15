@@ -5,8 +5,8 @@ import lxml.html
 
 class Spatula:
     """ mixin for scrapelib.Scraper """
-    def get_page(self, page_type, url=None, **kwargs):
-        yield from page_type(self, url=url, **kwargs).process_page()
+    def scrape_page_items(self, page_type, url=None, **kwargs):
+        yield from page_type(self, url=url, **kwargs).handle_page()
 
 
 class NoListItems(Exception):
@@ -28,20 +28,35 @@ class Page(AbstractPage):
         self.doc = lxml.html.fromstring(scraper.get(self.url).text)
         self.doc.make_links_absolute(self.url)
 
-    def get_page(self, page_type, url=None, **kwargs):
-        yield from page_type(self.scraper, url=url, **kwargs).process_page()
+    def scrape_page_items(self, page_type, url=None, **kwargs):
+        """
+            creates an instance of ``page_type`` and returns an iterable of
+            scraped items
+        """
+        yield from page_type(self.scraper, url=url, **kwargs).handle_page()
 
-    def get_page2(self, page_type, url=None, **kwargs):
-        page_type(self.scraper, url=url, **kwargs).process_page()
+    def scrape_page(self, page_type, url=None, obj=None, **kwargs):
+        """
+            creates an instance of ``page_type`` that knows about an object
+            being built (``obj``)
+        """
+        if not obj:
+            raise ValueError('must pass obj to scrape_page')
+        page_type(self.scraper, url=url, obj=obj, **kwargs).handle_page()
 
-    def process_list_item(self, item):
+    def handle_list_item(self, item):
+        """
+            override handle_list_item for scrapers that iterate over
+
+            return values
+        """
         raise NotImplementedError()
 
-    def process_page(self):
+    def handle_page(self):
         n = 0
         for item in self.doc.xpath(self.list_xpath):
             n += 1
-            processed = self.process_list_item(item)
+            processed = self.handle_list_item(item)
             if processed:
                 yield processed
         if not n:

@@ -7,7 +7,7 @@ from .base import Spatula, Page
 class SenDetail(Page):
     list_xpath = '//h4[contains(text(), "Office")]'
 
-    def process_list_item(self, office):
+    def handle_list_item(self, office):
         (name, ) = office.xpath('text()')
         if name == "Tallahassee Office":
             type_ = 'capitol'
@@ -46,8 +46,8 @@ class SenDetail(Page):
         if address:
             self.obj.add_contact_detail(type='address', value=address, note=type_)
 
-    def process_page(self):
-        list(super().process_page())
+    def handle_page(self):
+        list(super().handle_page())
         email = self.doc.xpath('//a[contains(@href, "mailto:")]')[0].get('href').split(':')[-1]
         self.obj.add_contact_detail(type='email', value=email)
 
@@ -58,7 +58,7 @@ class SenList(Page):
     url = "http://www.flsenate.gov/Senators/"
     list_xpath = "//a[contains(@href, 'Senators/s')]"
 
-    def process_list_item(self, item):
+    def handle_list_item(self, item):
         name = " ".join(item.xpath('.//text()'))
         name = re.sub(r'\s+', " ", name).replace(" ,", ",").strip()
 
@@ -77,7 +77,7 @@ class SenList(Page):
         leg.add_source(self.url)
         leg.add_source(leg_url)
 
-        self.get_page2(SenDetail, leg_url, obj=leg)
+        self.scrape_page(SenDetail, leg_url, obj=leg)
 
         return leg
 
@@ -86,7 +86,7 @@ class RepList(Page):
     url = "http://www.flhouse.gov/Sections/Representatives/representatives.aspx"
     list_xpath = '//div[@id="MemberListing"]/div[@class="rep_listing1"]'
 
-    def process_list_item(self, item):
+    def handle_list_item(self, item):
         link = item.xpath('.//div[@class="rep_style"]/a')[0]
         name = link.text_content().strip()
 
@@ -109,13 +109,13 @@ class RepList(Page):
         rep.add_source(leg_url)
         rep.add_source(self.url)
 
-        self.get_page2(RepDetail, leg_url, obj=rep)
+        self.scrape_page(RepDetail, leg_url, obj=rep)
 
         return rep
 
 
 class RepDetail(Page):
-    def process_page(self):
+    def handle_page(self):
         self.scrape_office('Capitol Office')
         self.scrape_office('District Office')
 
@@ -148,5 +148,5 @@ class RepDetail(Page):
 class FlPersonScraper(Scraper, Spatula):
 
     def scrape(self):
-        yield from self.get_page(SenList)
-        yield from self.get_page(RepList)
+        yield from self.scrape_page_items(SenList)
+        yield from self.scrape_page_items(RepList)
