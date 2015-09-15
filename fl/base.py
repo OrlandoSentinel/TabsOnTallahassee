@@ -3,19 +3,33 @@ import subprocess
 import lxml.html
 
 
+class Spatula:
+    """ mixin for scrapelib.Scraper """
+    def get_page(self, page_type, url=None, **kwargs):
+        return page_type(self, url=url, **kwargs)
+
+
 class NoListItems(Exception):
     pass
 
 
-class Page:
+class AbstractPage:
     def __init__(self, scraper, url=None, *, obj=None, **kwargs):
         self.scraper = scraper
         if url:
             self.url = url
-        self.doc = lxml.html.fromstring(scraper.get(self.url).text)
-        self.doc.make_links_absolute(self.url)
         self.obj = obj
         self.kwargs = kwargs
+
+
+class Page(AbstractPage):
+    def __init__(self, scraper, url=None, *, obj=None, **kwargs):
+        super().__init__(scraper, url=url, obj=obj, **kwargs)
+        self.doc = lxml.html.fromstring(scraper.get(self.url).text)
+        self.doc.make_links_absolute(self.url)
+
+    def get_page(self, page_type, url=None, **kwargs):
+        return page_type(self.scraper, url=url, **kwargs)
 
     def process_list_item(self, item):
         raise NotImplementedError()
@@ -39,16 +53,12 @@ class Page:
             raise NoListItems()
 
 
-class PDF:
+class PDF(AbstractPage):
     def __init__(self, scraper, url=None, *, obj=None, **kwargs):
-        self.scraper = scraper
-        if url:
-            self.url = url
-        self.obj = obj
-        self.kwargs = kwargs
+        super().__init__(scraper, url=url, obj=obj, **kwargs)
 
+        # open PDF as text
         (path, resp) = self.scraper.urlretrieve(url)
-
         self.text = self.convert_pdf(path, 'text').decode('utf8')
         self.lines = self.text.split('\n')
         os.remove(path)

@@ -1,7 +1,7 @@
 import re
 import datetime
 from pupa.scrape import Scraper, Bill, Vote
-from .base import Page, PDF
+from .base import Page, PDF, Spatula
 
 
 class StartPage(Page):
@@ -21,7 +21,7 @@ class StartPage(Page):
 
         for page_number in range(1, pages + 1):
             page_url = (self.url + '&PageNumber={}'.format(page_number))
-            blp = BillList(self.scraper, page_url, session=self.kwargs['session'])
+            blp = self.get_page(BillList, url=page_url, session=self.kwargs['session'])
             yield from blp.yield_list()
 
 
@@ -55,7 +55,7 @@ class BillList(Page):
         for sp in sponsor.split(', '):
             bill.add_sponsorship(sp, 'primary', 'person', True)
 
-        bdp = BillDetail(self.scraper, bill_url, obj=bill)
+        bdp = self.get_page(BillDetail, url=bill_url, obj=bill)
         yield from bdp.process_page()
 
         yield bill
@@ -251,8 +251,9 @@ class FloorVote(PDF):
         yield vote
 
 
-class FlBillScraper(Scraper):
+class FlBillScraper(Scraper, Spatula):
 
     def scrape(self, session):
         url = "http://flsenate.gov/Session/Bills/{}?chamber=both".format(session)
-        yield from StartPage(self, url, session=session).process_page()
+        sp = self.get_page(StartPage, url, session=session)
+        yield from sp.process_page()
