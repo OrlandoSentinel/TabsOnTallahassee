@@ -1,7 +1,7 @@
 import re
 from urllib import parse
 from pupa.scrape import Scraper, Person
-from .base import Page
+from .base import Spatula, Page
 
 
 class SenDetail(Page):
@@ -47,6 +47,7 @@ class SenDetail(Page):
             self.obj.add_contact_detail(type='address', value=address, note=type_)
 
     def process_page(self):
+        super().process_page()
         email = self.doc.xpath('//a[contains(@href, "mailto:")]')[0].get('href').split(':')[-1]
         self.obj.add_contact_detail(type='email', value=email)
 
@@ -76,9 +77,7 @@ class SenList(Page):
         leg.add_source(self.url)
         leg.add_source(leg_url)
 
-        sd = SenDetail(self.scraper, leg_url, obj=leg)
-        sd.process_list()
-        sd.process_page()
+        self.get_page2(SenDetail, leg_url, obj=leg)
 
         return leg
 
@@ -110,14 +109,16 @@ class RepList(Page):
         rep.add_source(leg_url)
         rep.add_source(self.url)
 
-        rd = RepDetail(self.scraper, leg_url, obj=rep)
-        rd.scrape_office('Capitol Office')
-        rd.scrape_office('District Office')
+        self.get_page2(RepDetail, leg_url, obj=rep)
 
         return rep
 
 
 class RepDetail(Page):
+    def process_page(self):
+        self.scrape_office('Capitol Office')
+        self.scrape_office('District Office')
+
     def scrape_office(self, name):
         pieces = [x.tail.strip() for x in
                   self.doc.xpath('//strong[text()="{}"]/following-sibling::br'.format(name))]
@@ -144,10 +145,8 @@ class RepDetail(Page):
             self.obj.add_contact_detail(type='voice', value=phone, note=type_)
 
 
-class FlPersonScraper(Scraper):
+class FlPersonScraper(Scraper, Spatula):
 
     def scrape(self):
-        sl = SenList(self)
-        yield from sl.yield_list()
-        rl = RepList(self)
-        yield from rl.yield_list()
+        yield from self.get_page(SenList)
+        yield from self.get_page(RepList)

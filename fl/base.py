@@ -6,7 +6,7 @@ import lxml.html
 class Spatula:
     """ mixin for scrapelib.Scraper """
     def get_page(self, page_type, url=None, **kwargs):
-        return page_type(self, url=url, **kwargs)
+        yield from page_type(self, url=url, **kwargs).process_page()
 
 
 class NoListItems(Exception):
@@ -29,26 +29,21 @@ class Page(AbstractPage):
         self.doc.make_links_absolute(self.url)
 
     def get_page(self, page_type, url=None, **kwargs):
-        return page_type(self.scraper, url=url, **kwargs)
+        yield from page_type(self.scraper, url=url, **kwargs).process_page()
+
+    def get_page2(self, page_type, url=None, **kwargs):
+        page_type(self.scraper, url=url, **kwargs).process_page()
 
     def process_list_item(self, item):
         raise NotImplementedError()
 
-    def yield_list(self):
+    def process_page(self):
         n = 0
         for item in self.doc.xpath(self.list_xpath):
             n += 1
             processed = self.process_list_item(item)
             if processed:
                 yield processed
-        if not n:
-            raise NoListItems()
-
-    def process_list(self):
-        n = 0
-        for item in self.doc.xpath(self.list_xpath):
-            n += 1
-            self.process_list_item(item)
         if not n:
             raise NoListItems()
 

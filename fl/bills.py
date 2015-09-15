@@ -21,8 +21,7 @@ class StartPage(Page):
 
         for page_number in range(1, pages + 1):
             page_url = (self.url + '&PageNumber={}'.format(page_number))
-            blp = self.get_page(BillList, url=page_url, session=self.kwargs['session'])
-            yield from blp.yield_list()
+            yield from self.get_page(BillList, url=page_url, session=self.kwargs['session'])
 
 
 class BillList(Page):
@@ -55,8 +54,7 @@ class BillList(Page):
         for sp in sponsor.split(', '):
             bill.add_sponsorship(sp, 'primary', 'person', True)
 
-        bdp = self.get_page(BillDetail, url=bill_url, obj=bill)
-        yield from bdp.process_page()
+        yield from self.get_page(BillDetail, url=bill_url, obj=bill)
 
         yield bill
 
@@ -255,5 +253,4 @@ class FlBillScraper(Scraper, Spatula):
 
     def scrape(self, session):
         url = "http://flsenate.gov/Session/Bills/{}?chamber=both".format(session)
-        sp = self.get_page(StartPage, url, session=session)
-        yield from sp.process_page()
+        yield from self.get_page(StartPage, url, session=session)
