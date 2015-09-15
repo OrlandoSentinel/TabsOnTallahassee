@@ -1,7 +1,7 @@
 import re
 import datetime
-from pupa.scrape import Scraper, Bill
-from .base import Page
+from pupa.scrape import Scraper, Bill, Vote
+from .base import Page, PDF
 
 
 class StartPage(Page):
@@ -16,7 +16,7 @@ class StartPage(Page):
                 raise AssertionError("Bill list pagination needed but not used")
             else:
                 self.scraper.warning("Pagination not used; "
-                                     "make sure there're only a few bills for this session")
+                                     "make sure there are only a few bills for this session")
             pages = 1
 
         for page_number in range(1, pages + 1):
@@ -56,9 +56,9 @@ class BillList(Page):
             bill.add_sponsorship(sp, 'primary', 'person', True)
 
         bdp = BillDetail(self.scraper, bill_url, obj=bill)
-        bdp.process_page()
+        yield from bdp.process_page()
 
-        return bill
+        yield bill
 
 
 class BillDetail(Page):
@@ -66,6 +66,7 @@ class BillDetail(Page):
         self.process_history()
         self.process_versions()
         self.process_analysis()
+        yield from self.process_votes()
 
     def process_versions(self):
         try:
@@ -142,6 +143,112 @@ class BillDetail(Page):
 
                 self.obj.add_action(action, date, organization=actor, chamber=chamber,
                                     classification=atype)
+
+    def process_votes(self):
+        vote_tables = self.doc.xpath("//div[@id='tabBodyVoteHistory']//table")
+
+        for vote_table in vote_tables:
+            for tr in vote_table.xpath("tbody/tr"):
+                vote_date = tr.xpath("string(td[3])").strip()
+                if vote_date.isalpha():
+                    vote_date = tr.xpath("string(td[2])").strip()
+                try:
+                    vote_date = datetime.datetime.strptime(vote_date, "%m/%d/%Y %H:%M %p").strftime("%Y-%m-%d %H:%M:00")
+                except ValueError:
+                    self.scraper.logger.warning('bad vote date: {}'.format(vote_date))
+
+                vote_url = tr.xpath("td[4]/a")[0].attrib['href']
+                if "SenateVote" in vote_url:
+                    fv = FloorVote(self.scraper, url=vote_url,
+                                   date=vote_date, chamber='upper', bill=self.obj)
+                    yield from fv.process_page()
+                elif "HouseVote" in vote_url:
+                    fv = FloorVote(self.scraper, url=vote_url,
+                                   date=vote_date, chamber='lower', bill=self.obj)
+                    yield from fv.process_page()
+                else:
+                    pass
+                    #raise Exception('??? ' + vote_url)
+                    #self.scrape_uppper_committee_vote(bill, vote_date, vote_url)
+        else:
+            self.scraper.warning("No vote table for {}".format(self.obj.identifier))
+
+
+class FloorVote(PDF):
+    def process_page(self):
+        MOTION_INDEX = 4
+        TOTALS_INDEX = 6
+        VOTE_START_INDEX = 9
+
+        motion = self.lines[MOTION_INDEX].strip()
+        # Sometimes there is no motion name, only "Passage" in the line above
+        if (not motion and not self.lines[MOTION_INDEX - 1].startswith("Calendar Page:")):
+            motion = self.lines[MOTION_INDEX - 1]
+            MOTION_INDEX -= 1
+            TOTALS_INDEX -= 1
+            VOTE_START_INDEX -= 1
+        else:
+            assert motion, "Floor vote's motion name appears to be empty"
+
+        for _extra_motion_line in range(2):
+            MOTION_INDEX += 1
+            if self.lines[MOTION_INDEX].strip():
+                motion = "{}, {}".format(motion, self.lines[MOTION_INDEX].strip())
+                TOTALS_INDEX += 1
+                VOTE_START_INDEX += 1
+            else:
+                break
+
+        (yes_count, no_count, nv_count) = [
+            int(x) for x in re.search(r'^\s+Yeas - (\d+)\s+Nays - (\d+)\s+Not Voting - (\d+)\s*$',
+                                      self.lines[TOTALS_INDEX]).groups()
+        ]
+        result = 'pass' if yes_count > no_count else 'fail'
+
+        vote = Vote(#legislative_session=self.kwargs['bill'].legislative_session,
+                    start_date=self.kwargs['date'],
+                    chamber=self.kwargs['chamber'],
+                    bill=self.kwargs['bill'],
+                    motion_text=motion,
+                    result=result,
+                    classification='passage',
+                    )
+        vote.add_source(self.url)
+        vote.set_count('yes', yes_count)
+        vote.set_count('no', no_count)
+        vote.set_count('not voting', nv_count)
+
+        for line in self.lines[VOTE_START_INDEX:]:
+            if not line.strip():
+                break
+
+            if " President " in line:
+                line = line.replace(" President ", " ")
+            elif " Speaker " in line:
+                line = line.replace(" Speaker ", " ")
+
+            # Votes follow the pattern of:
+            # [vote code] [member name]-[district number]
+            for member in re.findall(r'\s*Y\s+(.*?)-\d{1,3}\s*', line):
+                vote.yes(member)
+            for member in re.findall(r'\s*N\s+(.*?)-\d{1,3}\s*', line):
+                vote.no(member)
+            for member in re.findall(r'\s*(?:EX|AV)\s+(.*?)-\d{1,3}\s*', line):
+                vote.vote('not voting', member)
+
+        #try:
+        #    vote.validate()
+        #except ValueError:
+        #    # On a rare occasion, a member won't have a vote code,
+        #    # which indicates that they didn't vote. The totals reflect
+        #    # this.
+        #    self.scraper.info("Votes don't add up; looking for additional ones")
+        #    for line in self.lines[VOTE_START_INDEX:]:
+        #        if not line.strip():
+        #            break
+        #        for member in re.findall(r'\s{8,}([A-Z][a-z\'].*?)-\d{1,3}', line):
+        #            vote.other(member)
+        yield vote
 
 
 class FlBillScraper(Scraper):
