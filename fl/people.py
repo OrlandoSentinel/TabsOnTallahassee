@@ -47,7 +47,7 @@ class SenDetail(Page):
             self.obj.add_contact_detail(type='address', value=address, note=type_)
 
     def process_page(self):
-        super().process_page()
+        list(super().process_page())
         email = self.doc.xpath('//a[contains(@href, "mailto:")]')[0].get('href').split(':')[-1]
         self.obj.add_contact_detail(type='email', value=email)
 
