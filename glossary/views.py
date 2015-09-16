@@ -15,7 +15,6 @@ def glossary(request):
         word = {}
         word[term.term] = term.definition
         all_terms.append(word)
-    # import ipdb; ipdb.set_trace();
 
     context = {'all_terms': all_terms}
 
