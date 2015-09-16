@@ -9,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'gfq4da*^9^6vvo4tv)z10wu4z2%6f7q2v8w5rd3&y%mq08zou9'
+SECRET_KEY = '...'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,8 +29,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'opencivicdata.apps.BaseConfig',
-    'glossary'
+    'glossary',
+
+    # # The Django sites framework is required
+    'django.contrib.sites',
 ]
+
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -89,6 +93,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend'
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
@@ -122,3 +129,5 @@ STATIC_ROOT = os.path.join('..', BASE_DIR, 'static')
 # STATIC_URL = '{}/static/'.format(DOMAIN)
 
 STATIC_URL = '/static/'
+
+SITE_ID = 1
