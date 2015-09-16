@@ -157,13 +157,11 @@ class BillDetail(Page):
 
                 vote_url = tr.xpath("td[4]/a")[0].attrib['href']
                 if "SenateVote" in vote_url:
-                    fv = FloorVote(self.scraper, url=vote_url,
-                                   date=vote_date, chamber='upper', bill=self.obj)
-                    yield from fv.process_page()
+                    yield from self.scrape_page_items(FloorVote, vote_url,
+                                                      date=vote_date, chamber='upper', bill=self.obj)
                 elif "HouseVote" in vote_url:
-                    fv = FloorVote(self.scraper, url=vote_url,
-                                   date=vote_date, chamber='lower', bill=self.obj)
-                    yield from fv.process_page()
+                    yield from self.scrape_page_items(FloorVote, vote_url,
+                                                      date=vote_date, chamber='lower', bill=self.obj)
                 else:
                     pass
                     #raise Exception('??? ' + vote_url)
@@ -227,25 +225,41 @@ class FloorVote(PDF):
 
             # Votes follow the pattern of:
             # [vote code] [member name]-[district number]
-            for member in re.findall(r'\s*Y\s+(.*?)-\d{1,3}\s*', line):
-                vote.yes(member)
-            for member in re.findall(r'\s*N\s+(.*?)-\d{1,3}\s*', line):
-                vote.no(member)
-            for member in re.findall(r'\s*(?:EX|AV)\s+(.*?)-\d{1,3}\s*', line):
-                vote.vote('not voting', member)
+            for vtype, member in re.findall(r'\s*(Y|N|EX|AV)\s+(.*?)-\d{1,3}\s*', line):
+                vtype = {'Y': 'yes', 'N': 'no', 'EX': 'excused', 'AV': 'abstain'}[vtype]
+                vote.vote(vtype, member)
 
-        #try:
-        #    vote.validate()
-        #except ValueError:
-        #    # On a rare occasion, a member won't have a vote code,
-        #    # which indicates that they didn't vote. The totals reflect
-        #    # this.
-        #    self.scraper.info("Votes don't add up; looking for additional ones")
-        #    for line in self.lines[VOTE_START_INDEX:]:
-        #        if not line.strip():
-        #            break
-        #        for member in re.findall(r'\s{8,}([A-Z][a-z\'].*?)-\d{1,3}', line):
-        #            vote.other(member)
+        # check totals line up
+        yes_count = no_count = nv_count = 0
+        for vc in vote.counts:
+            if vc['option'] == 'yes':
+                yes_count = vc['value']
+            elif vc['option'] == 'no':
+                no_count = vc['value']
+            else:
+                nv_count += vc['value']
+
+        for vr in vote.votes:
+            if vr['option'] == 'yes':
+                yes_count -= 1
+            elif vr['option'] == 'no':
+                no_count -= 1
+            else:
+                nv_count -= 1
+
+        if yes_count != 0 or no_count != 0:
+            raise ValueError('vote count incorrect: ' + self.url)
+
+        if nv_count != 0:
+            # On a rare occasion, a member won't have a vote code,
+            # which indicates that they didn't vote. The totals reflect
+            # this.
+            self.scraper.info("Votes don't add up; looking for additional ones")
+            for line in self.lines[VOTE_START_INDEX:]:
+                if not line.strip():
+                    break
+                for member in re.findall(r'\s{8,}([A-Z][a-z\'].*?)-\d{1,3}', line):
+                    vote.vote('not voting', member)
         yield vote
 
 
