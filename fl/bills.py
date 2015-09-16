@@ -21,11 +21,11 @@ class StartPage(Page):
 
         for page_number in range(1, pages + 1):
             page_url = (self.url + '&PageNumber={}'.format(page_number))
-            yield from self.scrape_page_items(BillList, url=page_url, session=self.kwargs['session'])
+            yield from self.scrape_page_items(BillList, url=page_url,
+                                              session=self.kwargs['session'])
 
 
 class BillList(Page):
-    #list_xpath = "//a[contains(@href, '/Session/Bill/{}/')]".format(session)
     list_xpath = "//a[contains(@href, '/Session/Bill/')]"
 
     def handle_list_item(self, item):
@@ -152,17 +152,20 @@ class BillDetail(Page):
                 if vote_date.isalpha():
                     vote_date = tr.xpath("string(td[2])").strip()
                 try:
-                    vote_date = datetime.datetime.strptime(vote_date, "%m/%d/%Y %H:%M %p").strftime("%Y-%m-%d %H:%M:00")
+                    vote_date = datetime.datetime.strptime(vote_date, "%m/%d/%Y %H:%M %p"
+                                                           ).strftime("%Y-%m-%d %H:%M:00")
                 except ValueError:
                     self.scraper.logger.warning('bad vote date: {}'.format(vote_date))
 
                 vote_url = tr.xpath("td[4]/a")[0].attrib['href']
                 if "SenateVote" in vote_url:
                     yield from self.scrape_page_items(FloorVote, vote_url,
-                                                      date=vote_date, chamber='upper', bill=self.obj)
+                                                      date=vote_date, chamber='upper',
+                                                      bill=self.obj)
                 elif "HouseVote" in vote_url:
                     yield from self.scrape_page_items(FloorVote, vote_url,
-                                                      date=vote_date, chamber='lower', bill=self.obj)
+                                                      date=vote_date, chamber='lower',
+                                                      bill=self.obj)
                 else:
                     yield from self.scrape_page_items(UpperComVote, vote_url,
                                                       date=vote_date, bill=self.obj)
@@ -299,7 +302,7 @@ class UpperComVote(PDF):
                         votes['no'].append(member)
                     else:
                         raise ValueError("Unparseable vote found for {0} in {1}:\n{2}"
-                                         .format(member, url, line))
+                                         .format(member, self.url, line))
                 else:
                     votes['other'].append(member)
 
@@ -311,7 +314,6 @@ class UpperComVote(PDF):
         yes_count = int(totals[0])
         no_count = int(totals[1])
         result = 'pass' if (yes_count > no_count) else 'fail'
-        other_count = len(votes['other'])
 
         vote = Vote(start_date=self.kwargs['date'],
                     bill=self.kwargs['bill'],
@@ -377,7 +379,8 @@ class HouseComVote(Page):
 
     def handle_page(self):
         (date, ) = self.doc.xpath('//span[@id="ctl00_ContentPlaceHolder1_lblDate"]/text()')
-        date = datetime.datetime.strptime(date, '%m/%d/%Y %I:%M:%S %p').isoformat().replace('T', ' ')
+        date = datetime.datetime.strptime(date, '%m/%d/%Y %I:%M:%S %p'
+                                          ).isoformat().replace('T', ' ')
 
         totals = self.doc.xpath('//table//table')[-1].text_content()
         totals = re.sub(r'(?mu)\s+', " ", totals).strip()
@@ -386,7 +389,8 @@ class HouseComVote(Page):
             'Total Missed:\s+(\d+)', totals).groups()]
         result = 'pass' if yes_count > no_count else 'fail'
 
-        (committee, ) = self.doc.xpath('//span[@id="ctl00_ContentPlaceHolder1_lblCommittee"]/text()')
+        (committee, ) = self.doc.xpath(
+            '//span[@id="ctl00_ContentPlaceHolder1_lblCommittee"]/text()')
         (action, ) = self.doc.xpath('//span[@id="ctl00_ContentPlaceHolder1_lblAction"]/text()')
         motion = "{} ({})".format(action, committee)
 

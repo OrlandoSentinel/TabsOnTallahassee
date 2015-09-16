@@ -103,7 +103,7 @@ class Page(AbstractPage):
                     yield from processed
                 else:
                     yield processed
-        #if not n:
+        # if not n:
         #    raise NoListItems('no matches for {} on {}'.format(self.list_xpath, self.url))
 
 
@@ -125,7 +125,8 @@ class PDF(AbstractPage):
         try:
             pipe = subprocess.Popen(commands[type], stdout=subprocess.PIPE, close_fds=True).stdout
         except OSError as e:
-            raise EnvironmentError("error running {}, missing executable? [{}]".format(' '.join(commands[type]), e))
+            raise EnvironmentError("error running {}, missing executable? [{}]"
+                                   .format(' '.join(commands[type]), e))
         data = pipe.read()
         pipe.close()
         return data
