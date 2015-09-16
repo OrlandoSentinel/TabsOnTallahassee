@@ -54,7 +54,7 @@ class BillList(Page):
         bill.add_source(bill_url)
 
         # normalize id from HB 0004 to H4
-        subj_bill_id = re.sub('(B|CR) 0*', '', bill_id)
+        subj_bill_id = re.sub('(H|S)\w+ 0*(\d+)', r'\1\2', bill_id)
         bill.subject = list(self.kwargs['subjects'][subj_bill_id])
 
         sponsor = re.sub(r'^(?:Rep|Sen)\.\s', "", sponsor)
@@ -437,6 +437,8 @@ class HouseComVote(Page):
 
 
 class SubjectPDF(PDF):
+    pdftotext_type = 'text-nolayout'
+
     def handle_page(self):
         """
             sort of a state machine
@@ -447,26 +449,20 @@ class SubjectPDF(PDF):
         """
         subjects = defaultdict(set)
 
-        SUBJ_RE = re.compile('[A-Z ,()]+')
+        SUBJ_RE = re.compile('^[A-Z ,()]+$')
         BILL_RE = re.compile('[HS]\d+(?:-[A-Z])?')
 
-        last_blank = False
         subject = None
 
         for line in self.lines:
-            if not line:
-                last_blank = True
-            elif last_blank and SUBJ_RE.match(line):
-                subject = line.lower()
+            if SUBJ_RE.match(line):
+                subject = line.lower().strip()
                 last_blank = False
             elif subject and BILL_RE.findall(line):
                 for bill in BILL_RE.findall(line):
                     # normalize bill id to [SH]#
                     bill = bill.replace('-', '')
                     subjects[bill].add(subject)
-                last_blank = False
-            else:
-                last_blank = False
 
         return subjects
 

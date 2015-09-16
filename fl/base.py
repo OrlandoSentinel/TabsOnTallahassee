@@ -111,16 +111,18 @@ class Page(AbstractPage):
 
 
 class PDF(AbstractPage):
+    pdftotext_type = 'text'
+
     def __init__(self, scraper, url=None, *, obj=None, **kwargs):
         super().__init__(scraper, url=url, obj=obj, **kwargs)
 
         # open PDF as text
         (path, resp) = self.scraper.urlretrieve(url)
-        self.text = self.convert_pdf(path, 'text').decode('utf8')
+        self.text = self.convert_pdf(path, self.pdftotext_type).decode('utf8')
         self.lines = self.text.split('\n')
         os.remove(path)
 
-    def convert_pdf(self, filename, type='xml'):
+    def convert_pdf(self, filename, type):
         commands = {'text': ['pdftotext', '-layout', filename, '-'],
                     'text-nolayout': ['pdftotext', filename, '-'],
                     'xml': ['pdftohtml', '-xml', '-stdout', filename],
