@@ -64,8 +64,12 @@ class AbstractPage:
 class Page(AbstractPage):
     def __init__(self, scraper, url=None, *, obj=None, **kwargs):
         super().__init__(scraper, url=url, obj=obj, **kwargs)
-        self.doc = lxml.html.fromstring(scraper.get(self.url).text)
+        resp = self.do_request()
+        self.doc = lxml.html.fromstring(resp.text)
         self.doc.make_links_absolute(self.url)
+
+    def do_request(self):
+        return self.scraper.get(self.url)
 
     def scrape_page_items(self, page_type, url=None, **kwargs):
         """
@@ -95,9 +99,12 @@ class Page(AbstractPage):
             n += 1
             processed = self.handle_list_item(item)
             if processed:
-                yield processed
-        if not n:
-            raise NoListItems()
+                if hasattr(processed, '__iter__'):
+                    yield from processed
+                else:
+                    yield processed
+        #if not n:
+        #    raise NoListItems('no matches for {} on {}'.format(self.list_xpath, self.url))
 
 
 class PDF(AbstractPage):

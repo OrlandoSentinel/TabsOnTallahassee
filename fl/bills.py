@@ -65,6 +65,7 @@ class BillDetail(Page):
         self.process_versions()
         self.process_analysis()
         yield from self.process_votes()
+        yield from self.scrape_page_items(HousePage, bill=self.obj)
 
     def process_versions(self):
         try:
@@ -328,6 +329,98 @@ class UpperComVote(PDF):
         for vtype, voters in votes.items():
             for voter in voters:
                 vote.vote(vtype, voter)
+
+        yield vote
+
+
+class HousePage(Page):
+    '''
+    House committee roll calls are not available on the Senate's
+    website. Furthermore, the House uses an internal ID system in
+    its URLs, making accessing those pages non-trivial.
+
+    This will fetch all the House committee votes for the
+    given bill, and add the votes to that object.
+    '''
+    url = 'http://www.myfloridahouse.gov/Sections/Bills/bills.aspx'
+    list_xpath = '//a[contains(@href, "/Bills/billsdetail.aspx?BillId=")]/@href'
+
+    def do_request(self):
+        # Keep the digits and all following characters in the bill's ID
+        bill_number = re.search(r'^\w+\s(\d+\w*)$', self.kwargs['bill'].identifier).group(1)
+        session_number = {'2016': '80',
+                          '2015B': '81'}[self.kwargs['bill'].legislative_session]
+
+        form = {
+            'rblChamber': 'B',
+            'ddlSession': session_number,
+            'ddlBillList': '-1',
+            'txtBillNumber': bill_number,
+            'ddlSponsor': '-1',
+            'ddlReferredTo': '-1',
+            'SubmittedByControl': '',
+        }
+        return self.scraper.post(self.url, data=form)
+
+    def handle_list_item(self, item):
+        yield from self.scrape_page_items(HouseBillPage, item, bill=self.kwargs['bill'])
+
+
+class HouseBillPage(Page):
+    list_xpath = '//a[text()="See Votes"]/@href'
+
+    def handle_list_item(self, item):
+        yield from self.scrape_page_items(HouseComVote, item, bill=self.kwargs['bill'])
+
+
+class HouseComVote(Page):
+
+    def handle_page(self):
+        (date, ) = self.doc.xpath('//span[@id="ctl00_ContentPlaceHolder1_lblDate"]/text()')
+        date = datetime.datetime.strptime(date, '%m/%d/%Y %I:%M:%S %p').isoformat().replace('T', ' ')
+
+        totals = self.doc.xpath('//table//table')[-1].text_content()
+        totals = re.sub(r'(?mu)\s+', " ", totals).strip()
+        (yes_count, no_count, other_count) = [int(x) for x in re.search(
+            r'(?m)Total Yeas:\s+(\d+)\s+Total Nays:\s+(\d+)\s+'
+            'Total Missed:\s+(\d+)', totals).groups()]
+        result = 'pass' if yes_count > no_count else 'fail'
+
+        (committee, ) = self.doc.xpath('//span[@id="ctl00_ContentPlaceHolder1_lblCommittee"]/text()')
+        (action, ) = self.doc.xpath('//span[@id="ctl00_ContentPlaceHolder1_lblAction"]/text()')
+        motion = "{} ({})".format(action, committee)
+
+        vote = Vote(start_date=date,
+                    bill=self.kwargs['bill'],
+                    chamber='lower',
+                    motion_text=motion,
+                    result=result,
+                    classification='committee',
+                    )
+        vote.add_source(self.url)
+        vote.set_count('yes', yes_count)
+        vote.set_count('no', no_count)
+        vote.set_count('not voting', other_count)
+
+        for member_vote in self.doc.xpath('//table//table//table//td'):
+            if not member_vote.text_content().strip():
+                continue
+
+            (member, ) = member_vote.xpath('span[2]//text()')
+            (member_vote, ) = member_vote.xpath('span[1]//text()')
+
+            if member_vote == "Y":
+                vote.yes(member)
+            elif member_vote == "N":
+                vote.no(member)
+            elif member_vote == "-":
+                vote.other(member)
+            # Parenthetical votes appear to not be counted in the
+            # totals for Yea, Nay, _or_ Missed
+            elif re.search(r'\([YN]\)', member_vote):
+                continue
+            else:
+                raise ValueError("Unknown vote type found: {}".format(member_vote))
 
         yield vote
 
