@@ -14,9 +14,18 @@
             <div class="header clearfix">
                 <nav>
                     <ul class="nav nav-pills pull-right">
-                        <li role="presentation" class="active"><a href="#">Home</a></li>
-                        <li role="presentation"><a href="#">About</a></li>
-                        <li role="presentation"><a href="/glossary">Glossary</a></li>
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="/glossary">Glossary</a></li>
+
+                        <li>
+                          <!-- {{ user }} -->
+                          {% if user.is_anonymous %}
+                          <a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
+                          {% else %}
+                          <a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
+                          {% endif %}
+                        </li>
                     </ul>
                 </nav>
               <h3 class="text-muted">Tabs on Tallahassee</h3>
