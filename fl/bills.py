@@ -163,9 +163,8 @@ class BillDetail(Page):
                     yield from self.scrape_page_items(FloorVote, vote_url,
                                                       date=vote_date, chamber='lower', bill=self.obj)
                 else:
-                    pass
-                    #raise Exception('??? ' + vote_url)
-                    #self.scrape_uppper_committee_vote(bill, vote_date, vote_url)
+                    yield from self.scrape_page_items(UpperComVote, vote_url,
+                                                      date=vote_date, bill=self.obj)
         else:
             self.scraper.warning("No vote table for {}".format(self.obj.identifier))
 
@@ -201,8 +200,7 @@ class FloorVote(PDF):
         ]
         result = 'pass' if yes_count > no_count else 'fail'
 
-        vote = Vote(#legislative_session=self.kwargs['bill'].legislative_session,
-                    start_date=self.kwargs['date'],
+        vote = Vote(start_date=self.kwargs['date'],
                     chamber=self.kwargs['chamber'],
                     bill=self.kwargs['bill'],
                     motion_text=motion,
@@ -260,6 +258,77 @@ class FloorVote(PDF):
                     break
                 for member in re.findall(r'\s{8,}([A-Z][a-z\'].*?)-\d{1,3}', line):
                     vote.vote('not voting', member)
+        yield vote
+
+
+class UpperComVote(PDF):
+
+    def handle_page(self):
+        (_, motion) = self.lines[5].split("FINAL ACTION:")
+        motion = motion.strip()
+        if not motion:
+            self.warning("Vote appears to be empty")
+            return
+
+        vote_top_row = [self.lines.index(x) for x in self.lines if
+                        re.search(r'^\s+Yea\s+Nay.*?(?:\s+Yea\s+Nay)+$', x)][0]
+        yea_columns_end = self.lines[vote_top_row].index("Yea") + len("Yea")
+        nay_columns_begin = self.lines[vote_top_row].index("Nay")
+
+        votes = {'yes': [], 'no': [], 'other': []}
+        for line in self.lines[(vote_top_row + 1):]:
+            if line.strip():
+                member = re.search(r'''(?x)
+                        ^\s+(?:[A-Z\-]+)?\s+    # Possible vote indicator
+                        ([A-Z][a-z]+            # Name must have lower-case characters
+                        [\w\-\s]+)              # Continue looking for the rest of the name
+                        (?:,[A-Z\s]+?)?         # Leadership has an all-caps title
+                        (?:\s{2,}.*)?           # Name ends when many spaces are seen
+                        ''', line).group(1)
+                # Usually non-voting members won't even have a code listed
+                # Only a couple of codes indicate an actual vote:
+                # "VA" (vote after roll call) and "VC" (vote change)
+                did_vote = bool(re.search(r'^\s+(X|VA|VC)\s+[A-Z][a-z]', line))
+                if did_vote:
+                    # Check where the "X" or vote code is on the page
+                    vote_column = len(line) - len(line.lstrip())
+                    if vote_column <= yea_columns_end:
+                        votes['yes'].append(member)
+                    elif vote_column >= nay_columns_begin:
+                        votes['no'].append(member)
+                    else:
+                        raise ValueError("Unparseable vote found for {0} in {1}:\n{2}"
+                                         .format(member, url, line))
+                else:
+                    votes['other'].append(member)
+
+            # End loop as soon as no more members are found
+            else:
+                break
+
+        totals = re.search(r'(?msu)\s+(\d{1,3})\s+(\d{1,3})\s+.*?TOTALS', self.text).groups()
+        yes_count = int(totals[0])
+        no_count = int(totals[1])
+        result = 'pass' if (yes_count > no_count) else 'fail'
+        other_count = len(votes['other'])
+
+        vote = Vote(start_date=self.kwargs['date'],
+                    bill=self.kwargs['bill'],
+                    chamber='upper',
+                    motion_text=motion,
+                    classification='committee',
+                    result=result
+                    )
+        vote.add_source(self.url)
+        vote.set_count('yes', yes_count)
+        vote.set_count('no', no_count)
+        vote.set_count('other', len(votes['other']))
+
+        # set voters
+        for vtype, voters in votes.items():
+            for voter in voters:
+                vote.vote(vtype, voter)
+
         yield vote
 
 
