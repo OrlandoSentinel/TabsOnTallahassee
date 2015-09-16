@@ -1,5 +1,6 @@
 import re
 import datetime
+from collections import defaultdict
 from pupa.scrape import Scraper, Bill, Vote
 from .base import Page, PDF, Spatula
 
@@ -22,7 +23,9 @@ class StartPage(Page):
         for page_number in range(1, pages + 1):
             page_url = (self.url + '&PageNumber={}'.format(page_number))
             yield from self.scrape_page_items(BillList, url=page_url,
-                                              session=self.kwargs['session'])
+                                              session=self.kwargs['session'],
+                                              subjects=self.kwargs['subjects'],
+                                              )
 
 
 class BillList(Page):
@@ -49,6 +52,10 @@ class BillList(Page):
 
         bill = Bill(bill_id, self.kwargs['session'], title, classification=bill_type)
         bill.add_source(bill_url)
+
+        # normalize id from HB 0004 to H4
+        subj_bill_id = re.sub('(B|CR) 0*', '', bill_id)
+        bill.subject = list(self.kwargs['subjects'][subj_bill_id])
 
         sponsor = re.sub(r'^(?:Rep|Sen)\.\s', "", sponsor)
         for sp in sponsor.split(', '):
@@ -429,8 +436,46 @@ class HouseComVote(Page):
         yield vote
 
 
+class SubjectPDF(PDF):
+    def handle_page(self):
+        """
+            sort of a state machine
+
+            after a blank line if there's an all caps phrase that's the new subject
+
+            if a line contains (H|S)(\d+) that bill gets current subject
+        """
+        subjects = defaultdict(set)
+
+        SUBJ_RE = re.compile('[A-Z ,()]+')
+        BILL_RE = re.compile('[HS]\d+(?:-[A-Z])?')
+
+        last_blank = False
+        subject = None
+
+        for line in self.lines:
+            if not line:
+                last_blank = True
+            elif last_blank and SUBJ_RE.match(line):
+                subject = line.lower()
+                last_blank = False
+            elif subject and BILL_RE.findall(line):
+                for bill in BILL_RE.findall(line):
+                    # normalize bill id to [SH]#
+                    bill = bill.replace('-', '')
+                    subjects[bill].add(subject)
+                last_blank = False
+            else:
+                last_blank = False
+
+        return subjects
+
+
 class FlBillScraper(Scraper, Spatula):
 
     def scrape(self, session):
+        subject_url = 'http://www.leg.state.fl.us/data/session/{}/citator/Daily/subindex.pdf'.format(session)
+        subjects = self.scrape_page(SubjectPDF, subject_url)
+
         url = "http://flsenate.gov/Session/Bills/{}?chamber=both".format(session)
-        yield from self.scrape_page_items(StartPage, url, session=session)
+        yield from self.scrape_page_items(StartPage, url, session=session, subjects=subjects)

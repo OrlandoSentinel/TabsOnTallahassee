@@ -47,6 +47,9 @@ class Spatula:
     def scrape_page_items(self, page_type, url=None, **kwargs):
         yield from page_type(self, url=url, **kwargs).handle_page()
 
+    def scrape_page(self, page_type, url=None, obj=None, **kwargs):
+        return page_type(self, url=url, obj=obj, **kwargs).handle_page()
+
 
 class NoListItems(Exception):
     pass
@@ -83,7 +86,7 @@ class Page(AbstractPage):
             creates an instance of ``page_type`` that knows about an object
             being built (``obj``)
         """
-        page_type(self.scraper, url=url, obj=obj, **kwargs).handle_page()
+        return page_type(self.scraper, url=url, obj=obj, **kwargs).handle_page()
 
     def handle_list_item(self, item):
         """
