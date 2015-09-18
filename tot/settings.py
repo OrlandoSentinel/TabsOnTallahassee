@@ -19,8 +19,6 @@ DOMAIN = 'http://localhost:8000'
 ALLOWED_HOSTS = ['*']
 
 
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,10 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'opencivicdata.apps.BaseConfig',
-    'glossary',
-
-    # # The Django sites framework is required
     'django.contrib.sites',
+    'registration',
+    'glossary'
 ]
 
 
@@ -133,3 +130,6 @@ STATIC_URL = '/static/'
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = 'preferences/'
+
+ACCOUNT_ACTIVATION_DAYS = 7  # Account can be activated within 7 days
+
