@@ -133,3 +133,5 @@ LOGIN_REDIRECT_URL = 'preferences/'
 
 ACCOUNT_ACTIVATION_DAYS = 7  # Account can be activated within 7 days
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
