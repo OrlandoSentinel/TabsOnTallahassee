@@ -17,10 +17,13 @@ from django.contrib import admin
 from django.conf.urls import url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+from preferences.views import EmailRegistrationView
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^glossary/', include('glossary.urls')),
-    url(r'^accounts/', include('registration.backends.default.urls'))
+    url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/register/', EmailRegistrationView.as_view(), name= 'registration_register')
 ]
 
 urlpatterns += staticfiles_urlpatterns()

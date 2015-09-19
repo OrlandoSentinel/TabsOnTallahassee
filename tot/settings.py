@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'opencivicdata.apps.BaseConfig',
     'django.contrib.sites',
     'registration',
-    'glossary'
+    'glossary',
+    'preferences'
 ]
 
 
@@ -137,5 +138,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REGISTRATION_DEFAULT_FROM_EMAIL = 'tot@tot.com'
 
+REGISTRATION_AUTO_LOGIN = True
 
+INCLUDE_REGISTER_URL = False
 
