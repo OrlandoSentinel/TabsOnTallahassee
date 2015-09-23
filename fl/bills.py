@@ -425,7 +425,7 @@ class HouseComVote(Page):
             elif member_vote == "N":
                 vote.no(member)
             elif member_vote == "-":
-                vote.other(member)
+                vote.vote('not voting', member)
             # Parenthetical votes appear to not be counted in the
             # totals for Yea, Nay, _or_ Missed
             elif re.search(r'\([YN]\)', member_vote):
