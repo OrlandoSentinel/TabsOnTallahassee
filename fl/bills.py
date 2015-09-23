@@ -80,7 +80,8 @@ class LocationMatcher:
         self.regex = '|'.join('\W{}\W'.format(p) for p in self.places)
 
     def match(self, text):
-        return re.findall(self.regex, text, re.I)
+        # strip non-match chars off (b/c of 100-group limit on regex)
+        return list({word[1:-1] for word in re.findall(self.regex, text)})
 
 
 class BillDetail(Page):
