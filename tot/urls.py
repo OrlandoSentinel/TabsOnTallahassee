@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^glossary/', include('glossary.urls')),
     url('^', include('django.contrib.auth.urls'))
+    url(r'', include('imago.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

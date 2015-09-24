@@ -1,14 +1,13 @@
 import re
 from urllib import parse
 from pupa.scrape import Scraper, Person
-from .base import Page
+from .base import Spatula, Page
 
 
 class SenDetail(Page):
-    def __init__(self, scraper, url, obj):
-        super().__init__(scraper, url, list_xpath='//h4[contains(text(), "Office")]', obj=obj)
+    list_xpath = '//h4[contains(text(), "Office")]'
 
-    def process_list_item(self, office):
+    def handle_list_item(self, office):
         (name, ) = office.xpath('text()')
         if name == "Tallahassee Office":
             type_ = 'capitol'
@@ -47,7 +46,8 @@ class SenDetail(Page):
         if address:
             self.obj.add_contact_detail(type='address', value=address, note=type_)
 
-    def process_page(self):
+    def handle_page(self):
+        list(super().handle_page())
         email = self.doc.xpath('//a[contains(@href, "mailto:")]')[0].get('href').split(':')[-1]
         self.obj.add_contact_detail(type='email', value=email)
 
@@ -55,12 +55,10 @@ class SenDetail(Page):
 
 
 class SenList(Page):
-    def __init__(self, scraper):
-        super().__init__(scraper,
-                         "http://www.flsenate.gov/Senators/",
-                         list_xpath="//a[contains(@href, 'Senators/s')]")
+    url = "http://www.flsenate.gov/Senators/"
+    list_xpath = "//a[contains(@href, 'Senators/s')]"
 
-    def process_list_item(self, item):
+    def handle_list_item(self, item):
         name = " ".join(item.xpath('.//text()'))
         name = re.sub(r'\s+', " ", name).replace(" ,", ",").strip()
 
@@ -79,20 +77,16 @@ class SenList(Page):
         leg.add_source(self.url)
         leg.add_source(leg_url)
 
-        sd = SenDetail(self.scraper, leg_url, obj=leg)
-        sd.process_list()
-        sd.process_page()
+        self.scrape_page(SenDetail, leg_url, obj=leg)
 
         return leg
 
 
 class RepList(Page):
-    def __init__(self, scraper):
-        super().__init__(scraper,
-                         "http://www.flhouse.gov/Sections/Representatives/representatives.aspx",
-                         list_xpath='//div[@id="MemberListing"]/div[@class="rep_listing1"]')
+    url = "http://www.flhouse.gov/Sections/Representatives/representatives.aspx"
+    list_xpath = '//div[@id="MemberListing"]/div[@class="rep_listing1"]'
 
-    def process_list_item(self, item):
+    def handle_list_item(self, item):
         link = item.xpath('.//div[@class="rep_style"]/a')[0]
         name = link.text_content().strip()
 
@@ -115,14 +109,16 @@ class RepList(Page):
         rep.add_source(leg_url)
         rep.add_source(self.url)
 
-        rd = RepDetail(self.scraper, leg_url, obj=rep)
-        rd.scrape_office('Capitol Office')
-        rd.scrape_office('District Office')
+        self.scrape_page(RepDetail, leg_url, obj=rep)
 
         return rep
 
 
 class RepDetail(Page):
+    def handle_page(self):
+        self.scrape_office('Capitol Office')
+        self.scrape_office('District Office')
+
     def scrape_office(self, name):
         pieces = [x.tail.strip() for x in
                   self.doc.xpath('//strong[text()="{}"]/following-sibling::br'.format(name))]
@@ -149,10 +145,8 @@ class RepDetail(Page):
             self.obj.add_contact_detail(type='voice', value=phone, note=type_)
 
 
-class FlPersonScraper(Scraper):
+class FlPersonScraper(Scraper, Spatula):
 
     def scrape(self):
-        sl = SenList(self)
-        yield from sl.yield_list()
-        rl = RepList(self)
-        yield from rl.yield_list()
+        yield from self.scrape_page_items(SenList)
+        yield from self.scrape_page_items(RepList)

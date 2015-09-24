@@ -30,9 +30,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'opencivicdata.apps.BaseConfig',
     'glossary',
-
-    # # The Django sites framework is required
     'django.contrib.sites',
+    'boundaries',
+    'imago',
 ]
 
 
