@@ -11,7 +11,7 @@ class CustomModelFilter(forms.ModelChoiceField):
         return "%s" % (obj.name)
 
 class PreferencesForm(forms.ModelForm):
-    senator = CustomModelFilter(queryset=Person.objects.filter(memberships__organization='Florida Senate'))
+    senator = CustomModelFilter(queryset=Person.objects.filter(memberships__organization__name='Florida Senate'))
 
     class Meta:
         model = Preferences
