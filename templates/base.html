@@ -1,0 +1,43 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="{% static 'bootstrap-3.3.5/css/bootstrap.min.css' %}" rel="stylesheet" media="screen"/>
+        <link href="{% static 'css/custom.css' %}" rel="stylesheet" media="screen"/>
+
+        <title>Tabs on Tallahassee</title>
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div class="header clearfix">
+                <nav>
+                    <ul class="nav nav-pills pull-right">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="/glossary">Glossary</a></li>
+
+                        <li>
+                          <!-- {{ user }} -->
+                          {% if user.is_anonymous %}
+                          <a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
+                          {% else %}
+                          <a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
+                          {% endif %}
+                        </li>
+                    </ul>
+                </nav>
+              <h3 class="text-muted">Tabs on Tallahassee</h3>
+              {% block title %}{% endblock title %}
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    {% block content %}{% endblock content %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -9,15 +9,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'gfq4da*^9^6vvo4tv)z10wu4z2%6f7q2v8w5rd3&y%mq08zou9'
+SECRET_KEY = '...'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+DOMAIN = 'http://localhost:8000'
+
 ALLOWED_HOSTS = ['*']
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -27,9 +27,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'opencivicdata.apps.BaseConfig',
+    'glossary',
     'boundaries',
     'imago',
+    'django.contrib.sites',
+    'registration',
+    'preferences'
 ]
+
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,7 +52,7 @@ ROOT_URLCONF = 'tot.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -59,6 +64,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'tot.wsgi.application'
 
@@ -87,6 +93,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
@@ -102,7 +111,36 @@ USE_L10N = True
 USE_TZ = True
 
 
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(
+        os.path.dirname(__file__),
+        # '..', # up one level from the settings directory
+        'static',
+    ),
+)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
+STATIC_ROOT = os.path.join('..', BASE_DIR, 'static')
+# STATIC_URL = '{}/static/'.format(DOMAIN)
+
 STATIC_URL = '/static/'
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = 'preferences/'
+
+ACCOUNT_ACTIVATION_DAYS = 7  # Account can be activated within 7 days
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+REGISTRATION_DEFAULT_FROM_EMAIL = 'tot@tot.com'
+
+REGISTRATION_AUTO_LOGIN = True
+
+INCLUDE_REGISTER_URL = False
+
