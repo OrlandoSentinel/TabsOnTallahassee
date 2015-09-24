@@ -19,8 +19,6 @@ DOMAIN = 'http://localhost:8000'
 ALLOWED_HOSTS = ['*']
 
 
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,10 +27,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'opencivicdata.apps.BaseConfig',
-    'glossary',
-
-    # # The Django sites framework is required
     'django.contrib.sites',
+    'registration',
+    'glossary',
+    'preferences'
 ]
 
 
@@ -94,7 +92,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend'
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 # Internationalization
@@ -131,3 +129,16 @@ STATIC_ROOT = os.path.join('..', BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 SITE_ID = 1
+
+LOGIN_REDIRECT_URL = 'preferences/'
+
+ACCOUNT_ACTIVATION_DAYS = 7  # Account can be activated within 7 days
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+REGISTRATION_DEFAULT_FROM_EMAIL = 'tot@tot.com'
+
+REGISTRATION_AUTO_LOGIN = True
+
+INCLUDE_REGISTER_URL = False
+

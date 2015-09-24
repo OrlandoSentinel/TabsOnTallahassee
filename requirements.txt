@@ -4,3 +4,4 @@
 
 #django/postgres object merging
 -e git://github.com/sunlightlabs/waterfall.git#egg=waterfall
+-e git://github.com/macropin/django-registration.git@f1dfbd95c3a67308a7e2853e00e8662346b2c96a#egg=registration
