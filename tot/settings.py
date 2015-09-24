@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'opencivicdata.apps.BaseConfig',
+    'boundaries',
+    'imago',
 ]
 
 MIDDLEWARE_CLASSES = [
