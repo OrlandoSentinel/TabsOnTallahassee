@@ -22,7 +22,7 @@ from preferences.views import EmailRegistrationView, UserPreferences
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^glossary/', include('glossary.urls')),
-    url('^', include('django.contrib.auth.urls'))
+    url('^', include('django.contrib.auth.urls')),
     url(r'', include('imago.urls')),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^accounts/register/', EmailRegistrationView.as_view(), name= 'registration_register'),
