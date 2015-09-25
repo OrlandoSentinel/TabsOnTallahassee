@@ -1,14 +1,39 @@
 Tabs on Tallahassee
 ===================
 
+Getting Started
+---------------
+
+0) Before getting started it is necessary to have a few things installed:
+    * Python 3.4
+    * PostgreSQL 9.4
+    * git
+
+1) Create a new virtualenv:
+    $ pyvenv tot -p `which python3.4`
+
+2) Install Python requirements within this virtualenv:
+    (tot)$ pip install -r requirements.txt
+
+3) Initialize the database:
+    (tot)$ pupa dbinit us
+
+
+Running the Scraper
+-------------------
+
+From within the tot virtualenv:
+
+    $ pupa update fl people bills session=2016
+
+Project Layout
+--------------
+
 fl
     pupa 0.5 compatible scraper for FL legislature
-
 glossary
     legislative term glossary application
-
 preferences
     user preferences & API key application
-
 tot
     Tabs on Tallahassee django project
