@@ -1,6 +1,7 @@
--e git://github.com/django/django.git#egg=Django
+Django>=1.9a1
+opencivicdata-django>=0.7.0a3
 -e git://github.com/opencivicdata/pupa@0.5.x#egg=pupa
--e git://github.com/opencivicdata/python-opencivicdata-django.git@0.7.x#egg=python-opencivicdata-models
+-e git://github.com/opencivicdata/imago@0.5.x#egg=imago
 
 #django/postgres object merging
 -e git://github.com/sunlightlabs/waterfall.git#egg=waterfall

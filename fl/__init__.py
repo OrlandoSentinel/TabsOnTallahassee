@@ -33,7 +33,8 @@ class Florida(Jurisdiction):
         legis = Organization(name="Florida Legislature", classification="legislature")
 
         upper = Organization('Florida Senate', classification='upper', parent_id=legis._id)
-        lower = Organization('Florida House of Representatives', classification='lower', parent_id=legis._id)
+        lower = Organization('Florida House of Representatives', classification='lower',
+                             parent_id=legis._id)
 
         for n in range(1, 41):
             upper.add_post(label=str(n), role='Senator')

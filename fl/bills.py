@@ -502,7 +502,6 @@ class SubjectPDF(PDF):
         for line in self.lines:
             if SUBJ_RE.match(line):
                 subject = line.lower().strip()
-                last_blank = False
             elif subject and BILL_RE.findall(line):
                 for bill in BILL_RE.findall(line):
                     # normalize bill id to [SH]#
@@ -515,7 +514,8 @@ class SubjectPDF(PDF):
 class FlBillScraper(Scraper, Spatula):
 
     def scrape(self, session):
-        subject_url = 'http://www.leg.state.fl.us/data/session/{}/citator/Daily/subindex.pdf'.format(session)
+        subject_url = ('http://www.leg.state.fl.us/data/session/{}/citator/Daily/subindex.pdf'
+                       .format(session))
         subjects = self.scrape_page(SubjectPDF, subject_url)
 
         url = "http://flsenate.gov/Session/Bills/{}?chamber=both".format(session)
