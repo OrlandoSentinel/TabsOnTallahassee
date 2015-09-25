@@ -28,8 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'opencivicdata.apps.BaseConfig',
     'glossary',
-    'boundaries',
-    'imago',
+    # 'boundaries',
+    # 'imago',
     'django.contrib.sites',
     'registration',
     'preferences'
