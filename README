@@ -1,1 +1,14 @@
-coming soon
+Tabs on Tallahassee
+===================
+
+fl
+    pupa 0.5 compatible scraper for FL legislature
+
+glossary
+    legislative term glossary application
+
+preferences
+    user preferences & API key application
+
+tot
+    Tabs on Tallahassee django project
