@@ -15,5 +15,4 @@ class PreferencesForm(forms.ModelForm):
 
     class Meta:
         model = Preferences
-        fields = ['representitive', 'senator', 'street_line1', 'street_line2',
-                  'zipcode', 'city', 'state']
+        fields = ['street_line1', 'street_line2', 'zipcode', 'city', 'state']
