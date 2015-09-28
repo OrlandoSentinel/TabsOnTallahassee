@@ -2,8 +2,32 @@
 
 {% block content %}
 
-<form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
+<form action="" method="post">
+{% csrf_token %}
+
+
+    <div class="pref_choice">
+        <p class="lead">Senators</p>
+        <select multiple name="senators" size="8">
+            {% for senator in senators %}
+                <option value="{{senator.id}}">{{ senator.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <hr/>
+
+    <div class="pref_choice">
+        <p class="lead">Representitives</p>
+        <select multiple name="representitives" size="8">
+            {% for representitive in representitives %}
+                <option value="{{representitive.id}}">{{ representitive.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <hr/>
+
     <input type="submit"/>
 </form>
 
