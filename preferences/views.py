@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.db import transaction
 # from django.views.generic import TemplateView
 
+from tot.utils import get_current_people
+
 from registration.forms import RegistrationFormUniqueEmail
 from registration.backends.default.views import RegistrationView
 
@@ -19,8 +21,8 @@ class EmailRegistrationView(RegistrationView):
 def user_preferences(request):
     user = request.user
 
-    senators = Person.objects.filter(memberships__organization__name='Florida Senate')
-    representatives = Person.objects.filter(memberships__organization__name='Florida House of Representatives')
+    senators = get_current_people(position='senator')
+    representatives = get_current_people(position='representatives')
 
     if request.method == 'POST':
         with transaction.atomic():
