@@ -22,7 +22,7 @@ def user_preferences(request):
     user = request.user
 
     senators = get_current_people(position='senator')
-    representatives = get_current_people(position='representatives')
+    representatives = get_current_people(position='representative')
 
     if request.method == 'POST':
         with transaction.atomic():
