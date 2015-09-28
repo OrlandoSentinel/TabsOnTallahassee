@@ -24,10 +24,10 @@
     <hr/>
 
     <div class="pref_choice">
-        <p class="lead">Representitives</p>
+        <p class="lead">Representatives</p>
         <select multiple name="representitives" size="8">
-            {% for representitive in representitives %}
-                <option value="{{representitive.id}}">{{ representitive.name }}</option>
+            {% for representative in representatives %}
+                <option value="{{representative.id}}">{{ representative.name }}</option>
             {% endfor %}
         </select>
     </div>

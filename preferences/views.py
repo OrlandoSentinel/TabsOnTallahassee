@@ -20,18 +20,18 @@ def user_preferences(request):
     user = request.user
 
     senators = Person.objects.filter(memberships__organization__name='Florida Senate')
-    representitives = Person.objects.filter(memberships__organization__name='Florida House of Representatives')
+    representatives = Person.objects.filter(memberships__organization__name='Florida House of Representatives')
 
     if request.method == 'POST':
         with transaction.atomic():
             PersonFollow.objects.filter(user=user).delete()
             for senator in request.POST.getlist('senators'):
                 PersonFollow.objects.create(user=user, person_id=senator)
-            for representitive in request.POST.getlist('representitives'):
+            for representative in request.POST.getlist('representatives'):
                 PersonFollow.objects.create(user=user, person_id=representitive)
 
     return render(
         request,
         'preferences/preferences.html',
-        {'user': user, 'senators': senators, 'representitives': representitives}
+        {'user': user, 'senators': senators, 'representatives': representatives}
     )
