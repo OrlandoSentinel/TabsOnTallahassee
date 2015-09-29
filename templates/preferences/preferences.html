@@ -12,7 +12,7 @@
 {% csrf_token %}
 
 
-    <div class="pref_choice">
+    <div>
         <p class="lead">Senators</p>
         <select multiple name="senators" size="8">
             {% for senator in senators %}
@@ -23,7 +23,7 @@
 
     <hr/>
 
-    <div class="pref_choice">
+    <div>
         <p class="lead">Representatives</p>
         <select multiple name="representitives" size="8">
             {% for representative in representatives %}
