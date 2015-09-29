@@ -323,7 +323,7 @@ class UpperComVote(PDF):
         (_, motion) = self.lines[5].split("FINAL ACTION:")
         motion = motion.strip()
         if not motion:
-            self.warning("Vote appears to be empty")
+            self.scraper.warning("Vote appears to be empty")
             return
 
         vote_top_row = [self.lines.index(x) for x in self.lines if
