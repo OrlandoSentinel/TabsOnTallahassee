@@ -34,6 +34,28 @@
 
     <hr/>
 
+    <div>
+        <p class="lead">Locations</p>
+        <select multiple name="representitives" size="8">
+            {% for locations in locations %}
+                <option value="{{location.id}}">{{ location.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <hr/>
+
+    <div>
+        <p class="lead">Subjects</p>
+        <select multiple name="representitives" size="8">
+            {% for subject in subject %}
+                <option value="{{subject.id}}">{{ subject.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <hr/>
+
     <input type="submit"/>
 </form>
 
