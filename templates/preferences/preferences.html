@@ -5,8 +5,9 @@
 <div>
     <h2>User Preferences</h2>
 
-    <p>Please select which Senators and Representatives you'd like to follow.</p>
+    <p>Please select which Senators, Representatives, locations, and subjects you'd like to follow.</p>
 </div>
+
 
 <form action="" method="post">
 {% csrf_token %}
@@ -14,7 +15,7 @@
 
     <div>
         <p class="lead">Senators</p>
-        <select multiple name="senators" size="8">
+        <select multiple name="senators" class="prefs-multiple">
             {% for senator in senators %}
                 <option value="{{senator.id}}">{{ senator.name }}</option>
             {% endfor %}
@@ -25,7 +26,7 @@
 
     <div>
         <p class="lead">Representatives</p>
-        <select multiple name="representitives" size="8">
+        <select multiple name="representitives" class="prefs-multiple">
             {% for representative in representatives %}
                 <option value="{{representative.id}}">{{ representative.name }}</option>
             {% endfor %}
@@ -36,9 +37,9 @@
 
     <div>
         <p class="lead">Locations</p>
-        <select multiple name="representitives" size="8">
-            {% for locations in locations %}
-                <option value="{{location.id}}">{{ location.name }}</option>
+        <select multiple name="locations" class="prefs-multiple">
+            {% for location in locations %}
+                <option value="{{location}}">{{ location }}</option>
             {% endfor %}
         </select>
     </div>
@@ -47,9 +48,9 @@
 
     <div>
         <p class="lead">Subjects</p>
-        <select multiple name="representitives" size="8">
-            {% for subject in subject %}
-                <option value="{{subject.id}}">{{ subject.name }}</option>
+        <select multiple name="subjects" class="prefs-multiple">
+            {% for subject in subjects %}
+                <option value="{{subject}}">{{ subject }}</option>
             {% endfor %}
         </select>
     </div>
@@ -58,5 +59,12 @@
 
     <input type="submit"/>
 </form>
+
+{% endblock %}
+
+
+{% block bottomscript %}
+
+    $(".prefs-multiple").select2();
 
 {% endblock %}
