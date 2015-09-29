@@ -125,7 +125,7 @@ class BillDetail(Page):
                 if date:
                     name += " (%s)" % date
                 analysis_url = tr.xpath("td/a")[0].attrib['href']
-                self.obj.add_document_link(name, analysis_url)
+                self.obj.add_document_link(name, analysis_url, on_duplicate='ignore')
         except IndexError:
             self.scraper.warning("No analysis table for {}".format(self.obj.identifier))
 
