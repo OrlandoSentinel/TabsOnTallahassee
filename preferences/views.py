@@ -4,6 +4,8 @@ from django.db import transaction
 
 from tot.utils import get_current_people
 
+from bills.utils import get_all_subjects, get_all_locations
+
 from registration.forms import RegistrationFormUniqueEmail
 from registration.backends.default.views import RegistrationView
 
@@ -24,6 +26,9 @@ def user_preferences(request):
     senators = get_current_people(position='senator')
     representatives = get_current_people(position='representative')
 
+    locations = get_all_locations()
+    subjects = get_all_subjects()
+
     if request.method == 'POST':
         with transaction.atomic():
             PersonFollow.objects.filter(user=user).delete()
@@ -31,9 +36,19 @@ def user_preferences(request):
                 PersonFollow.objects.create(user=user, person_id=senator)
             for representative in request.POST.getlist('representatives'):
                 PersonFollow.objects.create(user=user, person_id=representitive)
+            for location in request.POST.getlist('locations'):
+                PersonFollow.objects.create(user=user, person_id=representitive)
+            for subject in request.POST.getlist('subjects'):
+                PersonFollow.objects.create(user=user, person_id=representitive)
 
     return render(
         request,
         'preferences/preferences.html',
-        {'user': user, 'senators': senators, 'representatives': representatives}
+        {
+            'user': user,
+            'senators': senators,
+            'representatives': representatives,
+            'locations': locations,
+            'subjects': subjects
+         }
     )
