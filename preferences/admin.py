@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Preferences, PersonFollow, TopicFollow, LocationFollow
 
-# Register your models here.
+admin.site.register(Preferences)
+admin.site.register(PersonFollow)

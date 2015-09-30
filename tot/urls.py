@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.conf.urls import url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from preferences.views import EmailRegistrationView, UserPreferences
+from preferences.views import EmailRegistrationView, user_preferences
+
 
 admin.site.site_header = 'Tabs on Tallahassee Admin'
 
@@ -28,7 +29,7 @@ urlpatterns = [
     url(r'', include('imago.urls')),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^accounts/register/', EmailRegistrationView.as_view(), name= 'registration_register'),
-    url(r'^preferences/', UserPreferences.as_view(), name='preferences')
+    url(r'^preferences/', user_preferences, name='preferences')
 ]
 
 urlpatterns += staticfiles_urlpatterns()
