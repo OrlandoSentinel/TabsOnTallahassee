@@ -1,10 +1,10 @@
-from django.shortcuts import render
 from django.db import transaction
-from bills.utils import get_all_subjects, get_all_locations
-from registration.forms import RegistrationFormUniqueEmail
-from registration.backends.default.views import RegistrationView
-from preferences.models import PersonFollow, LocationFollow, TopicFollow
+from django.shortcuts import render, redirect
 from opencivicdata.models import Person, Organization
+from bills.utils import get_all_subjects, get_all_locations
+from preferences.models import PersonFollow, LocationFollow, TopicFollow
+from registration.backends.default.views import RegistrationView
+from registration.forms import RegistrationFormUniqueEmail
 
 
 def _get_current_people(position):
@@ -60,6 +60,7 @@ def user_preferences(request):
                 LocationFollow.objects.create(user=user, location=location)
             for subject in request.POST.getlist('subjects'):
                 TopicFollow.objects.create(user=user, topic=subject)
+        return redirect('.')
 
     return render(
         request,
