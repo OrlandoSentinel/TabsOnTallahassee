@@ -1,30 +1,42 @@
 from django.shortcuts import render
 from django.db import transaction
-# from django.views.generic import TemplateView
-
-from tot.utils import get_current_people, mark_selected
-
 from bills.utils import get_all_subjects, get_all_locations
-
 from registration.forms import RegistrationFormUniqueEmail
 from registration.backends.default.views import RegistrationView
-
 from preferences.models import PersonFollow, LocationFollow, TopicFollow
+from opencivicdata.models import Person, Organization
 
-from opencivicdata.models.people_orgs import Person
 
+def _get_current_people(position):
+    if position == 'senator':
+        return Organization.objects.get(name='Florida Senate').get_current_members()
+    if position == 'representative':
+        return Organization.objects.get(name='Florida House of Representatives').get_current_members()
+
+
+def _mark_selected(items, items_followed):
+    selected_items = []
+    for item in items:
+        item_dict = {}
+        item_dict['item'] = item
+        if item in items_followed:
+            item_dict['selected'] = True
+        else:
+            item_dict['selected'] = False
+        selected_items.append(item_dict)
+
+    return selected_items
 
 
 class EmailRegistrationView(RegistrationView):
-
     form_class = RegistrationFormUniqueEmail
 
 
 def user_preferences(request):
     user = request.user
 
-    senators = get_current_people(position='senator')
-    representatives = get_current_people(position='representative')
+    senators = _get_current_people(position='senator')
+    representatives = _get_current_people(position='representative')
     locations = get_all_locations()
     subjects = get_all_subjects()
 
@@ -32,10 +44,10 @@ def user_preferences(request):
     subjects_followed = [subject.topic for subject in TopicFollow.objects.filter(user=user)]
     locations_followed = [location.location for location in LocationFollow.objects.filter(user=user)]
 
-    selected_reps = mark_selected(representatives, people_followed)
-    selected_senators = mark_selected(senators, people_followed)
-    selected_subjects = mark_selected(subjects, subjects_followed)
-    selected_locations = mark_selected(locations, locations_followed)
+    selected_reps = _mark_selected(representatives, people_followed)
+    selected_senators = _mark_selected(senators, people_followed)
+    selected_subjects = _mark_selected(subjects, subjects_followed)
+    selected_locations = _mark_selected(locations, locations_followed)
 
     if request.method == 'POST':
         with transaction.atomic():
