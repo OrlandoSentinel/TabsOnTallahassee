@@ -20,6 +20,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from preferences.views import EmailRegistrationView, user_preferences
 
 
+admin.site.site_header = 'Tabs on Tallahassee Admin'
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^glossary/', include('glossary.urls')),

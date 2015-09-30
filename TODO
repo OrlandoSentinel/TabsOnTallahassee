@@ -1,0 +1,15 @@
+API
+    acceptance test the bill and person endpoints
+    see if imago code can't be simplified
+        default processor could be omitted from serializers?
+
+Auth
+    get key displayed on user preference page
+    reset key
+        [via JS: "Are you sure??"]
+        POST -> generate new random UUID
+        flash message w/ new key
+
+Admin
+    audit people, bill, vote, jurisdiction views
+    merge tool

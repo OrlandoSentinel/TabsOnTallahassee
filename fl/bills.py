@@ -125,7 +125,7 @@ class BillDetail(Page):
                 if date:
                     name += " (%s)" % date
                 analysis_url = tr.xpath("td/a")[0].attrib['href']
-                self.obj.add_document_link(name, analysis_url)
+                self.obj.add_document_link(name, analysis_url, on_duplicate='ignore')
         except IndexError:
             self.scraper.warning("No analysis table for {}".format(self.obj.identifier))
 
@@ -323,7 +323,7 @@ class UpperComVote(PDF):
         (_, motion) = self.lines[5].split("FINAL ACTION:")
         motion = motion.strip()
         if not motion:
-            self.warning("Vote appears to be empty")
+            self.scraper.warning("Vote appears to be empty")
             return
 
         vote_top_row = [self.lines.index(x) for x in self.lines if
@@ -403,7 +403,12 @@ class HousePage(Page):
         # Keep the digits and all following characters in the bill's ID
         bill_number = re.search(r'^\w+\s(\d+\w*)$', self.kwargs['bill'].identifier).group(1)
         session_number = {'2016': '80',
-                          '2015B': '81'}[self.kwargs['bill'].legislative_session]
+                          '2015B': '81',
+                          '2015A': '79',
+                          '2015': '76',
+                          '2014O': '78',
+                          '2014A': '77',
+                          }[self.kwargs['bill'].legislative_session]
 
         form = {
             'rblChamber': 'B',

@@ -8,7 +8,7 @@ def get_all_subjects(billset=None):
     if not billset:
         billset = Bill.objects.all()
 
-    subjects = reduce(lambda a,b: a+b, billset.values_list('subject', flat=True))
+    subjects = reduce(lambda a,b: a+b, billset.values_list('subject', flat=True), initial=[])
     # deduped list
     return sorted(set(subjects))
 
