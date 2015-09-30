@@ -1,22 +1,18 @@
-from django.shortcuts import render
 from django.db import transaction
-# from django.views.generic import TemplateView
+from django.shortcuts import render
+
+from registration.backends.default.views import RegistrationView
+from registration.forms import RegistrationFormUniqueEmail
 
 from tot.utils import get_current_people, mark_selected
-
 from bills.utils import get_all_subjects, get_all_locations
-
-from registration.forms import RegistrationFormUniqueEmail
-from registration.backends.default.views import RegistrationView
 
 from preferences.models import PersonFollow, LocationFollow, TopicFollow
 
 from opencivicdata.models.people_orgs import Person
 
 
-
 class EmailRegistrationView(RegistrationView):
-
     form_class = RegistrationFormUniqueEmail
 
 
