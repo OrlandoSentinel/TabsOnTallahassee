@@ -5,8 +5,9 @@
 <div>
     <h2>User Preferences</h2>
 
-    <p>Please select which Senators and Representatives you'd like to follow.</p>
+    <p>Please select which Senators, Representatives, locations, and subjects you'd like to follow.</p>
 </div>
+
 
 <form action="" method="post">
 {% csrf_token %}
@@ -14,9 +15,13 @@
 
     <div>
         <p class="lead">Senators</p>
-        <select multiple name="senators" size="8">
+        <select multiple name="senators" class="prefs-multiple">
             {% for senator in senators %}
-                <option value="{{senator.id}}">{{ senator.name }}</option>
+                {% if senator.selected %}
+                    <option value="{{senator.item.id}}" selected="True">{{ senator.item.name }}</option>
+                {% else %}
+                    <option value="{{senator.item.id}}">{{ senator.item.name }}</option>
+                {% endif %}
             {% endfor %}
         </select>
     </div>
@@ -25,9 +30,13 @@
 
     <div>
         <p class="lead">Representatives</p>
-        <select multiple name="representitives" size="8">
+        <select multiple name="representatives" class="prefs-multiple">
             {% for representative in representatives %}
-                <option value="{{representative.id}}">{{ representative.name }}</option>
+                {% if representative.selected %}
+                    <option value="{{representative.item.id}}" selected="True">{{ representative.item.name }}</option>
+                {% else %}
+                    <option value="{{representative.item.id}}">{{ representative.item.name }}</option>
+                {% endif %}
             {% endfor %}
         </select>
     </div>
@@ -36,9 +45,13 @@
 
     <div>
         <p class="lead">Locations</p>
-        <select multiple name="representitives" size="8">
-            {% for locations in locations %}
-                <option value="{{location.id}}">{{ location.name }}</option>
+        <select multiple name="locations" class="prefs-multiple">
+            {% for location in locations %}
+                {% if location.selected %}
+                    <option value="{{ location.item }}" selected="True">{{ location.item }}</option>
+                {% else %}
+                    <option value="{ location.item }}">{{ location.item }}</option>
+                {% endif %}
             {% endfor %}
         </select>
     </div>
@@ -47,9 +60,13 @@
 
     <div>
         <p class="lead">Subjects</p>
-        <select multiple name="representitives" size="8">
-            {% for subject in subject %}
-                <option value="{{subject.id}}">{{ subject.name }}</option>
+        <select multiple name="subjects" class="prefs-multiple">
+            {% for subject in subjects %}
+                {% if subject.selected %}
+                    <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+                {% else %}
+                    <option value="{ subject.item }}">{{ subject.item }}</option>
+                {% endif %}
             {% endfor %}
         </select>
     </div>
@@ -58,5 +75,12 @@
 
     <input type="submit"/>
 </form>
+
+{% endblock %}
+
+
+{% block bottomscript %}
+
+    $(".prefs-multiple").select2();
 
 {% endblock %}
