@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     # 'imago',
     'django.contrib.sites',
     'registration',
-    'preferences'
+    'preferences',
+    'home'
 ]
 
 
