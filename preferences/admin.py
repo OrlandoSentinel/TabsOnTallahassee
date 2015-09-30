@@ -1,7 +1,5 @@
 from django.contrib import admin
-from .models import Preferences
+from .models import Preferences, PersonFollow, TopicFollow, LocationFollow
 
-
-@admin.register(Preferences)
-class PreferencesAdmin(admin.ModelAdmin):
-    model = Preferences
+admin.site.register(Preferences)
+admin.site.register(PersonFollow)

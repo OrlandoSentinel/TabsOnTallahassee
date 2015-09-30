@@ -28,8 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'opencivicdata.apps.BaseConfig',
     'glossary',
-    'boundaries',
-    'imago',
+    # 'boundaries',
+    # 'imago',
     'django.contrib.sites',
     'registration',
     'preferences'
@@ -133,7 +133,7 @@ STATIC_URL = '/static/'
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = 'preferences/'
+LOGIN_REDIRECT_URL = DOMAIN + '/preferences/'
 
 ACCOUNT_ACTIVATION_DAYS = 7  # Account can be activated within 7 days
 

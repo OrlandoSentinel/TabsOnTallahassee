@@ -2,8 +2,60 @@
 
 {% block content %}
 
-<form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
+<div>
+    <h2>User Preferences</h2>
+
+    <p>Please select which Senators and Representatives you'd like to follow.</p>
+</div>
+
+<form action="" method="post">
+{% csrf_token %}
+
+
+    <div>
+        <p class="lead">Senators</p>
+        <select multiple name="senators" size="8">
+            {% for senator in senators %}
+                <option value="{{senator.id}}">{{ senator.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <hr/>
+
+    <div>
+        <p class="lead">Representatives</p>
+        <select multiple name="representitives" size="8">
+            {% for representative in representatives %}
+                <option value="{{representative.id}}">{{ representative.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <hr/>
+
+    <div>
+        <p class="lead">Locations</p>
+        <select multiple name="representitives" size="8">
+            {% for locations in locations %}
+                <option value="{{location.id}}">{{ location.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <hr/>
+
+    <div>
+        <p class="lead">Subjects</p>
+        <select multiple name="representitives" size="8">
+            {% for subject in subject %}
+                <option value="{{subject.id}}">{{ subject.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <hr/>
+
     <input type="submit"/>
 </form>
 
