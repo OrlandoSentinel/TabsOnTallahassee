@@ -2,9 +2,11 @@ from django.shortcuts import render
 
 
 def index(request):
+    user = request.user
     return render(
         request,
-        'home/index.html'
+        'home/index.html',
+        {'user': user}
     )
 
 
