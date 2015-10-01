@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Welcome!</h1>
+
+
+{% if user.is_anonymous %}
+<p class="lead">Please <a href="/login">login</a> or <a href="{% url 'registration_register' %}">create an account</a> to get started.</p>
+
+{% else %}
+
+<p class="lead">Hello {{user}}!</p>
+
+{% endif %}
+
+{% endblock %}
