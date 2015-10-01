@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div>
+    <h2>Bills</h2>
+
+    <p class="lead">Bill Filter</p>
+</div>
+
+    {% for bill in bills %}
+    <div>
+        <h2> {{ bill.title }} </h2>
+            <p> {{ bill.from_organization }} </p>
+
+            {% for action in bill.actions %}
+                <p>{{ action.description }}</p>
+                <p>{{ action.date }}</p>
+            {% endfor %}
+    </div>
+
+    <hr/>
+
+    {% endfor %}
+
+
+{% endblock %}
