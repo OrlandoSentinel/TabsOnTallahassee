@@ -5,7 +5,20 @@
 <div>
     <h2>Bills</h2>
 
-    <p class="lead">Bill Filter</p>
+
+    <form action="" method="post">
+    {% csrf_token %}
+
+        <div> Filter by subject 
+            <select multiple name="subjects" class="prefs-multiple">
+                {% for subject in subjects %}
+                    <option value="{{ subject }}">{{ subject }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit"/>
+        </div>
+
+    </form>
 </div>
 
     {% for bill in bills %}
@@ -23,5 +36,11 @@
 
     {% endfor %}
 
+
+{% endblock %}
+
+{% block bottomscript %}
+
+    $(".prefs-multiple").select2();
 
 {% endblock %}
