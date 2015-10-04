@@ -1,6 +1,8 @@
 
+from django.db import transaction
 from django.shortcuts import render, redirect
 
+from preferences.views import _mark_selected
 from bills.utils import get_all_subjects, get_all_locations
 
 from opencivicdata.models import Bill
@@ -11,10 +13,12 @@ def bill_list(request):
 
     if request.POST.getlist('bill_subjects'):
         filter_subjects = request.POST.getlist('bill_subjects')
-        all_bills = Bill.objects.filter(subject__in=filter_subjects)
+        all_bills = Bill.objects.filter(subject__contains=filter_subjects)
     else:
+        filter_subjects = []
         all_bills = Bill.objects.all()
 
+    subjects = _mark_selected(subjects, filter_subjects)
     details = []
     for bill in all_bills:
         bill_detail = {}
@@ -35,11 +39,6 @@ def bill_list(request):
             })
 
         details.append(bill_detail)
-
-        if request.method == 'POST':
-            with transaction.atomic():
-                filter_subjects = request.POST.getlist('bill_subjects')
-            return redirect('.')
 
     return render(
         request,
