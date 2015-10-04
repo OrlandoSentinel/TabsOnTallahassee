@@ -3,7 +3,7 @@
 {% block content %}
 
 <div>
-    <h2>Bills</h2>
+    <h2>{{ current_session }}</h2>
 
 
     <form action="" method="post">
@@ -34,6 +34,8 @@
         <div>
             <h2> {{ bill.title }} </h2>
                 <p> {{ bill.from_organization }} </p>
+
+                <p> {{ bill.legislative_session }}</p>
 
                 {% for action in bill.actions %}
                     <p>{{ action.description }}</p>
