@@ -10,7 +10,7 @@
     {% csrf_token %}
 
         <div> Filter by subject 
-            <select multiple name="subjects" class="prefs-multiple">
+            <select multiple name="bill_subjects" class="prefs-multiple">
                 {% for subject in subjects %}
                     <option value="{{ subject }}">{{ subject }}</option>
                 {% endfor %}
