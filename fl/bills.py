@@ -3,7 +3,7 @@ import os
 import csv
 import datetime
 from collections import defaultdict
-from pupa.scrape import Scraper, Bill, Vote
+from pupa.scrape import Scraper, Bill, VoteEvent
 from .base import Page, PDF, Spatula
 
 
@@ -256,7 +256,7 @@ class FloorVote(PDF):
         ]
         result = 'pass' if yes_count > no_count else 'fail'
 
-        vote = Vote(start_date=self.kwargs['date'],
+        vote = VoteEvent(start_date=self.kwargs['date'],
                     chamber=self.kwargs['chamber'],
                     bill=self.kwargs['bill'],
                     motion_text=motion,
@@ -367,7 +367,7 @@ class UpperComVote(PDF):
         no_count = int(totals[1])
         result = 'pass' if (yes_count > no_count) else 'fail'
 
-        vote = Vote(start_date=self.kwargs['date'],
+        vote = VoteEvent(start_date=self.kwargs['date'],
                     bill=self.kwargs['bill'],
                     chamber='upper',
                     motion_text=motion,
@@ -451,7 +451,7 @@ class HouseComVote(Page):
         (action, ) = self.doc.xpath('//span[@id="ctl00_ContentPlaceHolder1_lblAction"]/text()')
         motion = "{} ({})".format(action, committee)
 
-        vote = Vote(start_date=date,
+        vote = VoteEvent(start_date=date,
                     bill=self.kwargs['bill'],
                     chamber='lower',
                     motion_text=motion,
