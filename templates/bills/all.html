@@ -30,17 +30,28 @@
 
     {% if bills %}
 
-        {% for bill in bills %}
-        <div>
-            <h2> {{ bill.title }} </h2>
-                <p> {{ bill.from_organization }} </p>
+        {% regroup bills by startswith as bills_by_letter %}
 
-                <p> {{ bill.legislative_session }}</p>
+        {% for billgroup in bills_by_letter %}
+        <div id="{{ billgroup.grouper }}">{{ billgroup.grouper }}
+            {% for bill in billgroup.list %}
+            <div>
+                <h2> {{ bill.title }} </h2>
+                    <p> {{ bill.from_organization }} </p>
 
-                {% for action in bill.actions %}
-                    <p>{{ action.description }}</p>
-                    <p>{{ action.date }}</p>
-                {% endfor %}
+                    <p> {{ bill.legislative_session }}</p>
+
+                    {% for action in bill.actions %}
+                        <p>{{ action.description }}</p>
+                        <p>{{ action.date }}</p>
+                    {% endfor %}
+
+                    {% for sponsor in bill.sponsorships %}
+                        <p>{{ sponsor.primary }}</p>
+                        <p>{{ sponsor.sponsor }}</p>
+                    {% endfor %}
+            </div>
+            {% endfor %}
         </div>
 
         <hr/>
@@ -51,8 +62,8 @@
     </div>
 
     {% endif %}
-
 {% endblock %}
+
 
 {% block bottomscript %}
 
