@@ -4,5 +4,7 @@ opencivicdata-django>=0.7.0a3
 -e git://github.com/opencivicdata/imago@0.5.x#egg=imago
 -e git://github.com/macropin/django-registration.git@f1dfbd95c3a67308a7e2853e00e8662346b2c96a#egg=registration
 
+lxml
+
 #django/postgres object merging
 -e git://github.com/sunlightlabs/waterfall.git#egg=waterfall
