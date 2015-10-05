@@ -17,10 +17,10 @@ def bill_list(request):
 
     if request.POST.getlist('bill_subjects'):
         filter_subjects = request.POST.getlist('bill_subjects')
-        all_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=filter_subjects)
+        all_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=filter_subjects).order_by("title")
     else:
         filter_subjects = []
-        all_bills = Bill.objects.filter(legislative_session=current_session)
+        all_bills = Bill.objects.filter(legislative_session=current_session).order_by("title")
 
     subjects = _mark_selected(subjects, filter_subjects)
     details = []
@@ -28,6 +28,7 @@ def bill_list(request):
         bill_detail = {}
 
         bill_detail['title'] = bill.title
+        bill_detail['startswith'] = bill.title[0].lower()
         bill_detail['from_organization'] = bill.from_organization.name
         bill_detail['legislative_session'] = bill.legislative_session.name
         bill_detail['actions'] = []
