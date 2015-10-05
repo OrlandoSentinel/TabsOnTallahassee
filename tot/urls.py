@@ -32,7 +32,8 @@ urlpatterns = [
     url(r'^accounts/register/', EmailRegistrationView.as_view(), name= 'registration_register'),
     url(r'^preferences/', user_preferences, name='preferences'),
     url(r'^$', 'home.views.index'),
-    url(r'^about/', 'home.views.about')
+    url(r'^about/', 'home.views.about'),
+    url(r'^admin/', include('opencivicdata.admin.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
