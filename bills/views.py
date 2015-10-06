@@ -12,7 +12,6 @@ current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
 def bill_list(request):
 
-
     subjects = get_all_subjects()
 
     if request.POST.getlist('bill_subjects'):
@@ -23,16 +22,20 @@ def bill_list(request):
         all_bills = Bill.objects.filter(legislative_session=current_session).order_by("title")
 
     subjects = _mark_selected(subjects, filter_subjects)
-    details = []
-    for bill in all_bills:
-        bill_detail = {}
 
+    bills = {}
+    for bill in all_bills:
+        bill_locations = bill.extras['places']
+
+        bill_detail = {}
         bill_detail['title'] = bill.title
         bill_detail['startswith'] = bill.title[0].lower()
         bill_detail['from_organization'] = bill.from_organization.name
         bill_detail['legislative_session'] = bill.legislative_session.name
+        bill_detail['subject'] = bill.subject
         bill_detail['actions'] = []
         bill_detail['sponsorships'] = []
+        bill_detail['locations'] = bill.extras['places']
 
         for action in bill.actions.all():
             bill_detail['actions'].append({'description': action.description, 'date': action.date})
@@ -44,10 +47,19 @@ def bill_list(request):
                 'primary': sponsorship.primary
             })
 
-        details.append(bill_detail)
+        for subject in bill.subject:
+            if subject in bills.keys():
+                bills[subject].append(bill_detail)
+            else:
+                bills[subject] = [bill_detail]
+
+    # bills = [
+    #     {'name': 'apple', 'sorter': 'a', 'bills': [{'name': 'whaaaa'}],
+    #     {'name': 'pear', 'sorter': 'p','bills': [{'name': 'whaaaa2'}]
+    # ]
 
     return render(
         request,
         'bills/all.html',
-        {'bills': details, 'subjects': subjects, 'current_session': current_session.name}
+        {'bills': bills, 'subjects': subjects, 'current_session': current_session.name}
     )
