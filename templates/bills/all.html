@@ -32,27 +32,33 @@
 
     <!-- {{ bills }} -->
 
-        {% for keyword, billlist in bills.items %}
-        <div id="{{ keyword }}">The keyword is: {{ keyword }}
-            {% for bill in billlist %}
+        {% regroup bills by sorter as alphabetical_bill_list %}
 
-            <div>
-                <h3> {{ bill.title }} </h3>
-                    <p> {{ bill.from_organization }} </p>
+        {% for billdict in alphabetical_bill_list %}
+        <div id="{{ billdict.grouper }}">The letter is: {{ billdict.grouper }}
 
-                    <p> {{ bill.legislative_session }}</p>
-                    <p> {{ bill.subject }}</p>
+            {% for billlist in billdict.list %}
+            
+                <h1>{{ billlist.name }}</h1>
+                {% for bill in billlist.bills %}
+                <div>
+                    <h3> {{ bill.title }} </h3>
+                        <p> {{ bill.from_organization }} </p>
 
-                    {% for action in bill.actions %}
-                        <p>{{ action.description }}</p>
-                        <p>{{ action.date }}</p>
-                    {% endfor %}
+                        <p> {{ bill.legislative_session }}</p>
+                        <p> {{ bill.subject }}</p>
 
-                    {% for sponsor in bill.sponsorships %}
-                        <p>{{ sponsor.primary }}</p>
-                        <p>{{ sponsor.sponsor }}</p>
-                    {% endfor %}
-            </div>
+                        {% for action in bill.actions %}
+                            <p>{{ action.description }}</p>
+                            <p>{{ action.date }}</p>
+                        {% endfor %}
+
+                        {% for sponsor in bill.sponsorships %}
+                            <p>{{ sponsor.primary }}</p>
+                            <p>{{ sponsor.sponsor }}</p>
+                        {% endfor %}
+                </div>
+                {% endfor %}
             {% endfor %}
         </div>
 

@@ -53,13 +53,14 @@ def bill_list(request):
             else:
                 bills[subject] = [bill_detail]
 
-    # bills = [
-    #     {'name': 'apple', 'sorter': 'a', 'bills': [{'name': 'whaaaa'}],
-    #     {'name': 'pear', 'sorter': 'p','bills': [{'name': 'whaaaa2'}]
-    # ]
+    real_bills = []
+    for keyword,bill_list in bills.items():
+        real_bills.append({'name': keyword, 'sorter': keyword[0].lower(), 'bills': bill_list})
+
+    items = sorted(real_bills, key = lambda x: x["name"])
 
     return render(
         request,
         'bills/all.html',
-        {'bills': bills, 'subjects': subjects, 'current_session': current_session.name}
+        {'bills': items, 'subjects': subjects, 'current_session': current_session.name}
     )
