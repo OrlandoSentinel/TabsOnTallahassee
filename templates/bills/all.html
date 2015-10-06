@@ -30,16 +30,18 @@
 
     {% if bills %}
 
-        {% regroup bills by startswith as bills_by_letter %}
+    <!-- {{ bills }} -->
 
-        {% for billgroup in bills_by_letter %}
-        <div id="{{ billgroup.grouper }}">{{ billgroup.grouper }}
-            {% for bill in billgroup.list %}
+        {% for keyword, billlist in bills.items %}
+        <div id="{{ keyword }}">The keyword is: {{ keyword }}
+            {% for bill in billlist %}
+
             <div>
-                <h2> {{ bill.title }} </h2>
+                <h3> {{ bill.title }} </h3>
                     <p> {{ bill.from_organization }} </p>
 
                     <p> {{ bill.legislative_session }}</p>
+                    <p> {{ bill.subject }}</p>
 
                     {% for action in bill.actions %}
                         <p>{{ action.description }}</p>
