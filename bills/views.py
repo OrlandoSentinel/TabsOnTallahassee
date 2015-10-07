@@ -1,3 +1,4 @@
+import string
 
 from django.db import transaction
 from django.shortcuts import render, redirect
@@ -62,5 +63,5 @@ def bill_list(request):
     return render(
         request,
         'bills/all.html',
-        {'bills': items, 'subjects': subjects, 'current_session': current_session.name}
+        {'bills': items, 'subjects': subjects, 'current_session': current_session.name, 'letters': string.ascii_lowercase}
     )
