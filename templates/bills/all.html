@@ -2,74 +2,87 @@
 
 {% block content %}
 
-<div>
-    <h2>{{ current_session }}</h2>
+<div class="row">
 
+    <div class="col-xs-10">
 
-    <form action="" method="post">
-    {% csrf_token %}
-
-        <div> Filter by subject 
-            <select multiple name="bill_subjects" class="prefs-multiple">
-                {% for subject in subjects %}
-
-                    {% if subject.selected %}
-                        <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
-                    {% else %}
-                        <option value="{{ subject.item }}">{{ subject.item }}</option>
-                    {% endif %}
-
-                    <!-- <option value="{{ subject }}">{{ subject }}</option> -->
-                {% endfor %}
-            </select>
-            <input type="submit"/>
-        </div>
-
-    </form>
-</div>
-
-    {% if bills %}
-
-    <!-- {{ bills }} -->
-
-        {% regroup bills by sorter as alphabetical_bill_list %}
-
-        {% for billdict in alphabetical_bill_list %}
-        <div id="{{ billdict.grouper }}">The letter is: {{ billdict.grouper }}
-
-            {% for billlist in billdict.list %}
-            
-                <h1>{{ billlist.name }}</h1>
-                {% for bill in billlist.bills %}
-                <div>
-                    <h3> {{ bill.title }} </h3>
-                        <p> {{ bill.from_organization }} </p>
-
-                        <p> {{ bill.legislative_session }}</p>
-                        <p> {{ bill.subject }}</p>
-
-                        {% for action in bill.actions %}
-                            <p>{{ action.description }}</p>
-                            <p>{{ action.date }}</p>
-                        {% endfor %}
-
-                        {% for sponsor in bill.sponsorships %}
-                            <p>{{ sponsor.primary }}</p>
-                            <p>{{ sponsor.sponsor }}</p>
-                        {% endfor %}
-                </div>
-                {% endfor %}
-            {% endfor %}
-        </div>
-
-        <hr/>
-        {% endfor %}
-    {% else %}
     <div>
-        <p class="lead">No results for this query</p>
+        <h2>{{ current_session }}</h2>
+
+
+        <form action="" method="post">
+        {% csrf_token %}
+
+            <div> Filter by subject 
+                <select multiple name="bill_subjects" class="prefs-multiple">
+                    {% for subject in subjects %}
+
+                        {% if subject.selected %}
+                            <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+                        {% else %}
+                            <option value="{{ subject.item }}">{{ subject.item }}</option>
+                        {% endif %}
+
+                        <!-- <option value="{{ subject }}">{{ subject }}</option> -->
+                    {% endfor %}
+                </select>
+                <input type="submit"/>
+            </div>
+
+        </form>
     </div>
 
-    {% endif %}
+        {% if bills %}
+
+        <!-- {{ bills }} -->
+
+            {% regroup bills by sorter as alphabetical_bill_list %}
+
+            {% for billdict in alphabetical_bill_list %}
+            <div id="{{ billdict.grouper }}">The letter is: {{ billdict.grouper }}
+
+                {% for billlist in billdict.list %}
+                
+                    <h1>{{ billlist.name }}</h1>
+                    {% for bill in billlist.bills %}
+                    <div>
+                        <h3> {{ bill.title }} </h3>
+                            <p> {{ bill.from_organization }} </p>
+
+                            <p> {{ bill.legislative_session }}</p>
+                            <p> {{ bill.subject }}</p>
+
+                            {% for action in bill.actions %}
+                                <p>{{ action.description }}</p>
+                                <p>{{ action.date }}</p>
+                            {% endfor %}
+
+                            {% for sponsor in bill.sponsorships %}
+                                <p>{{ sponsor.primary }}</p>
+                                <p>{{ sponsor.sponsor }}</p>
+                            {% endfor %}
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            <hr/>
+            {% endfor %}
+        {% else %}
+        <div>
+            <p class="lead">No results for this query</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+    <div class="col-xs-2">
+    {% for letter in letters %}
+        <div><a href="#{{ letter }}"> {{ letter }}</a></div>
+    {% endfor %}
+    </div>
+
+</div>
 {% endblock %}
 
 
