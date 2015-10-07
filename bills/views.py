@@ -24,6 +24,22 @@ def bill_list(request):
 
     subjects = _mark_selected(subjects, filter_subjects)
 
+    bills = organize_bill_info(all_bills)
+
+    real_bills = []
+    for keyword,bill_list in bills.items():
+        real_bills.append({'name': keyword, 'sorter': keyword[0].lower(), 'bills': bill_list})
+
+    items = sorted(real_bills, key = lambda x: x["name"])
+
+    return render(
+        request,
+        'bills/all.html',
+        {'bills': items, 'subjects': subjects, 'current_session': current_session.name, 'letters': string.ascii_lowercase}
+    )
+
+
+def organize_bill_info(all_bills):
     bills = {}
     for bill in all_bills:
         bill_locations = bill.extras['places']
@@ -54,14 +70,4 @@ def bill_list(request):
             else:
                 bills[subject] = [bill_detail]
 
-    real_bills = []
-    for keyword,bill_list in bills.items():
-        real_bills.append({'name': keyword, 'sorter': keyword[0].lower(), 'bills': bill_list})
-
-    items = sorted(real_bills, key = lambda x: x["name"])
-
-    return render(
-        request,
-        'bills/all.html',
-        {'bills': items, 'subjects': subjects, 'current_session': current_session.name, 'letters': string.ascii_lowercase}
-    )
+    return bills
