@@ -4,41 +4,39 @@
 
 <div class="row">
 
+    {% if alphalist %}
     <div class="col-xs-10">
+    {% else %}
+    <div class="col-xs-12">
+    {% endif %}
 
+    {% if subjects %}
     <div>
         <h2>{{ current_session }}</h2>
 
 
         <form action="" method="post">
         {% csrf_token %}
-
             <div> Filter by subject 
                 <select multiple name="bill_subjects" class="prefs-multiple">
                     {% for subject in subjects %}
-
                         {% if subject.selected %}
                             <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
                         {% else %}
                             <option value="{{ subject.item }}">{{ subject.item }}</option>
                         {% endif %}
-
-                        <!-- <option value="{{ subject }}">{{ subject }}</option> -->
                     {% endfor %}
                 </select>
                 <input type="submit"/>
             </div>
-
         </form>
     </div>
+    {% endif %}
 
         {% if bills %}
+            {% regroup bills by sorter as sorted_bill_list %}
 
-        <!-- {{ bills }} -->
-
-            {% regroup bills by sorter as alphabetical_bill_list %}
-
-            {% for billdict in alphabetical_bill_list %}
+            {% for billdict in sorted_bill_list %}
             <div id="{{ billdict.grouper }}">
 
                 <div class="heading"><strong>{{ billdict.grouper.upper }}</strong></div>
@@ -76,16 +74,19 @@
         </div>
 
         {% endif %}
+    </div>
+
+    {% if alphalist %}
+    <div class="col-xs-2 sidebar" >
+        <ul class="nav nav-sidebar">
+        {% for letter in letters %}
+            <li><a href="#{{ letter }}"> {{ letter }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 
     </div>
-    <div class="col-xs-2 sidebar" >
-    <ul class="nav nav-sidebar">
-    {% for letter in letters %}
-        <li><a href="#{{ letter }}"> {{ letter }}</a></li>
-    {% endfor %}
-    </ul>
-
-</div>
 {% endblock %}
 
 
