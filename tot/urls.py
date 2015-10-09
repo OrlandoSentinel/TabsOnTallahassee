@@ -18,7 +18,7 @@ from django.conf.urls import url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from preferences.views import EmailRegistrationView, user_preferences
-from bills.views import bill_list 
+from bills.views import bill_list, latest_bill_activity
 from home import views
 
 
@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^$', 'home.views.index'),
     url(r'^about/', 'home.views.about'),
     url(r'^bills/', bill_list, name='bills_list'),
+    url(r'^latest/', latest_bill_activity, name='latest_bill_activity')
 ]
 
 urlpatterns += staticfiles_urlpatterns()
