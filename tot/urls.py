@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^$', 'home.views.index'),
     url(r'^about/', 'home.views.about'),
     url(r'^bills/', bill_list, name='bills_list'),
-    url(r'^latest/', latest_bill_activity, name='latest_bill_activity')
+    url(r'^latest/', latest_bill_activity, name='latest_bill_activity'),
     url(r'^admin/', include('opencivicdata.admin.urls')),
 ]
 
