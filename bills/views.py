@@ -42,8 +42,9 @@ def latest_bill_activity(request):
     alphalist = False
     topic_bills = []
     location_bills = []
-    if not request.user.is_anonymous():
-        user = request.user
+    sorted_bills = []
+    user = request.user
+    if not user.is_anonymous():
 
         # people_followed = PersonFollow.objects.filter(user=user)
         topics_followed = [item.topic for item in TopicFollow.objects.filter(user=user)]
@@ -68,7 +69,7 @@ def latest_bill_activity(request):
 
     return render(
         request,
-        'bills/all.html',
+        'bills/latest.html',
         {'bills': sorted_bills, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
     )
 
