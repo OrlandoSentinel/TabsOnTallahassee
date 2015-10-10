@@ -18,6 +18,7 @@ from django.conf.urls import url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from preferences.views import EmailRegistrationView, user_preferences
+from bills.views import bill_list, latest_bill_activity
 from home import views
 
 
@@ -27,12 +28,14 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^glossary/', include('glossary.urls')),
     url('^', include('django.contrib.auth.urls')),
-    url(r'', include('imago.urls')),
+    url(r'^api/', include('imago.urls')),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^accounts/register/', EmailRegistrationView.as_view(), name= 'registration_register'),
     url(r'^preferences/', user_preferences, name='preferences'),
     url(r'^$', 'home.views.index'),
     url(r'^about/', 'home.views.about'),
+    url(r'^bills/', bill_list, name='bills_list'),
+    url(r'^latest/', latest_bill_activity, name='latest_bill_activity')
     url(r'^admin/', include('opencivicdata.admin.urls')),
 ]
 
