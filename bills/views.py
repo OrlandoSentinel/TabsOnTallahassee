@@ -29,16 +29,12 @@ def bill_list(request):
 
     bills = organize_bill_info(all_bills=all_bills, sorter='subject')
 
-    real_bills = []
-    for keyword,bill_list in bills.items():
-        real_bills.append({'name': keyword, 'sorter': keyword[0].lower(), 'bills': bill_list})
-
-    items = sorted(real_bills, key = lambda x: x["name"])
+    sorted_bills = sort_bills_by_keyword(bills)
 
     return render(
         request,
         'bills/all.html',
-        {'bills': items, 'subjects': subjects, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
+        {'bills': sorted_bills, 'subjects': subjects, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
     )
 
 
@@ -68,17 +64,21 @@ def latest_bill_activity(request):
         bills = organized_subjects.copy()
         bills.update(organized_locations)
 
-        real_bills = []
-        for keyword,bill_list in bills.items():
-            real_bills.append({'name': keyword, 'sorter': keyword[0].lower(), 'bills': bill_list})
-
-        items = sorted(real_bills, key = lambda x: x["name"])
+        sorted_bills = sort_bills_by_keyword(bills)
 
     return render(
         request,
         'bills/all.html',
-        {'bills': items, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
+        {'bills': sorted_bills, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
     )
+
+
+def sort_bills_by_keyword(bills):
+    real_bills = []
+    for keyword,bill_list in bills.items():
+        real_bills.append({'name': keyword, 'sorter': keyword[0].lower(), 'bills': bill_list})
+
+    return sorted(real_bills, key = lambda x: x["name"])
 
 
 def organize_bill_info(all_bills, sorter='subject'):
