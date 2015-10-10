@@ -6,9 +6,18 @@
 <div class="row">
     <div class="col-xs-12">
     {% if user.is_anonymous %}
-        <div>Welcome to Tabs on Tallahassee</div>
+        <div><h1>Welcome to Tabs on Tallahassee</h1></div>
 
-        {% include "preferences/form.html" %}
+        <a class="btn btn-primary" role="button" data-toggle="collapse" href="#customizeForm" aria-expanded="false" aria-controls="customizeForm">
+          Customize your results
+        </a>
+        <a class="btn btn-primary" role="button" data-toggle="collapse" href="/latest" aria-expanded="false" aria-controls="customizeForm">
+          Jump right to latest news
+        </a>
+
+        <div class="collapse" id="customizeForm">
+            {% include "preferences/form.html" %}
+        </div>
     {% else %}
         <div>
             <h2>{{ current_session }}</h2>
