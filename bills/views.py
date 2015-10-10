@@ -4,7 +4,7 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 
 from tot import settings
-from preferences.views import _mark_selected
+from preferences.views import _mark_selected, _get_current_people
 from bills.utils import get_all_subjects, get_all_locations
 from preferences.models import PersonFollow, TopicFollow, LocationFollow
 
@@ -44,6 +44,12 @@ def latest_bill_activity(request):
     location_bills = []
     sorted_bills = []
     user = request.user
+
+    senators = _get_current_people(position='senator')
+    representatives = _get_current_people(position='representative')
+    locations = get_all_locations()
+    subjects = get_all_subjects()
+
     if not user.is_anonymous():
 
         # people_followed = PersonFollow.objects.filter(user=user)
