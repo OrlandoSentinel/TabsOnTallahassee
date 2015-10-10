@@ -6,7 +6,9 @@
 <div class="row">
     <div class="col-xs-12">
     {% if user.is_anonymous %}
-        <div>User form stuff here</div>
+        <div>Welcome to Tabs on Tallahassee</div>
+
+        {% include "preferences/form.html" %}
     {% else %}
         <div>
             <h2>{{ current_session }}</h2>
