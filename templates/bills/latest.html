@@ -19,26 +19,10 @@
             {% include "preferences/form.html" %}
         </div>
     {% else %}
-        <div>
-            <h2>{{ current_session }}</h2>
 
-            <form action="" method="post">
-            {% csrf_token %}
-                <div> Filter by subject 
-                    <select multiple name="bill_subjects" class="prefs-multiple">
-                        {% for subject in subjects %}
-                            {% if subject.selected %}
-                                <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
-                            {% else %}
-                                <option value="{{ subject.item }}">{{ subject.item }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                    <input type="submit"/>
-                </div>
-            </form>
-        </div>
-
+        {% if user.is_anonymous %}
+        <div class="collapse" id="latest_results">
+        {% endif %}
         {% if bills %}
             {% regroup bills by sorter as sorted_bill_list %}
 
@@ -73,12 +57,16 @@
 
             <hr/>
             {% endfor %}
+
+        {% if user.is_anonymous %}
+        </div>
+        {% endif %}
+
         {% else %}
         <div>
             <p class="lead">You're not following any topics or locations yet!</p><p>Head to your <a href="preferences/">preferences</a> to track topics and locations.</p>
         </div>
         {% endif %}
-
 
     {% endif %}
     </div>
