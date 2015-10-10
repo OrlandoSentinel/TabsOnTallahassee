@@ -32,15 +32,16 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                   <ul class="nav navbar-nav">
-                    <li class="active"><a href="/">Home<span class="sr-only">(current)</span></a></li>
+                    <li class="active"><a href="/latest">Home/Latest News<span class="sr-only">(current)</span></a></li>
                     <li><a href="/about/">About</a></li>
-                    <li><a href="/glossary">Glossary</a></li>
+                    <li><a href="/find_legislator/">Find your legislator</a></li>
+                    <li><a href="/glossary">Legislative glossary</a></li>
                     <li class="dropdown">
                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bills<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="/bills">Bills for the Current Session</a></li>
-                      <li><a href="/bills/topic">Bills by Topic</a></li>
+                      <li><a href="/bills/topic">Bills by topic</a></li>
                       <li><a href="/bills/location">Bills by location</a></li>
+                      <li><a href="/bills">Alphabetical bill list</a></li>
                     </ul>
                   </li>
                   </ul>
@@ -55,8 +56,9 @@
                       <li class="dropdown">
                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello {{user}}<span class="caret"></span></a>
                       <ul class="dropdown-menu">
-                        <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
+                        <li><a href="/preferences/">API</a></li>
                         <li><a href="/preferences/">Preferences</a></li>
+                        <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
                       </ul>
                     </li>
                       {% endif %}
