@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="row">
+    <div class="col-xs-12">
+    {% if user.is_anonymous %}
+        <div>User form stuff here</div>
+    {% else %}
+        <div>
+            <h2>{{ current_session }}</h2>
+
+            <form action="" method="post">
+            {% csrf_token %}
+                <div> Filter by subject 
+                    <select multiple name="bill_subjects" class="prefs-multiple">
+                        {% for subject in subjects %}
+                            {% if subject.selected %}
+                                <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+                            {% else %}
+                                <option value="{{ subject.item }}">{{ subject.item }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input type="submit"/>
+                </div>
+            </form>
+        </div>
+
+        {% if bills %}
+            {% regroup bills by sorter as sorted_bill_list %}
+
+            {% for billdict in sorted_bill_list %}
+            <div id="{{ billdict.grouper }}">
+
+                <div class="heading"><strong>{{ billdict.grouper.upper }}</strong></div>
+
+                {% for billlist in billdict.list %}
+                    <h1>{{ billlist.name }}</h1>
+                    {% for bill in billlist.bills %}
+                    <div>
+                        <h3> {{ bill.title }} </h3>
+                            <p> {{ bill.from_organization }} </p>
+
+                            <p> {{ bill.legislative_session }}</p>
+                            <p> {{ bill.subject }}</p>
+
+                            {% for action in bill.actions %}
+                                <p>{{ action.description }}</p>
+                                <p>{{ action.date }}</p>
+                            {% endfor %}
+
+                            {% for sponsor in bill.sponsorships %}
+                                <p>{{ sponsor.primary }}</p>
+                                <p>{{ sponsor.sponsor }}</p>
+                            {% endfor %}
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            <hr/>
+            {% endfor %}
+        {% else %}
+        <div>
+            <p class="lead">You're not following any topics or locations yet!</p><p>Head to your <a href="preferences/">preferences</a> to track topics and locations.</p>
+        </div>
+        {% endif %}
+
+
+    {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block bottomscript %}
+
+    $(".prefs-multiple").select2();
+
+{% endblock %}
