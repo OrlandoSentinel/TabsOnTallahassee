@@ -8,67 +8,66 @@
     {% if user.is_anonymous %}
         <div><h1>Welcome to Tabs on Tallahassee</h1></div>
 
-        <a class="btn btn-primary" role="button" data-toggle="collapse" href="#customizeForm" aria-expanded="false" aria-controls="customizeForm">
-          Customize your results
-        </a>
-        <a class="btn btn-primary" role="button" data-toggle="collapse" href="/latest" aria-expanded="false" aria-controls="customizeForm">
-          Jump right to latest news
-        </a>
+        <div>
+            <a class="btn btn-primary" role="button" data-toggle="collapse" href="#customizeForm" aria-expanded="false" aria-controls="customizeForm">
+              Customize your results
+            </a>
+            <a class="btn btn-primary" role="button" data-toggle="collapse" href="#latestResults" aria-expanded="false" aria-controls="customizeForm">
+              Jump right to latest news
+            </a>
+        </div>
 
         <div class="collapse" id="customizeForm">
             {% include "preferences/form.html" %}
         </div>
-    {% else %}
+    <div class="collapse" id="latestResults">
+    {% endif %}
 
-        {% if user.is_anonymous %}
-        <div class="collapse" id="latest_results">
-        {% endif %}
-        {% if bills %}
-            {% regroup bills by sorter as sorted_bill_list %}
+    {% if bills %}
+    {% regroup bills by sorter as sorted_bill_list %}
 
-            {% for billdict in sorted_bill_list %}
-            <div id="{{ billdict.grouper }}">
+        {% for billdict in sorted_bill_list %}
+        <div id="{{ billdict.grouper }}">
 
-                <div class="heading"><strong>{{ billdict.grouper.upper }}</strong></div>
+            <div class="heading"><strong>{{ billdict.grouper.upper }}</strong></div>
 
-                {% for billlist in billdict.list %}
-                    <h1>{{ billlist.name }}</h1>
-                    {% for bill in billlist.bills %}
-                    <div>
-                        <h3> {{ bill.title }} </h3>
-                            <p> {{ bill.from_organization }} </p>
+            {% for billlist in billdict.list %}
+                <h1>{{ billlist.name }}</h1>
+                {% for bill in billlist.bills %}
+                <div>
+                    <h3> {{ bill.title }} </h3>
+                        <p> {{ bill.from_organization }} </p>
 
-                            <p> {{ bill.legislative_session }}</p>
-                            <p> {{ bill.subject }}</p>
+                        <p> {{ bill.legislative_session }}</p>
+                        <p> {{ bill.subject }}</p>
 
-                            {% for action in bill.actions %}
-                                <p>{{ action.description }}</p>
-                                <p>{{ action.date }}</p>
-                            {% endfor %}
+                        {% for action in bill.actions %}
+                            <p>{{ action.description }}</p>
+                            <p>{{ action.date }}</p>
+                        {% endfor %}
 
-                            {% for sponsor in bill.sponsorships %}
-                                <p>{{ sponsor.primary }}</p>
-                                <p>{{ sponsor.sponsor }}</p>
-                            {% endfor %}
-                    </div>
-                    {% endfor %}
+                        {% for sponsor in bill.sponsorships %}
+                            <p>{{ sponsor.primary }}</p>
+                            <p>{{ sponsor.sponsor }}</p>
+                        {% endfor %}
+                </div>
                 {% endfor %}
-            </div>
-
-            <hr/>
             {% endfor %}
-
-        {% if user.is_anonymous %}
         </div>
-        {% endif %}
+        <hr/>
+        {% endfor %}
 
-        {% else %}
+    {% if user.is_anonymous %}
+    </div>
+
+    {% else %}
         <div>
             <p class="lead">You're not following any topics or locations yet!</p><p>Head to your <a href="preferences/">preferences</a> to track topics and locations.</p>
         </div>
-        {% endif %}
-
     {% endif %}
+{% endif %}
+    
+
     </div>
 </div>
 
