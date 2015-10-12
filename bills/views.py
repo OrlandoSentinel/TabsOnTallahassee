@@ -39,18 +39,62 @@ def bill_list(request):
 
 
 def latest_bill_activity(request):
-    alphalist = False
-    topic_bills = []
-    location_bills = []
-    sorted_bills = []
     user = request.user
 
-    senators = _get_current_people(position='senator')
-    representatives = _get_current_people(position='representative')
-    locations = get_all_locations()
-    subjects = get_all_subjects()
+    if user.is_anonymous():
+        senators = _get_current_people(position='senator')
+        representatives = _get_current_people(position='representative')
+        locations = get_all_locations()
+        subjects = get_all_subjects()
 
-    if not user.is_anonymous():
+        request.session['filters'] = {}
+        request.session['filters']['senators'] = []
+        request.session['filters']['representatives'] = []
+        request.session['filters']['locations'] = []
+        request.session['filters']['subjects'] = []
+
+        if request.method == 'POST':
+            request.session['filters'] = {}
+            request.session['filters']['senators'] = request.POST.getlist('senators')
+            request.session['filters']['representatives'] = request.POST.getlist('representatives')
+            request.session['filters']['locations'] = request.POST.getlist('locations')
+            request.session['filters']['subjects'] =request.POST.getlist('subjects')
+            return redirect('.')
+
+        marked_senators = _mark_selected(senators, request.session['filters']['senators'])
+        marked_representatives = _mark_selected(representatives, request.session['filters']['representatives'])
+        marked_locations = _mark_selected(locations, request.session['filters']['locations'])
+        marked_subjects = _mark_selected(subjects, request.session['filters']['subjects'])
+
+        topic_bills = []
+        location_bills = []
+        sorted_bills = []
+
+        for subject in request.session['filters']['subjects']:
+            topic_bills += Bill.objects.filter(legislative_session=current_session, subject__contains=[subject])
+        location_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=['insurance'])
+
+        organized_subjects = organize_bill_info(topic_bills)
+        organized_locations = organize_bill_info(all_bills=location_bills, sorter='location')
+
+        bills = organized_subjects.copy()
+        bills.update(organized_locations)
+
+        sorted_bills = sort_bills_by_keyword(bills)
+
+        context = {
+            'bills': sorted_bills,
+            'current_session': current_session.name,
+            'senators': marked_senators,
+            'representatives': marked_representatives,
+            'subjects': marked_subjects,
+            'locations': marked_locations
+        }
+
+    else:
+        topic_bills = []
+        location_bills = []
+        sorted_bills = []
 
         # people_followed = PersonFollow.objects.filter(user=user)
         topics_followed = [item.topic for item in TopicFollow.objects.filter(user=user)]
@@ -73,11 +117,12 @@ def latest_bill_activity(request):
 
         sorted_bills = sort_bills_by_keyword(bills)
 
-    return render(
-        request,
-        'bills/latest.html',
-        {'bills': sorted_bills, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
-    )
+        context = {
+            'bills': sorted_bills,
+            'current_session': current_session.name
+        }
+
+    return render(request, 'bills/latest.html', context)
 
 
 def sort_bills_by_keyword(bills):
