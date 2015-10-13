@@ -1,6 +1,6 @@
 import string
 
-from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import render, redirect
 
 from tot import settings
@@ -13,6 +13,7 @@ from opencivicdata.models import Bill, LegislativeSession
 current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
 all_letters = string.ascii_lowercase
+
 
 def bill_list(request):
     alphalist = True
@@ -58,8 +59,8 @@ def latest_bill_activity(request):
             request.session['filters']['senators'] = request.POST.getlist('senators')
             request.session['filters']['representatives'] = request.POST.getlist('representatives')
             request.session['filters']['locations'] = request.POST.getlist('locations')
-            request.session['filters']['subjects'] =request.POST.getlist('subjects')
-            return redirect('.')
+            request.session['filters']['subjects'] = request.POST.getlist('subjects')
+            # return redirect('.')
 
         marked_senators = _mark_selected(senators, request.session['filters']['senators'])
         marked_representatives = _mark_selected(representatives, request.session['filters']['representatives'])
@@ -100,14 +101,17 @@ def latest_bill_activity(request):
         topics_followed = [item.topic for item in TopicFollow.objects.filter(user=user)]
         locations_followed = [item.location for item in LocationFollow.objects.filter(user=user)]
 
-        #  TODO - how do I make this not a loop?
-        for subject in topics_followed:
-            topic_bills += Bill.objects.filter(legislative_session=current_session, subject__contains=[subject])
-        
-        #  TODO - how do I actually do this query?
-        # for location in locations_followed:
-        #     location_bills += Bill.objects.filter(legislative_session=current_session, extras__contains=[location])
-        location_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=['insurance'])
+        subj_q = Q()
+        if topics_followed:
+            for subject in topics_followed:
+                subj_q |= Q(subject__contains=[subject])
+            topic_bills = Bill.objects.filter(subj_q, legislative_session=current_session)
+
+        location_q = Q()
+        if locations_followed:
+            for location in locations_followed:
+                location_q |= Q(extras__places__contains=[location])
+            location_bills = Bill.objects.filter(location_q, legislative_session=current_session)
 
         organized_subjects = organize_bill_info(topic_bills)
         organized_locations = organize_bill_info(all_bills=location_bills, sorter='location')
@@ -127,17 +131,15 @@ def latest_bill_activity(request):
 
 def sort_bills_by_keyword(bills):
     real_bills = []
-    for keyword,bill_list in bills.items():
+    for keyword, bill_list in bills.items():
         real_bills.append({'name': keyword, 'sorter': keyword[0].lower(), 'bills': bill_list})
 
-    return sorted(real_bills, key = lambda x: x["name"])
+    return sorted(real_bills, key=lambda x: x["name"])
 
 
 def organize_bill_info(all_bills, sorter='subject'):
     bills = {}
     for bill in all_bills:
-        bill_locations = bill.extras['places']
-
         bill_detail = {}
         bill_detail['title'] = bill.title
         bill_detail['startswith'] = bill.title[0].lower()
