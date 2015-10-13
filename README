@@ -18,6 +18,10 @@ Getting Started
 3) Initialize the database:
     (tot)$ pupa dbinit us
 
+4) Load Shapefiles & Mappings
+    (tot)$ ./manage.py loadshapefiles
+    (tot)$ ./manage.py loadmappings
+
 
 Running the Scraper
 -------------------
