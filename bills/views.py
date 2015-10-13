@@ -48,11 +48,11 @@ def latest_bill_activity(request):
         locations = get_all_locations()
         subjects = get_all_subjects()
 
-        request.session['filters'] = {}
-        request.session['filters']['senators'] = []
-        request.session['filters']['representatives'] = []
-        request.session['filters']['locations'] = []
-        request.session['filters']['subjects'] = []
+        request.session['filters'] = request.session['filters'] or {}
+        request.session['filters']['senators'] = request.session['filters']['senators'] or []
+        request.session['filters']['representatives'] = request.session['filters']['representatives'] or []
+        request.session['filters']['locations'] = request.session['filters']['locations'] or []
+        request.session['filters']['subjects'] = request.session['filters']['subjects'] or []
 
         if request.method == 'POST':
             request.session['filters'] = {}
@@ -60,23 +60,17 @@ def latest_bill_activity(request):
             request.session['filters']['representatives'] = request.POST.getlist('representatives')
             request.session['filters']['locations'] = request.POST.getlist('locations')
             request.session['filters']['subjects'] = request.POST.getlist('subjects')
-            # return redirect('.')
+            return redirect('.')
 
         marked_senators = _mark_selected(senators, request.session['filters']['senators'])
         marked_representatives = _mark_selected(representatives, request.session['filters']['representatives'])
         marked_locations = _mark_selected(locations, request.session['filters']['locations'])
         marked_subjects = _mark_selected(subjects, request.session['filters']['subjects'])
 
-        topic_bills = []
-        location_bills = []
-        sorted_bills = []
-
-        for subject in request.session['filters']['subjects']:
-            topic_bills += Bill.objects.filter(legislative_session=current_session, subject__contains=[subject])
-        location_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=['insurance'])
-
-        organized_subjects = organize_bill_info(topic_bills)
-        organized_locations = organize_bill_info(all_bills=location_bills, sorter='location')
+        organized_subjects, organized_locations = filter_organize_bills(
+            request.session['filters']['subjects'],
+            request.session['filters']['locations']
+        )
 
         bills = organized_subjects.copy()
         bills.update(organized_locations)
@@ -93,28 +87,11 @@ def latest_bill_activity(request):
         }
 
     else:
-        topic_bills = []
-        location_bills = []
-        sorted_bills = []
-
         # people_followed = PersonFollow.objects.filter(user=user)
         topics_followed = [item.topic for item in TopicFollow.objects.filter(user=user)]
         locations_followed = [item.location for item in LocationFollow.objects.filter(user=user)]
 
-        subj_q = Q()
-        if topics_followed:
-            for subject in topics_followed:
-                subj_q |= Q(subject__contains=[subject])
-            topic_bills = Bill.objects.filter(subj_q, legislative_session=current_session)
-
-        location_q = Q()
-        if locations_followed:
-            for location in locations_followed:
-                location_q |= Q(extras__places__contains=[location])
-            location_bills = Bill.objects.filter(location_q, legislative_session=current_session)
-
-        organized_subjects = organize_bill_info(topic_bills)
-        organized_locations = organize_bill_info(all_bills=location_bills, sorter='location')
+        organized_subjects, organized_locations = filter_organize_bills(topics_followed, locations_followed)
 
         bills = organized_subjects.copy()
         bills.update(organized_locations)
@@ -174,3 +151,25 @@ def organize_bill_info(all_bills, sorter='subject'):
                     bills[location] = [bill_detail]
 
     return bills
+
+
+def filter_organize_bills(topics_followed, locations_followed):
+    topic_bills = []
+    location_bills = []
+
+    subj_q = Q()
+    if topics_followed:
+        for subject in topics_followed:
+            subj_q |= Q(subject__contains=[subject])
+        topic_bills = Bill.objects.filter(subj_q, legislative_session=current_session)
+
+    location_q = Q()
+    if locations_followed:
+        for location in locations_followed:
+            location_q |= Q(extras__places__contains=[location])
+        location_bills = Bill.objects.filter(location_q, legislative_session=current_session)
+
+    organized_subjects = organize_bill_info(topic_bills)
+    organized_locations = organize_bill_info(all_bills=location_bills, sorter='location')
+
+    return organized_subjects, organized_locations
