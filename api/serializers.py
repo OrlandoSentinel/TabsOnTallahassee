@@ -3,7 +3,10 @@ from opencivicdata.models import (Person,
                                   PersonName,
                                   PersonContactDetail,
                                   PersonLink,
-                                  PersonSource)
+                                  PersonSource,
+                                  Membership,
+                                  Post,
+                                  )
 from rest_framework import serializers
 
 
@@ -37,17 +40,31 @@ class PersonSourceSerializer(serializers.ModelSerializer):
         model = PersonSource
 
 
+class SimpleMembershipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Membership
+        exclude = ('id', 'person', 'created_at', 'updated_at',
+                   'extras', 'locked_fields',
+                   )
+
+
+
 class SimplePersonSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Person
+
+    memberships = SimpleMembershipSerializer(many=True)
 
 
 class FullPersonSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Person
 
+    #memberships = MembershipSerializer(many=True)
+
     identifiers = PersonIdentifierSerializer(many=True)
     other_names = PersonNameSerializer(many=True)
     contact_details = PersonContactDetailSerializer(many=True)
     links = PersonLinkSerializer(many=True)
     sources = PersonSourceSerializer(many=True)
+

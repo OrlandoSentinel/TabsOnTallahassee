@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics
 from .serializers import Person, SimplePersonSerializer, FullPersonSerializer
 
@@ -38,10 +39,33 @@ class AllowFieldLimitingMixin(object):
 
 
 class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
-    queryset = Person.objects.all()
     serializer_class = SimplePersonSerializer
     full_serializer_class = FullPersonSerializer
     paginate_by = 50
+
+    def get_queryset(self):
+        queryset = Person.objects.all()
+
+        name = self.request.query_params.get('name', None)
+        member_of = self.request.query_params.get('member_of', None)
+        ever_member_of = self.request.query_params.get('ever_member_of', None)
+        latitude = self.request.query_params.get('latitude', None)
+        longitude = self.request.query_params.get('longitude', None)
+
+        if name:
+            queryset = queryset.filter(Q(name__icontains=name) |
+                                       Q(other_names__name__icontains=name)
+                                       )
+        if member_of:
+            queryset = queryset.member_of(member_of)
+        if ever_member_of:
+            queryset = queryset.member_of(ever_member_of, current_only=False)
+        if latitude and longitude:
+            pass                # TODO: geo query
+        elif latitude or longitude:
+            raise Exception()   # TODO: make meaningful exception
+
+        return queryset
 
 
 class PersonDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
