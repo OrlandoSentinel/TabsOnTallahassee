@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^glossary/', include('glossary.urls')),
     url('^', include('django.contrib.auth.urls')),
-    url(r'^api/', include('imago.urls')),
+    url(r'^api/', include('api.urls')),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^accounts/register/', EmailRegistrationView.as_view(), name= 'registration_register'),
     url(r'^preferences/', user_preferences, name='preferences'),

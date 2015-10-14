@@ -27,13 +27,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'opencivicdata.apps.BaseConfig',
     'glossary',
     'boundaries',
-    'imago',
-    'django.contrib.sites',
     'registration',
-    'preferences'
+    'preferences',
+    'api',
+    'rest_framework',
 ]
 
 
@@ -46,7 +47,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'preferences.middleware.AuthMiddleware',
+    #'preferences.middleware.AuthMiddleware',
 ]
 
 ROOT_URLCONF = 'tot.urls'
