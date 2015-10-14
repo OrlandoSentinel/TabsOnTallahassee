@@ -164,3 +164,21 @@ IMAGO_BOUNDARY_MAPPINGS = {
                 'ignore': '.*ZZZ',
                 },
 }
+
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 10,
+    'PAGINATE_BY_PARAM': 'page_size',
+    'MAX_PAGINATE_BY': 100,
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework_json_api.pagination.PageNumberPagination',
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework_json_api.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework_json_api.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
+}
