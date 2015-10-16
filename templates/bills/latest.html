@@ -20,7 +20,9 @@
         <div class="collapse" id="customizeForm">
             {% include "preferences/form.html" %}
         </div>
-    <div class="collapse" id="latestResults">
+        {% if not are_filters %}
+            <div class="collapse" id="latestResults">
+        {% endif %}
     {% endif %}
 
     {% if bills %}
@@ -58,7 +60,9 @@
         {% endfor %}
 
     {% if user.is_anonymous %}
-    </div>
+        {% if not are_filters %}
+            </div>
+        {% endif %}
 
     {% else %}
         <div>

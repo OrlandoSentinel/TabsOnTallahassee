@@ -67,13 +67,17 @@ def latest_bill_activity(request):
         marked_locations = _mark_selected(locations, request.session['filters']['locations'])
         marked_subjects = _mark_selected(subjects, request.session['filters']['subjects'])
 
-        organized_subjects, organized_locations = filter_organize_bills(
-            request.session['filters']['subjects'],
-            request.session['filters']['locations']
-        )
+        filters_exist = ''.join([value for key, value in request.session['filters'].items()][0])
 
-        bills = organized_subjects.copy()
-        bills.update(organized_locations)
+        if filters_exist:
+            organized_subjects, organized_locations = filter_organize_bills(
+                request.session['filters']['subjects'],
+                request.session['filters']['locations']
+            )
+            bills = organized_subjects.copy()
+            bills.update(organized_locations)
+        else:
+            bills = organize_bill_info(Bill.objects.filter(legislative_session=current_session))
 
         sorted_bills = sort_bills_by_keyword(bills)
 
@@ -83,7 +87,8 @@ def latest_bill_activity(request):
             'senators': marked_senators,
             'representatives': marked_representatives,
             'subjects': marked_subjects,
-            'locations': marked_locations
+            'locations': marked_locations,
+            'are_filters': filters_exist
         }
 
     else:
