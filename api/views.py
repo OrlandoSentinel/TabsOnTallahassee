@@ -1,6 +1,10 @@
 from django.db.models import Q
 from rest_framework import generics
-from .serializers import Person, SimplePersonSerializer, FullPersonSerializer
+from .serializers import (Person, SimplePersonSerializer, FullPersonSerializer,
+                          Bill, SimpleBillSerializer, FullBillSerializer,
+                          Organization, SimpleOrganizationSerializer, FullOrganizationSerializer,
+                          Jurisdiction, JurisdictionSerializer,
+                          )
 
 
 class AllowFieldLimitingMixin(object):
@@ -72,3 +76,52 @@ class PersonDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
     queryset = Person.objects.all()
     serializer_class = FullPersonSerializer
     full_serializer_class = FullPersonSerializer
+
+
+class OrganizationList(AllowFieldLimitingMixin, generics.ListAPIView):
+    serializer_class = SimpleOrganizationSerializer
+    full_serializer_class = FullOrganizationSerializer
+    paginate_by = 50
+
+    def get_queryset(self):
+        queryset = Organization.objects.all()
+        return queryset
+
+
+class OrganizationDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
+    queryset = Organization.objects.all()
+    serializer_class = SimpleOrganizationSerializer
+    full_serializer_class = FullOrganizationSerializer
+
+
+class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
+    serializer_class = SimpleBillSerializer
+    full_serializer_class = FullBillSerializer
+    paginate_by = 50
+
+    def get_queryset(self):
+        queryset = Bill.objects.all()
+        return queryset
+
+
+class BillDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
+    queryset = Bill.objects.all()
+    serializer_class = SimpleBillSerializer
+    full_serializer_class = FullBillSerializer
+
+
+
+class JurisdictionList(AllowFieldLimitingMixin, generics.ListAPIView):
+    serializer_class = JurisdictionSerializer
+    full_serializer_class = JurisdictionSerializer
+    paginate_by = 50
+
+    def get_queryset(self):
+        queryset = Jurisdiction.objects.all()
+        return queryset
+
+
+class JurisdictionDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
+    queryset = Jurisdiction.objects.all()
+    serializer_class = JurisdictionSerializer
+    full_serializer_class = JurisdictionSerializer
