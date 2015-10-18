@@ -4,38 +4,11 @@ from opencivicdata.models import (Person,
                                   Organization,
                                   Jurisdiction,
                                   Bill,
+                                  VoteEvent,
                                   )
 from rest_framework import serializers
+from .utils import InlineListField, InlineDictField
 
-
-class InlineMixin:
-    def _get_fields(self, obj):
-        if self.include:
-            included_fields = self.include
-        else:
-            included_fields = [k for k in obj.__dict__.keys()
-                               if not k.startswith('_') and k not in self.exclude]
-        return {f: getattr(obj, f) for f in included_fields}
-
-
-class InlineListField(serializers.ListField, InlineMixin):
-    def __init__(self, *args, **kwargs):
-        self.include = kwargs.pop('include', [])
-        self.exclude = kwargs.pop('exclude', [])
-        super().__init__(*args, **kwargs)
-
-    def to_representation(self, obj):
-        return [self._get_fields(i) for i in obj]
-
-
-class InlineDictField(serializers.DictField, InlineMixin):
-    def __init__(self, *args, **kwargs):
-        self.include = kwargs.pop('include', [])
-        self.exclude = kwargs.pop('exclude', [])
-        super().__init__(*args, **kwargs)
-
-    def to_representation(self, obj):
-        return self._get_fields(obj)
 
 
 class JurisdictionSerializer(serializers.HyperlinkedModelSerializer):
@@ -56,6 +29,7 @@ class SimpleMembershipSerializer(serializers.ModelSerializer):
 class SimplePersonSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Person
+        exclude = ('locked_fields',)
 
     memberships = SimpleMembershipSerializer(many=True)
 
@@ -63,6 +37,7 @@ class SimplePersonSerializer(serializers.HyperlinkedModelSerializer):
 class FullPersonSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Person
+        exclude = ('locked_fields',)
 
     #memberships = MembershipSerializer(many=True)
 
@@ -80,9 +55,23 @@ class SimpleBillSerializer(serializers.HyperlinkedModelSerializer):
     legislative_session = InlineDictField()
 
 
+class FullVoteSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = VoteEvent
+
+    legislative_session = InlineDictField()
+
+class SimpleVoteSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = VoteEvent
+
+    legislative_session = InlineDictField()
+
+
 class FullBillSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bill
+
 
 class SimpleOrganizationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -91,4 +80,3 @@ class SimpleOrganizationSerializer(serializers.HyperlinkedModelSerializer):
 class FullOrganizationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Organization
-
