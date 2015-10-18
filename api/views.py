@@ -1,17 +1,17 @@
 from django.db.models import Q
 from rest_framework import generics
-from .serializers import (Person, SimplePersonSerializer, FullPersonSerializer,
+from .serializers import (Jurisdiction, SimpleJurisdictionSerializer, FullJurisdictionSerializer,
+                          Person, SimplePersonSerializer, FullPersonSerializer,
                           Bill, SimpleBillSerializer, FullBillSerializer,
                           VoteEvent, SimpleVoteSerializer, FullVoteSerializer,
                           Organization, SimpleOrganizationSerializer, FullOrganizationSerializer,
-                          Jurisdiction, JurisdictionSerializer,
                           )
 from .utils import AllowFieldLimitingMixin
 
 
 class JurisdictionList(AllowFieldLimitingMixin, generics.ListAPIView):
-    serializer_class = JurisdictionSerializer
-    full_serializer_class = JurisdictionSerializer
+    serializer_class = SimpleJurisdictionSerializer
+    full_serializer_class = FullJurisdictionSerializer
     paginate_by = 50
 
     def get_queryset(self):
@@ -21,8 +21,8 @@ class JurisdictionList(AllowFieldLimitingMixin, generics.ListAPIView):
 
 class JurisdictionDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
     queryset = Jurisdiction.objects.all()
-    serializer_class = JurisdictionSerializer
-    full_serializer_class = JurisdictionSerializer
+    serializer_class = SimpleJurisdictionSerializer
+    full_serializer_class = FullJurisdictionSerializer
 
 
 class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
@@ -107,5 +107,3 @@ class VoteDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
     queryset = VoteEvent.objects.all()
     serializer_class = SimpleVoteSerializer
     full_serializer_class = FullVoteSerializer
-
-

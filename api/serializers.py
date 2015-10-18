@@ -10,13 +10,22 @@ from rest_framework import serializers
 from .utils import InlineListField, InlineDictField
 
 
-
-class JurisdictionSerializer(serializers.HyperlinkedModelSerializer):
+class SimpleJurisdictionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Jurisdiction
-        exclude = ('division',)
+        exclude = ('division', 'locked_fields')
 
     division_id = serializers.CharField()
+
+
+class FullJurisdictionSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Jurisdiction
+        exclude = ('division', 'locked_fields')
+
+    division_id = serializers.CharField()
+    legislative_session = InlineListField(source='legislative_sessions.all',
+                                          exclude=['id', 'jurisdiction_id'])
 
 
 class SimpleMembershipSerializer(serializers.ModelSerializer):
