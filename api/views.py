@@ -21,7 +21,7 @@ class JurisdictionList(AllowFieldLimitingMixin, generics.ListAPIView):
 
 class JurisdictionDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
     queryset = Jurisdiction.objects.all()
-    serializer_class = SimpleJurisdictionSerializer
+    serializer_class = FullJurisdictionSerializer
     full_serializer_class = FullJurisdictionSerializer
 
 

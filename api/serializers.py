@@ -24,8 +24,8 @@ class FullJurisdictionSerializer(serializers.HyperlinkedModelSerializer):
         exclude = ('division', 'locked_fields')
 
     division_id = serializers.CharField()
-    legislative_session = InlineListField(source='legislative_sessions.all',
-                                          exclude=['id', 'jurisdiction_id'])
+    legislative_sessions = InlineListField(source='legislative_sessions.all',
+                                           exclude=['id', 'jurisdiction_id'])
 
 
 class SimpleMembershipSerializer(serializers.ModelSerializer):
