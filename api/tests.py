@@ -2,6 +2,8 @@ import json
 from django.test import TestCase
 from opencivicdata.models import Person, Organization, Membership
 
+PERSON_FULL_FIELDS = ('identifiers', 'other_names', 'contact_details',
+                      'object_links', 'sources')
 
 class ApiTests(TestCase):
 
@@ -36,10 +38,22 @@ class ApiTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
         assert len(data['data']) == 50
+        for field in PERSON_FULL_FIELDS:
+            assert field not in data['data'][0]['attributes']
+        assert 'relationships' not in data['data'][0]
+
+    def test_person_detail(self):
+        resp = self._api('ocd-person/0446be69-7504-417d-97c1-136589908ee5/?')
+        self.assertEqual(resp.status_code, 200)
+        data = json.loads(resp.content.decode('utf8'))
+
+        # check that legislative sessions is there by default
+        for field in PERSON_FULL_FIELDS:
+            assert field in data['data']['attributes']
+        assert 'memberships' in data['data']['relationships']
 
     def test_person_list_by_name(self):
         resp = self._api('people/?name=John')
-        self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
         assert len(data['data']) == 4
 
@@ -71,11 +85,11 @@ class ApiTests(TestCase):
         data = json.loads(resp.content.decode('utf8'))
         assert data['meta']['pagination']['count'] == 107
 
-    def test_person_list_by_lat_lon(self):
-        resp = self._api('people/?latitude=39&longitude=-88')
-        data = json.loads(resp.content.decode('utf8'))
-        #assert data['meta']['pagination']['count'] == 2
-        # TODO get lat long working
+    # TODO get lat long working
+    #def test_person_list_by_lat_lon(self):
+    #    resp = self._api('people/?latitude=39&longitude=-88')
+    #    data = json.loads(resp.content.decode('utf8'))
+    #    assert data['meta']['pagination']['count'] == 2
 
     def test_bill_list(self):
         resp = self._api('bills/?')

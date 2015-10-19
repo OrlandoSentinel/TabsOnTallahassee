@@ -40,15 +40,13 @@ class SimplePersonSerializer(serializers.HyperlinkedModelSerializer):
         model = Person
         exclude = ('locked_fields',)
 
-    memberships = SimpleMembershipSerializer(many=True)
-
 
 class FullPersonSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Person
         exclude = ('locked_fields',)
 
-    #memberships = MembershipSerializer(many=True)
+    memberships = SimpleMembershipSerializer(many=True)
 
     identifiers = InlineListField(source='identifiers.all', exclude=['id', 'person_id'])
     other_names = InlineListField(source='other_names.all', exclude=['id', 'person_id'])
