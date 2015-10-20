@@ -2,7 +2,7 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 from opencivicdata.models import Person, Organization
 from bills.utils import get_all_subjects, get_all_locations
-from preferences.models import PersonFollow, LocationFollow, TopicFollow
+from preferences.models import PersonFollow, LocationFollow, TopicFollow, Preferences
 from registration.backends.default.views import RegistrationView
 from registration.forms import RegistrationFormUniqueEmail
 
@@ -52,6 +52,7 @@ def user_preferences(request):
     if request.method == 'POST':
         with transaction.atomic():
             PersonFollow.objects.filter(user=user).delete()
+            TopicFollow.objects.filter(user=user).delete()
             for senator in request.POST.getlist('senators'):
                 PersonFollow.objects.create(user=user, person_id=senator)
             for representative in request.POST.getlist('representatives'):
@@ -60,6 +61,19 @@ def user_preferences(request):
                 LocationFollow.objects.create(user=user, location=location)
             for subject in request.POST.getlist('subjects'):
                 TopicFollow.objects.create(user=user, topic=subject)
+            address = request.POST.get('address')
+            preferences = ''
+            try:
+                preferences = Preferences.objects.get(user=user)
+            except Preferences.DoesNotExist:
+                pass
+            if address:
+                if preferences:
+                    preferences.address = address
+                    preferences.save()
+                else:
+                    Preferences.objects.create(user=user, address=address)
+
         return redirect('.')
 
     return render(
