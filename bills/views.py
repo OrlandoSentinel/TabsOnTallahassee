@@ -48,11 +48,11 @@ def latest_bill_activity(request):
         locations = get_all_locations()
         subjects = get_all_subjects()
 
-        request.session['filters'] = request.session['filters'] or {}
-        request.session['filters']['senators'] = request.session['filters']['senators'] or []
-        request.session['filters']['representatives'] = request.session['filters']['representatives'] or []
-        request.session['filters']['locations'] = request.session['filters']['locations'] or []
-        request.session['filters']['subjects'] = request.session['filters']['subjects'] or []
+        request.session['filters'] = request.session.get('filters', {})
+        request.session['filters']['senators'] = request.session['filters'].get('senators', [])
+        request.session['filters']['representatives'] = request.session['filters'].get('representatives', [])
+        request.session['filters']['locations'] = request.session['filters'].get('locations', [])
+        request.session['filters']['subjects'] = request.session['filters'].get('subjects', [])
 
         if request.method == 'POST':
             request.session['filters'] = {}
