@@ -65,9 +65,11 @@
         {% endif %}
 
     {% else %}
+        {% if not bills %}
         <div>
             <p class="lead">You're not following any topics or locations yet!</p><p>Head to your <a href="preferences/">preferences</a> to track topics and locations.</p>
         </div>
+        {% endif %}
     {% endif %}
 {% endif %}
     
