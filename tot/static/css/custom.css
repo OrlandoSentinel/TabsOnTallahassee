@@ -13,6 +13,11 @@ form {
     padding-bottom: 20px;
 }
 
+.select2-container .select2-search, 
+.select2-container .select2-search__field {
+    width: 100% !important;
+}
+
 .sidebar {
   position: fixed;
   top: 65px;
