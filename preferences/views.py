@@ -49,6 +49,11 @@ def user_preferences(request):
     selected_subjects = _mark_selected(subjects, subjects_followed)
     selected_locations = _mark_selected(locations, locations_followed)
 
+    try:
+        address = Preferences.objects.get(user=user).address
+    except Preferences.DoesNotExist:
+        address = ''
+
     if request.method == 'POST':
         with transaction.atomic():
             PersonFollow.objects.filter(user=user).delete()
@@ -62,17 +67,12 @@ def user_preferences(request):
             for subject in request.POST.getlist('subjects'):
                 TopicFollow.objects.create(user=user, topic=subject)
             address = request.POST.get('address')
-            preferences = ''
             try:
                 preferences = Preferences.objects.get(user=user)
             except Preferences.DoesNotExist:
-                pass
-            if address:
-                if preferences:
-                    preferences.address = address
-                    preferences.save()
-                else:
-                    Preferences.objects.create(user=user, address=address)
+                preferences = Preferences.objects.create(user=user, address=address)
+            preferences.address = address
+            preferences.save()
 
         return redirect('.')
 
@@ -84,6 +84,7 @@ def user_preferences(request):
             'senators': selected_senators,
             'representatives': selected_reps,
             'locations': selected_locations,
-            'subjects': selected_subjects
+            'subjects': selected_subjects,
+            'address': address
         }
     )
