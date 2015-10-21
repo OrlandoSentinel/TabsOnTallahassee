@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.conf.urls import url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from preferences.views import EmailRegistrationView, user_preferences
+from preferences.views import EmailRegistrationView, user_preferences, set_user_latlon
 from bills.views import bill_list, latest_bill_activity
 from home import views
 
@@ -30,8 +30,9 @@ urlpatterns = [
     url('^', include('django.contrib.auth.urls')),
     url(r'^api/', include('imago.urls')),
     url(r'^accounts/', include('registration.backends.default.urls')),
-    url(r'^accounts/register/', EmailRegistrationView.as_view(), name= 'registration_register'),
+    url(r'^accounts/register/', EmailRegistrationView.as_view(), name='registration_register'),
     url(r'^preferences/', user_preferences, name='preferences'),
+    url(r'^set_user_latlon/', set_user_latlon, name='set_user_latlon'),
     url(r'^$', 'home.views.index'),
     url(r'^about/', 'home.views.about'),
     url(r'^bills/', bill_list, name='bills_list'),
@@ -40,3 +41,4 @@ urlpatterns = [
 ]
 
 urlpatterns += staticfiles_urlpatterns()
+set_user_latlon
