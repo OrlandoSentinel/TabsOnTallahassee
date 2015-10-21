@@ -92,14 +92,28 @@ class FullBillSerializer(serializers.HyperlinkedModelSerializer):
 class FullVoteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = VoteEvent
+        exclude = ('locked_fields',)
+
+    legislative_session = InlineDictField(include=BILL_LEG_SESSION_FIELDS)
+
+    votes = InlineListField(exclude=['id', 'vote_event'],
+                            children={'voter': {'include': ['name', 'id']}}
+                            )
+    counts = InlineListField(exclude=['id', 'vote_event'])
+    sources = InlineListField(exclude=['id', 'vote_event'])
 
 class SimpleVoteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = VoteEvent
+        exclude = ('locked_fields',)
+
+    legislative_session = InlineDictField(include=BILL_LEG_SESSION_FIELDS)
+
 
 class SimpleOrganizationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Organization
+
 
 class FullOrganizationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

@@ -7,6 +7,8 @@ PERSON_FULL_FIELDS = ('identifiers', 'other_names', 'contact_details',
 BILL_FULL_FIELDS = ('abstracts', 'other_titles', 'other_identifiers',
                     'actions', 'related_bills', 'sponsorships',
                     'documents', 'versions', 'sources')
+VOTE_FULL_FIELDS = ('counts', 'votes', 'sources')
+
 
 class ApiTests(TestCase):
 
@@ -143,6 +145,52 @@ class ApiTests(TestCase):
     #    resp = self._api('bills/?sponsor=')
     #    data = json.loads(resp.content.decode('utf8'))
 
-    #def test_vote_list(self):
-    #    resp = self._api('votes/?')
-    #    self.assertEqual(resp.status_code, 200)
+    def test_vote_list(self):
+        resp = self._api('votes/?')
+        self.assertEqual(resp.status_code, 200)
+        data = json.loads(resp.content.decode('utf8'))
+        assert data['meta']['pagination']['count'] == 18
+        for field in VOTE_FULL_FIELDS:
+            assert field not in data['data'][0]['attributes']
+        self.assertEqual({'bill', 'organization'}, set(data['data'][0]['relationships'].keys()))
+
+    def test_vote_detail(self):
+        resp = self._api('ocd-vote/b9411cbe-5638-4a17-864f-52f940b7e9b4/?')
+        self.assertEqual(resp.status_code, 200)
+        data = json.loads(resp.content.decode('utf8'))
+
+        # check that legislative sessions is there by default
+        for field in VOTE_FULL_FIELDS:
+            self.assertIn(field, data['data']['attributes'])
+        self.assertEqual({'bill', 'organization'}, set(data['data']['relationships'].keys()))
+
+    def test_vote_by_voter(self):
+        # an unresolved name
+        resp = self._api('votes/?voter=Kerner')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 10)
+
+    def test_vote_by_resolved_voter(self):
+        # a resolved name
+        resp = self._api('votes/?voter=Murphy, Amanda')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 5)
+
+    #def test_vote_by_resolved_voter_id(self):
+    #    pass
+
+    def test_vote_by_unresolved_voter_and_vote(self):
+        # a resolved name
+        resp = self._api('votes/?voter=Cummings&option=not voting')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 2)
+
+    def test_vote_by_bill(self):
+        resp = self._api('votes/?bill=ocd-bill/6529705f-b6d1-4bb6-a583-18e52459ebbe')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 6)
+
+    def test_vote_by_org(self):
+        resp = self._api('votes/?organization=ocd-organization/857ae9af-8682-42ea-a9d2-66b12b54f854')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 12)

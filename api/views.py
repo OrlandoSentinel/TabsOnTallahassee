@@ -123,10 +123,29 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
 
     def get_queryset(self):
         queryset = VoteEvent.objects.all()
+
+        voter = self.request.query_params.get('voter', None)
+        option = self.request.query_params.get('option', None)
+        bill = self.request.query_params.get('bill', None)
+        organization = self.request.query_params.get('organization', None)
+
+        if voter:
+            q = Q(votes__voter_name=voter) | Q(votes__voter__name=voter)
+            if option:
+                q &= Q(votes__option=option)
+            queryset = queryset.filter(q)
+        elif option:
+            raise ValueError('must specify voter w/ option')
+
+        if bill:
+            queryset = queryset.filter(bill_id=bill)
+        if organization:
+            queryset = queryset.filter(organization_id=organization)
+
         return queryset
 
 
 class VoteDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
     queryset = VoteEvent.objects.all()
-    serializer_class = SimpleVoteSerializer
+    serializer_class = FullVoteSerializer
     full_serializer_class = FullVoteSerializer
