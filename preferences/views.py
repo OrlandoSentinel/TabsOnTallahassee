@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from opencivicdata.models import Person, Organization
 from bills.utils import get_all_subjects, get_all_locations
 from preferences.models import PersonFollow, LocationFollow, TopicFollow, Preferences
@@ -88,3 +89,22 @@ def user_preferences(request):
             'address': address
         }
     )
+
+
+@login_required
+def set_user_latlon(request):
+    user = request.user
+    if request.is_ajax():
+        lat = request.GET.get('lat', '')
+        lon = request.GET.get('lon', '')
+        address = request.GET.get('lon', '')
+        print(lat, lon)
+        try:
+            preferences = Preferences.objects.get(user=user)
+        except Preferences.DoesNotExist:
+            preferences = Preferences.objects.create(user=user)
+        preferences.lat = float(lat)
+        preferences.lon = float(lon)
+        preferences.address = address
+        preferences.save()
+    return redirect('../preferences/')
