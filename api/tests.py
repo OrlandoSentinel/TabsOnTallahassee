@@ -94,6 +94,38 @@ class ApiTests(TestCase):
     def test_bill_list(self):
         resp = self._api('bills/?')
         self.assertEqual(resp.status_code, 200)
+        data = json.loads(resp.content.decode('utf8'))
+        assert data['meta']['pagination']['count'] == 345
+
+    def test_bills_by_session(self):
+        resp = self._api('bills/?legislative_session=2015B')
+        data = json.loads(resp.content.decode('utf8'))
+        assert data['meta']['pagination']['count'] == 7
+
+    def test_bills_by_subject(self):
+        resp = self._api('bills/?subject=legislature')
+        data = json.loads(resp.content.decode('utf8'))
+        assert data['meta']['pagination']['count'] == 4
+
+    def test_bills_by_place(self):
+        resp = self._api('bills/?extras={"places":["Citrus"]}')
+        data = json.loads(resp.content.decode('utf8'))
+        assert data['meta']['pagination']['count'] == 7
+
+    #def test_bills_by_org_name(self):
+    #    resp = self._api('bills/?from_organization=Florida%20Legislature')
+    #    data = json.loads(resp.content.decode('utf8'))
+    #    assert data['meta']['pagination']['count'] == 345
+    #    # TODO: fix from_organization in scraper
+
+    def test_bills_by_sponsor_name(self):
+        resp = self._api('bills/?sponsor=Jenne')
+        data = json.loads(resp.content.decode('utf8'))
+        assert data['meta']['pagination']['count'] == 4
+
+    #def test_bills_by_sponsor_id(self):
+    #    resp = self._api('bills/?sponsor=')
+    #    data = json.loads(resp.content.decode('utf8'))
 
     def test_vote_list(self):
         resp = self._api('votes/?')

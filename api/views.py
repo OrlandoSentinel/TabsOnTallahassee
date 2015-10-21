@@ -1,3 +1,4 @@
+import json
 from django.db.models import Q
 from rest_framework import generics
 from .serializers import (Jurisdiction, SimpleJurisdictionSerializer, FullJurisdictionSerializer,
@@ -84,6 +85,28 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Bill.objects.all()
+
+        session = self.request.query_params.get('legislative_session', None)
+        subject = self.request.query_params.get('subject', None)
+        extras = self.request.query_params.get('extras', None)
+        from_org = self.request.query_params.get('from_organization', None)
+        sponsor = self.request.query_params.get('sponsor', None)
+
+        if session:
+            queryset = queryset.filter(legislative_session__identifier=session)
+        if subject:
+            queryset = queryset.filter(subject__contains=[subject])
+        if extras:
+            try:
+                extras = json.loads(extras)
+            except ValueError:
+                pass
+            queryset = queryset.filter(extras__contains=extras)
+        if from_org:
+            queryset = queryset.filter(from_organization__name=from_org)
+        if sponsor:
+            queryset = queryset.filter(sponsorships__name=sponsor)
+
         return queryset
 
 
