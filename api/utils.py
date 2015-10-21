@@ -37,31 +37,70 @@ class AllowFieldLimitingMixin:
         return self.serializer_class
 
 
-class InlineMixin:
-    def _get_fields(self, obj):
-        if self.include:
-            included_fields = self.include
+def django_obj_to_dict(obj, include=None, exclude=None, children=None,
+                       parent=None, depth=1):
+    if obj is None:
+        return None
+    if exclude is None:
+        exclude = []
+    if children is None:
+        children = {}
+    if include:
+        included_fields = [f for f in obj._meta.get_fields() if f.name in include]
+    else:
+        included_fields = [f for f in obj._meta.get_fields() if f.name not in exclude]
+    od = {}
+    for f in included_fields:
+        if f.is_relation:
+            if depth <= 0:
+                continue
+            if f.one_to_many:
+                od[f.name] = [django_obj_to_dict(child,
+                                                 children.get(f.name, {}).get('include',[]),
+                                                 children.get(f.name, {}).get('exclude',[]),
+                                                 children.get(f.name, {}).get('children', {}),
+                                                 obj,
+                                                 depth-1
+                                                 )
+                              for child in getattr(obj, f.name).all()
+                              ]
+            elif f.many_to_one:
+                child = getattr(obj, f.name)
+                if child == parent:
+                    continue
+                od[f.name] = django_obj_to_dict(child,
+                                                children.get(f.name, {}).get('include',[]),
+                                                children.get(f.name, {}).get('exclude',[]),
+                                                children.get(f.name, {}).get('children', {}),
+                                                obj,
+                                                depth-1
+                                                )
+            else:
+                import ipdb; ipdb.set_trace()
+                raise Exception('unknown relation: ' + f.name)
         else:
-            included_fields = [k for k in obj.__dict__.keys()
-                               if not k.startswith('_') and k not in self.exclude]
-        return {f: getattr(obj, f) for f in included_fields}
+            od[f.name] = getattr(obj, f.name)
+    return od
 
 
-class InlineListField(serializers.ListField, InlineMixin):
+class InlineListField(serializers.ListField):
     def __init__(self, *args, **kwargs):
         self.include = kwargs.pop('include', [])
         self.exclude = kwargs.pop('exclude', [])
+        self.children = kwargs.pop('children', {})
         super().__init__(*args, **kwargs)
 
     def to_representation(self, obj):
-        return [self._get_fields(i) for i in obj.all()]
+        return [django_obj_to_dict(i, self.include, self.exclude, self.children)
+                for i in obj.all()]
 
 
-class InlineDictField(serializers.DictField, InlineMixin):
+class InlineDictField(serializers.DictField):
     def __init__(self, *args, **kwargs):
         self.include = kwargs.pop('include', [])
         self.exclude = kwargs.pop('exclude', [])
+        self.children = kwargs.pop('children', {})
         super().__init__(*args, **kwargs)
 
     def to_representation(self, obj):
-        return self._get_fields(obj)
+        return django_obj_to_dict(obj, self.include, self.exclude, self.children)

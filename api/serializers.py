@@ -47,11 +47,11 @@ class FullPersonSerializer(serializers.HyperlinkedModelSerializer):
 
     memberships = SimpleMembershipSerializer(many=True)
 
-    identifiers = InlineListField(source='identifiers.all', exclude=['id', 'person_id'])
-    other_names = InlineListField(source='other_names.all', exclude=['id', 'person_id'])
-    contact_details = InlineListField(source='contact_details.all', exclude=['id', 'person_id'])
-    object_links = InlineListField(source='links.all', exclude=['id', 'person_id'])
-    sources = InlineListField(source='sources.all', exclude=['id', 'person_id'])
+    identifiers = InlineListField(exclude=['id', 'person'])
+    other_names = InlineListField(exclude=['id', 'person'])
+    contact_details = InlineListField(exclude=['id', 'person'])
+    object_links = InlineListField(source='links', exclude=['id', 'person'])
+    sources = InlineListField(exclude=['id', 'person'])
 
 
 BILL_LEG_SESSION_FIELDS = ['name', 'identifier', 'jurisdiction_id']
@@ -70,20 +70,23 @@ class FullBillSerializer(serializers.HyperlinkedModelSerializer):
         exclude = ('locked_fields',)
 
     legislative_session = InlineDictField(include=BILL_LEG_SESSION_FIELDS)
-    abstracts = InlineListField(source='abstracts.all', exclude=['id', 'bill_id'])
-    other_titles = InlineListField(source='other_titles.all', exclude=['id', 'bill_id'])
-    other_identifiers = InlineListField(source='other_identifiers.all', exclude=['id', 'bill_id'])
-    actions = InlineListField(source='actions.all', exclude=['id', 'bill_id'])
-    # actions.organization_id => related
-    # actions.related_entities
-    related_bills = InlineListField(source='related_bills.all', exclude=['id', 'bill_id'])
-    # related_bills_reverse
-    sponsorships = InlineListField(source='sponsorships.all', exclude=['id', 'bill_id'])
-    documents = InlineListField(source='documents.all', exclude=['id', 'bill_id'])
-    # documents.links
-    versions = InlineListField(source='versions.all', exclude=['id', 'bill_id'])
-    # versions.links
-    sources = InlineListField(source='sources.all', exclude=['id', 'bill_id'])
+    abstracts = InlineListField(exclude=['id', 'bill'])
+    other_titles = InlineListField(exclude=['id', 'bill'])
+    other_identifiers = InlineListField(exclude=['id', 'bill'])
+    actions = InlineListField(exclude=['id', 'bill'],
+                              children={'organization': {'include': ['id', 'classification', 'name']}}
+                              )
+    # TODO: actions.related_entities
+    related_bills = InlineListField(exclude=['id', 'bill'])
+    # TODO: related_bills_reverse
+    sponsorships = InlineListField(exclude=['id', 'bill'])
+    documents = InlineListField(exclude=['id', 'bill'],
+                                children={'links': {'exclude': ['id']}},
+                                )
+    versions = InlineListField(exclude=['id', 'bill'],
+                               children={'links': {'exclude': ['id']}},
+                               )
+    sources = InlineListField(exclude=['id', 'bill'])
 
 
 class FullVoteSerializer(serializers.HyperlinkedModelSerializer):
