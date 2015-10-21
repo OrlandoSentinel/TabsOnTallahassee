@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from opencivicdata.models import Person, Organization
 from bills.utils import get_all_subjects, get_all_locations
@@ -50,11 +50,6 @@ def user_preferences(request):
     selected_subjects = _mark_selected(subjects, subjects_followed)
     selected_locations = _mark_selected(locations, locations_followed)
 
-    try:
-        address = Preferences.objects.get(user=user).address
-    except Preferences.DoesNotExist:
-        address = ''
-
     if request.method == 'POST':
         with transaction.atomic():
             PersonFollow.objects.filter(user=user).delete()
@@ -67,15 +62,10 @@ def user_preferences(request):
                 LocationFollow.objects.create(user=user, location=location)
             for subject in request.POST.getlist('subjects'):
                 TopicFollow.objects.create(user=user, topic=subject)
-            address = request.POST.get('address')
-            try:
-                preferences = Preferences.objects.get(user=user)
-            except Preferences.DoesNotExist:
-                preferences = Preferences.objects.create(user=user, address=address)
-            preferences.address = address
-            preferences.save()
-
         return redirect('.')
+
+    prefernces = get_object_or_404(Preferences, user=user) or Preferences.objects.create(user=user)
+    address = prefernces.address
 
     return render(
         request,
@@ -98,10 +88,7 @@ def set_user_latlon(request):
         lat = request.GET.get('lat', '')
         lon = request.GET.get('lon', '')
         address = request.GET.get('address', '')
-        try:
-            preferences = Preferences.objects.get(user=user)
-        except Preferences.DoesNotExist:
-            preferences = Preferences.objects.create(user=user)
+        preferences = get_object_or_404(Preferences, user=user) or Preferences.objects.create(user=user)
         preferences.lat = float(lat)
         preferences.lon = float(lon)
         preferences.address = address
