@@ -1,13 +1,19 @@
-Django>=1.9b1
-opencivicdata-django>=0.7.2
-pupa>=0.5.0
--e git://github.com/opencivicdata/imago@0.5.x#egg=imago
--e git://github.com/macropin/django-registration.git@f1dfbd95c3a67308a7e2853e00e8662346b2c96a#egg=registration
+# site
+Django==1.9b1
+opencivicdata-django==0.7.4
+represent-boundaries==0.7.4
+djangorestframework==3.2.4
 
+# scraper
 lxml
+pupa==0.5.0
 
-# for API docs
+# api docs
 markdown
 
-#django/postgres object merging
+# needs my commits, should be in 2.0.0a3 or later
+-e git://github.com/django-json-api/django-rest-framework-json-api.git#egg=drf-json-api
+# unreleased abandoned lib.. django/postgres object merging
 -e git://github.com/sunlightlabs/waterfall.git#egg=waterfall
+# unreleased version of django-reg
+-e git://github.com/macropin/django-registration.git@f1dfbd95c3a67308a7e2853e00e8662346b2c96a#egg=registration
