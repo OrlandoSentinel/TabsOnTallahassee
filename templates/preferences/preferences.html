@@ -38,6 +38,19 @@ $(document).ready(function() {
 </div>
 
     {% include "preferences/location_form.html" %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Your representitive is:</strong></p>
+            <p>{{ address_representative }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Your senator is:</strong></p>
+            <p>{{ address_senator }}</p>
+        </div>
+    </div>
+
+    <hr/>
     {% include "preferences/form.html" %}
 
 {% endblock %}
