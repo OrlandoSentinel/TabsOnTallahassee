@@ -35,9 +35,9 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     Filterable list of all Person objects.
 
-    * **name** - filter by name (partial matches included)
-    * **member_of** - filter for people that are current members of Organization
-    * **ever_member_of** - filter for people that have had known membership in Oganization
+    * **name** - by name (partial matches included)
+    * **member_of** - people that are current members of Organization
+    * **ever_member_of** - people that have had known membership in Oganization
     * **latitude, longitude** - must be specified together, filters for individuals currently representing
                                 a district including the location in question
     """

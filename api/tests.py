@@ -67,7 +67,12 @@ class ApiTests(TestCase):
         data = json.loads(resp.content.decode('utf8'))
         assert data['meta']['pagination']['count'] == 107
 
-    def test_person_list_by_member_of_name(self):
+    def test_person_list_by_member_of_id(self):
+        resp = self._api('people/?member_of=ocd-organization/8fbc15ed-043f-408a-a0a2-5d9c7dd62675')
+        data = json.loads(resp.content.decode('utf8'))
+        assert data['meta']['pagination']['count'] == 53
+
+    def test_person_list_by_member_of_with_name(self):
         resp = self._api('people/?member_of=Republican&name=John')
         data = json.loads(resp.content.decode('utf8'))
         assert data['meta']['pagination']['count'] == 3
