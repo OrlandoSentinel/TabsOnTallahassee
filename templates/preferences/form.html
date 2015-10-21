@@ -2,19 +2,6 @@
 {% csrf_token %}
 
     <div class="row">
-        <div class="col-md-12">
-            <p class="lead">Address</p>
-            {% if not address %}
-                <input type="text" name="address" id="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/>
-            {% else %}
-                <input type="text" name="address" id="address" value="{{address}}"/>
-            {% endif %}
-        </div>
-    </div>
-
-    <hr/>
-
-    <div class="row">
         <div class="col-md-6">
             <div>
                 <p class="lead">Senators</p>

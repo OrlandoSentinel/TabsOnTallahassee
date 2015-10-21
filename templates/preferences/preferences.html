@@ -6,7 +6,7 @@
 <script src='{% static "js/gmaps.js" %}'></script>
 <script>
 $(document).ready(function() {
-    $('#enter_prefs').submit(function(e){
+    $('#enter_location').submit(function(e){
         e.preventDefault();
         GMaps.geocode({
             address: $('#address').val().trim(),
@@ -37,6 +37,7 @@ $(document).ready(function() {
     <p>Please select which Senators, Representatives, locations, and subjects you'd like to follow.</p>
 </div>
 
+    {% include "preferences/location_form.html" %}
     {% include "preferences/form.html" %}
 
 {% endblock %}
