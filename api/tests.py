@@ -178,8 +178,11 @@ class ApiTests(TestCase):
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 5)
 
-    #def test_vote_by_resolved_voter_id(self):
-    #    pass
+    def test_vote_by_resolved_voter_id(self):
+        # ocd-vote
+        resp = self._api('votes/?voter=ocd-person/fc6f3850-ec2b-4529-88c5-80f663bb41f0')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 5)
 
     def test_vote_by_unresolved_voter_and_vote(self):
         # a resolved name
@@ -192,7 +195,12 @@ class ApiTests(TestCase):
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 6)
 
-    def test_vote_by_org(self):
+    def test_vote_by_org_id(self):
         resp = self._api('votes/?organization=ocd-organization/857ae9af-8682-42ea-a9d2-66b12b54f854')
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 12)
+
+    def test_vote_by_org_name(self):
+        resp = self._api('votes/?organization=Florida Senate')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 6)

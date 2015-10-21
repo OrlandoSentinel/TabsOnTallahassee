@@ -158,10 +158,12 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     Filterable list of all Bill objects.
 
-    * **voter** - filter by votes where given Person voted
-    * **option** - filter by votes where ``voter``'s vote was of type ``option`` (must provide ``voter``)
-    * **bill** - votes related go a given Bill
-    * **organization** - votes within a given Organization
+    Available Filters:
+
+    * **voter** - votes where given Person voted (by exact name or ``ocd-person`` id)
+    * **option** - votes where ``voter``'s vote was of type ``option`` (must provide ``voter``)
+    * **bill** - votes related go a given Bill (by ``ocd-bill`` id)
+    * **organization** - votes within a given Organization (by exact name or ``ocd-organization`` id)
     """
     serializer_class = SimpleVoteSerializer
     full_serializer_class = FullVoteSerializer
@@ -176,7 +178,11 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
         organization = self.request.query_params.get('organization', None)
 
         if voter:
-            q = Q(votes__voter_name=voter) | Q(votes__voter__name=voter)
+            if voter.startswith('ocd-person/'):
+                q = Q(votes__voter__id=voter)
+            else:
+                # resolved | unresolved name
+                q = Q(votes__voter_name=voter) | Q(votes__voter__name=voter)
             if option:
                 q &= Q(votes__option=option)
             queryset = queryset.filter(q)
@@ -186,7 +192,10 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
         if bill:
             queryset = queryset.filter(bill_id=bill)
         if organization:
-            queryset = queryset.filter(organization_id=organization)
+            if organization.startswith('ocd-organization/'):
+                queryset = queryset.filter(organization_id=organization)
+            else:
+                queryset = queryset.filter(organization__name=organization)
 
         return queryset
 
