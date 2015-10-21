@@ -27,13 +27,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     'opencivicdata.apps.BaseConfig',
     'glossary',
     'boundaries',
-    'imago',
-    'django.contrib.sites',
     'registration',
-    'preferences'
+    'preferences',
+    'api',
+    'rest_framework',
 ]
 
 
@@ -46,7 +48,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'preferences.middleware.AuthMiddleware',
+    #'preferences.middleware.AuthMiddleware',
 ]
 
 ROOT_URLCONF = 'tot.urls'
@@ -162,4 +164,18 @@ IMAGO_BOUNDARY_MAPPINGS = {
                 'prefix': 'sldu-',
                 'ignore': '.*ZZZ',
                 },
+}
+
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 10,
+    'PAGINATE_BY_PARAM': 'page_size',
+    'MAX_PAGINATE_BY': 100,
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework_json_api.pagination.PageNumberPagination',
+    'URL_FIELD_NAME': 'resource_url',
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework_json_api.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
 }

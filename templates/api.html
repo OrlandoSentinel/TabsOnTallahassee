@@ -1,0 +1,48 @@
+{% extends 'rest_framework/api.html' %}
+
+{% block body %}
+<body>
+  <div class="wrapper">
+      <div class="container">
+      <div id="content">
+
+          <h1>Tabs on Tallahassee API</h1>
+
+          <p>
+              The Tabs on Tallahassee API uses the <a href="https://jsonapi.org">JSON API</a> format.
+          </p>
+
+
+          <h3>Endpoints</h3>
+          <p>
+              All search endpoints can be paginated w/ <tt>page=</tt> and
+          fields may be specified w/ the <tt>fields=</tt> parameter.
+          </p>
+          <ul>
+              <li><a href="/api/people/">/api/people/</a> - People list/search.</li>
+              <li><a href="/api/bills/">/api/bills/</a> - Bill list/search.</li>
+              <li><a href="/api/people/">/api/votes/</a> - Votes list/search.</li>
+              <li><a href="/api/people/">/api/organizations/</a> - Organizations list/search.</li>
+          </ul>
+
+          <h3>Detail Lookup</h3>
+          Additionally, all objects can be fetched by their identifier:
+
+          <ul>
+              <li><a href="/api/ocd-person/c21725cc-2fe0-4214-9ab7-4c788b1d7312/">Example Legislator</a></li>
+              <li><a href="/api/ocd-bill/40668226-a16a-4300-ab37-81af0ee3b45e/">Example Bill</a>
+              <li><a href="/api/ocd-vote/b9411cbe-5638-4a17-864f-52f940b7e9b4/">Example Vote</a></li>
+          </ul>
+
+          <h3>Examples</h3>
+          <li><a href="/api/votes/?voter=Murphy,%20Amanda&option=yes">Votes where Amanda Murphy voted yes</a></li>
+          <li><a href="/api/bills/?subject=legislature">Bills w/ the 'legislature' subject</a></li>
+          <li><a href='/api/bills/?extras={"places":["Citrus"]}'>Bills w/ mentioning the Citrus County, FL</a></li>
+          <li><a href="/api/people/?latitude=28.4&longitude=-82.2">Legislators representing area surrounding 28.4N, 82.2W</a></li>
+
+      </div><!-- /.content -->
+    </div><!-- /.container -->
+  </div><!-- ./wrapper -->
+</body>
+{% endblock %}
+</html>
