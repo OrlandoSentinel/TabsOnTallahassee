@@ -97,8 +97,7 @@ def set_user_latlon(request):
     if request.is_ajax():
         lat = request.GET.get('lat', '')
         lon = request.GET.get('lon', '')
-        address = request.GET.get('lon', '')
-        print(lat, lon)
+        address = request.GET.get('address', '')
         try:
             preferences = Preferences.objects.get(user=user)
         except Preferences.DoesNotExist:
