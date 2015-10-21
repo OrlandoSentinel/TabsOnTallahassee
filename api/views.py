@@ -21,12 +21,26 @@ class JurisdictionList(AllowFieldLimitingMixin, generics.ListAPIView):
 
 
 class JurisdictionDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
+    """
+    Detailed resource for single Jurisdiction object.
+
+    Includes all fields by default, can be limited w/ ``fields`` parameter.
+    """
     queryset = Jurisdiction.objects.all()
     serializer_class = FullJurisdictionSerializer
     full_serializer_class = FullJurisdictionSerializer
 
 
 class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
+    """
+    Filterable list of all Person objects.
+
+    * **name** - filter by name (partial matches included)
+    * **member_of** - filter for people that are current members of Organization
+    * **ever_member_of** - filter for people that have had known membership in Oganization
+    * **latitude, longitude** - must be specified together, filters for individuals currently representing
+                                a district including the location in question
+    """
     serializer_class = SimplePersonSerializer
     full_serializer_class = FullPersonSerializer
     paginate_by = 50
@@ -57,6 +71,11 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
 
 
 class PersonDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
+    """
+    Detailed resource for single Person object.
+
+    Includes all fields by default, can be limited w/ ``fields`` parameter.
+    """
     queryset = Person.objects.all()
     serializer_class = FullPersonSerializer
     full_serializer_class = FullPersonSerializer
@@ -73,12 +92,26 @@ class OrganizationList(AllowFieldLimitingMixin, generics.ListAPIView):
 
 
 class OrganizationDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
+    """
+    Detailed resource for single Organization object.
+
+    Includes all fields by default, can be limited w/ ``fields`` parameter.
+    """
     queryset = Organization.objects.all()
     serializer_class = SimpleOrganizationSerializer
     full_serializer_class = FullOrganizationSerializer
 
 
 class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
+    """
+    Filterable list of all Bill objects.
+
+    * **legislative_session** - filter by a legislative_session.identifier
+    * **subject** - filter by given subject
+    * **extras** - returns bills containing a superset of passed JSON
+    * **from_organization** - filter for bills originating in given org
+    * **sponsor** - filters for bills sponsored by given legislator
+    """
     serializer_class = SimpleBillSerializer
     full_serializer_class = FullBillSerializer
     paginate_by = 50
@@ -111,12 +144,25 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
 
 
 class BillDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
+    """
+    Detailed resource for single Bill object.
+
+    Includes all fields by default, can be limited w/ ``fields`` parameter.
+    """
     queryset = Bill.objects.all()
     serializer_class = FullBillSerializer
     full_serializer_class = FullBillSerializer
 
 
 class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
+    """
+    Filterable list of all Bill objects.
+
+    * **voter** - filter by votes where given Person voted
+    * **option** - filter by votes where ``voter``'s vote was of type ``option`` (must provide ``voter``)
+    * **bill** - votes related go a given Bill
+    * **organization** - votes within a given Organization
+    """
     serializer_class = SimpleVoteSerializer
     full_serializer_class = FullVoteSerializer
     paginate_by = 50
@@ -146,6 +192,11 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
 
 
 class VoteDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
+    """
+    Detailed resource for single Vote object.
+
+    Includes all fields by default, can be limited w/ ``fields`` parameter.
+    """
     queryset = VoteEvent.objects.all()
     serializer_class = FullVoteSerializer
     full_serializer_class = FullVoteSerializer

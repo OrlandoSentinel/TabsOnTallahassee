@@ -136,6 +136,8 @@ class ApiTests(TestCase):
     #    assert data['meta']['pagination']['count'] == 345
     #    # TODO: fix from_organization in scraper
 
+    #def test_bills_by_org_id(self):
+
     def test_bills_by_sponsor_name(self):
         resp = self._api('bills/?sponsor=Jenne')
         data = json.loads(resp.content.decode('utf8'))

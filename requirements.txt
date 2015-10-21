@@ -6,5 +6,8 @@ pupa>=0.5.0
 
 lxml
 
+# for API docs
+markdown
+
 #django/postgres object merging
 -e git://github.com/sunlightlabs/waterfall.git#egg=waterfall
