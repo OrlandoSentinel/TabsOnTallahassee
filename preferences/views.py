@@ -71,5 +71,5 @@ def user_preferences(request):
             'representatives': selected_reps,
             'locations': selected_locations,
             'subjects': selected_subjects
-         }
+        }
     )
