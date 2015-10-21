@@ -4,6 +4,9 @@ from opencivicdata.models import Person, Organization, Membership
 
 PERSON_FULL_FIELDS = ('identifiers', 'other_names', 'contact_details',
                       'object_links', 'sources')
+BILL_FULL_FIELDS = ('abstracts', 'other_titles', 'other_identifiers',
+                    'actions', 'related_bills', 'sponsorships',
+                    'documents', 'versions', 'sources')
 
 class ApiTests(TestCase):
 
@@ -98,7 +101,17 @@ class ApiTests(TestCase):
         assert data['meta']['pagination']['count'] == 345
         for field in BILL_FULL_FIELDS:
             assert field not in data['data'][0]['attributes']
-        assert 'relationships' not in data['data'][0]
+        self.assertEqual(['from_organization'], list(data['data'][0]['relationships'].keys()))
+
+    def test_bill_detail(self):
+        resp = self._api('ocd-bill/1a35a7c7-88d3-4570-a2a5-2a97229ccbc5/?')
+        self.assertEqual(resp.status_code, 200)
+        data = json.loads(resp.content.decode('utf8'))
+
+        # check that legislative sessions is there by default
+        for field in BILL_FULL_FIELDS:
+            self.assertIn(field, data['data']['attributes'])
+        self.assertEqual(['from_organization'], list(data['data']['relationships'].keys()))
 
     def test_bills_by_session(self):
         resp = self._api('bills/?legislative_session=2015B')
@@ -130,6 +143,6 @@ class ApiTests(TestCase):
     #    resp = self._api('bills/?sponsor=')
     #    data = json.loads(resp.content.decode('utf8'))
 
-    def test_vote_list(self):
-        resp = self._api('votes/?')
-        self.assertEqual(resp.status_code, 200)
+    #def test_vote_list(self):
+    #    resp = self._api('votes/?')
+    #    self.assertEqual(resp.status_code, 200)
