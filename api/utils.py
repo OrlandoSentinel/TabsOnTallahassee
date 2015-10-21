@@ -54,7 +54,7 @@ class InlineListField(serializers.ListField, InlineMixin):
         super().__init__(*args, **kwargs)
 
     def to_representation(self, obj):
-        return [self._get_fields(i) for i in obj]
+        return [self._get_fields(i) for i in obj.all()]
 
 
 class InlineDictField(serializers.DictField, InlineMixin):

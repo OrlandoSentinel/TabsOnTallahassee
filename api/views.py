@@ -112,7 +112,7 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
 
 class BillDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
     queryset = Bill.objects.all()
-    serializer_class = SimpleBillSerializer
+    serializer_class = FullBillSerializer
     full_serializer_class = FullBillSerializer
 
 

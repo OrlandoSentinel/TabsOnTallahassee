@@ -96,6 +96,9 @@ class ApiTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
         assert data['meta']['pagination']['count'] == 345
+        for field in BILL_FULL_FIELDS:
+            assert field not in data['data'][0]['attributes']
+        assert 'relationships' not in data['data'][0]
 
     def test_bills_by_session(self):
         resp = self._api('bills/?legislative_session=2015B')
