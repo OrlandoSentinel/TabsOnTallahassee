@@ -1,4 +1,4 @@
-Django>=1.9a1
+Django>=1.9b1
 opencivicdata-django>=0.7.2
 pupa>=0.5.0
 -e git://github.com/opencivicdata/imago@0.5.x#egg=imago
