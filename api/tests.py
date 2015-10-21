@@ -137,15 +137,21 @@ class ApiTests(TestCase):
     #    # TODO: fix from_organization in scraper
 
     #def test_bills_by_org_id(self):
+    #    resp = self._api('bills/?from_organization=Florida%20Legislature')
+    #    data = json.loads(resp.content.decode('utf8'))
+    #    assert data['meta']['pagination']['count'] == 345
+    #    # TODO: fix from_organization in scraper
 
     def test_bills_by_sponsor_name(self):
         resp = self._api('bills/?sponsor=Jenne')
         data = json.loads(resp.content.decode('utf8'))
         assert data['meta']['pagination']['count'] == 4
 
+    # TODO: resolve bills in database
     #def test_bills_by_sponsor_id(self):
     #    resp = self._api('bills/?sponsor=')
     #    data = json.loads(resp.content.decode('utf8'))
+    #    assert data['meta']['pagination']['count'] == 4
 
     def test_vote_list(self):
         resp = self._api('votes/?')

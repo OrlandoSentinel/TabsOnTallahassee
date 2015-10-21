@@ -106,11 +106,11 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     Filterable list of all Bill objects.
 
-    * **legislative_session** - filter by a legislative_session.identifier
-    * **subject** - filter by given subject
-    * **extras** - returns bills containing a superset of passed JSON
-    * **from_organization** - filter for bills originating in given org
-    * **sponsor** - filters for bills sponsored by given legislator
+    * **legislative_session** - bills within the session identified by this session identifier
+    * **subject** - bills with given subject
+    * **extras** - bills containing a superset of passed JSON
+    * **from_organization** - bills originating in given Organization (exact name or ``ocd-organization`` id)
+    * **sponsor** - bills sponsored by given entity (exact name or ``ocd-person``/``ocd-organization`` id)
     """
     serializer_class = SimpleBillSerializer
     full_serializer_class = FullBillSerializer
@@ -136,9 +136,18 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
                 pass
             queryset = queryset.filter(extras__contains=extras)
         if from_org:
-            queryset = queryset.filter(from_organization__name=from_org)
+            if from_org.startswith('ocd-organization/'):
+                queryset = queryset.filter(from_organization_id=from_org)
+            else:
+                queryset = queryset.filter(from_organization__name=from_org)
         if sponsor:
-            queryset = queryset.filter(sponsorships__name=sponsor)
+            if sponsor.startswith('ocd-person/'):
+                queryset = queryset.filter(sponsorships__person_id=sponsor)
+            elif sponsor.startswith('ocd-organization/'):
+                queryset = queryset.filter(sponsorships__organization_id=sponsor)
+            else:
+                # TODO: include resolved name?
+                queryset = queryset.filter(sponsorships__name=sponsor)
 
         return queryset
 
