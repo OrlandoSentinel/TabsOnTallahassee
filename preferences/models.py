@@ -9,6 +9,8 @@ from django.contrib.auth.models import User
 class Preferences(models.Model):
     user = models.OneToOneField(User, related_name='preferences')
     address = models.CharField(max_length=100, blank=True)
+    lat = models.FloatField(null=True, blank=True)
+    lon = models.FloatField(null=True, blank=True)
     apikey = models.UUIDField(default=uuid.uuid4)
 
 
