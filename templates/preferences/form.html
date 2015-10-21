@@ -4,7 +4,11 @@
     <div class="row">
         <div class="col-md-12">
             <p class="lead">Address</p>
-            <input type="text" name="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/>
+            {% if not address %}
+                <input type="text" name="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/>
+            {% else %}
+                <input type="text" name="address" value="{{address}}"/>
+            {% endif %}
         </div>
     </div>
 
@@ -77,7 +81,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <input type="submit" value="Go!"/>
+            <input type="submit"/>
         </div>
     </div>
 </form>
