@@ -16,4 +16,4 @@ urlpatterns = [
     url(r'^(?P<pk>ocd-vote/.+)/$', views.VoteDetail.as_view(), name='voteevent-detail'),
 ]
 
-# Event, Post, Membership
+# Event, Post, Membership, Division
