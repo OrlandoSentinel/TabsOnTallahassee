@@ -8,3 +8,5 @@ lxml
 
 #django/postgres object merging
 -e git://github.com/sunlightlabs/waterfall.git#egg=waterfall
+
+google-api-python-client==1.4.2
