@@ -65,7 +65,16 @@ def user_preferences(request):
         return redirect('.')
 
     prefernces = get_object_or_404(Preferences, user=user) or Preferences.objects.create(user=user)
+
     address = prefernces.address
+    if address:
+        # Make a request to the API here
+        # Save the names and create a PersonFollow Object
+        address_senator = 'Devon'
+        address_representative = 'Bubba Ray'
+    else:
+        address_senator = None
+        address_representative = None
 
     return render(
         request,
@@ -76,7 +85,9 @@ def user_preferences(request):
             'representatives': selected_reps,
             'locations': selected_locations,
             'subjects': selected_subjects,
-            'address': address
+            'address': address,
+            'address_senator': address_senator,
+            'address_representative': address_representative
         }
     )
 
