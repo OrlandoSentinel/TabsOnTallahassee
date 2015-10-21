@@ -63,7 +63,10 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
         if ever_member_of:
             queryset = queryset.member_of(ever_member_of, current_only=False)
         if latitude and longitude:
-            pass                # TODO: geo query
+            queryset = queryset.filter(
+                memberships__post__division__geometries__boundary__shape__contains=
+                'POINT({} {})'.format(longitude, latitude)
+            )
         elif latitude or longitude:
             raise Exception()   # TODO: make meaningful exception
 

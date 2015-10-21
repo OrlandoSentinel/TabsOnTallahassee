@@ -95,11 +95,10 @@ class ApiTests(TestCase):
         data = json.loads(resp.content.decode('utf8'))
         assert data['meta']['pagination']['count'] == 107
 
-    # TODO get lat long working
-    #def test_person_list_by_lat_lon(self):
-    #    resp = self._api('people/?latitude=39&longitude=-88')
-    #    data = json.loads(resp.content.decode('utf8'))
-    #    assert data['meta']['pagination']['count'] == 2
+    def test_person_list_by_lat_lon(self):
+        resp = self._api('people/?latitude=28.4&longitude=-82.2')
+        data = json.loads(resp.content.decode('utf8'))
+        assert data['meta']['pagination']['count'] == 2
 
     def test_bill_list(self):
         resp = self._api('bills/?')
