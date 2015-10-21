@@ -52,7 +52,9 @@ class BillList(Page):
         else:
             raise ValueError('Failed to identify bill type.')
 
-        bill = Bill(bill_id, self.kwargs['session'], title, classification=bill_type)
+        bill = Bill(bill_id, self.kwargs['session'], title,
+                    chamber='lower' if bill_type[0] == 'H' else 'upper',
+                    classification=bill_type)
         bill.add_source(bill_url)
 
         # normalize id from HB 0004 to H4
