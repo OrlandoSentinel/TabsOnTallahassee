@@ -15,9 +15,6 @@ $(document).ready(function() {
                     var latlng = results[0].geometry.location,
                             lat = latlng.lat(),
                             lon = latlng.lng();
-                        console.log(lat, lon)
-                        console.log(address.value)
-                    // do_geo_locate(lat, lon);
                     $.get('/set_user_latlon/', {
                         user: results.name,
                         lat: lat,
