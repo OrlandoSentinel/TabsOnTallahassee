@@ -1,6 +1,8 @@
 import json
 from django.test import TestCase
+from django.contrib.auth.models import User
 from opencivicdata.models import Person, Organization, Membership
+from preferences.models import Preferences
 
 PERSON_FULL_FIELDS = ('identifiers', 'other_names', 'contact_details',
                       'object_links', 'sources')
@@ -14,8 +16,13 @@ class ApiTests(TestCase):
 
     fixtures = ['fl_testdata.json']
 
+    def setUp(self):
+        u = User.objects.create_user('test')
+        p = Preferences.objects.create(user=u)
+        self.apikey = p.apikey
+
     def _api(self, method):
-        return self.client.get('/api/{}&format=vnd.api%2Bjson'.format(method))
+        return self.client.get('/api/{}&format=vnd.api%2Bjson&apikey={}'.format(method, self.apikey))
 
     def test_jurisdiction_list(self):
         resp = self._api('jurisdictions/?')
