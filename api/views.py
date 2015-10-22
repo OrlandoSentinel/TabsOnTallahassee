@@ -149,8 +149,9 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
             elif sponsor.startswith('ocd-organization/'):
                 queryset = queryset.filter(sponsorships__organization_id=sponsor)
             else:
-                # TODO: include resolved name?
-                queryset = queryset.filter(sponsorships__name=sponsor)
+                queryset = queryset.filter(Q(sponsorships__name=sponsor) |
+                                           Q(sponsorships__person__name=sponsor) |
+                                           Q(sponsorships__organization__name=sponsor))
 
         return queryset
 
