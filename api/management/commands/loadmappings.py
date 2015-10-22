@@ -8,8 +8,8 @@ from opencivicdata.divisions import Division
 from boundaries.models import BoundarySet
 
 
-def load_mapping(boundary_set_id, key, prefix, boundary_key='external_id',
-                 ignore=None, quiet=False):
+def load_mapping(country, boundary_set_id, key, prefix,
+                 boundary_key='external_id', ignore=None, quiet=False):
     if ignore:
         ignore = re.compile(ignore)
     ignored = 0
@@ -17,7 +17,7 @@ def load_mapping(boundary_set_id, key, prefix, boundary_key='external_id',
 
     division_geometries = []
 
-    for div in Division.get('ocd-division/country:' + settings.IMAGO_COUNTRY).children(levels=100):
+    for div in Division.get('ocd-division/country:' + country).children(levels=100):
         if div.attrs[key]:
             geoid_mapping[div.attrs[key]] = div.id
 
@@ -58,7 +58,12 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
+        try:
+            country = args[0]
+        except IndexError:
+            print('must specify country')
+            raise SystemExit(1)
         with transaction.atomic():
             DivisionGeometry.objects.all().delete()
-            for set_id, d in settings.IMAGO_BOUNDARY_MAPPINGS.items():
-                load_mapping(set_id, quiet=options['quiet'], **d)
+            for set_id, d in settings.BOUNDARY_MAPPINGS.items():
+                load_mapping(country, set_id, quiet=options['quiet'], **d)

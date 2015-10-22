@@ -150,10 +150,9 @@ INCLUDE_REGISTER_URL = False
 
 CURRENT_SESSION = '2016 Regular Session'
 
-# Imago/Boundaries settings
+# boundaries settings
 BOUNDARIES_SHAPEFILES_DIR = 'shapefiles'
-IMAGO_COUNTRY = 'us'
-IMAGO_BOUNDARY_MAPPINGS = {
+BOUNDARY_MAPPINGS = {
     'sldl-15': {'key': 'census_geoid_14',
                 'prefix': 'sldl-',
                 'ignore': '.*ZZZ',
