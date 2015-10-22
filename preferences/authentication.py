@@ -5,7 +5,7 @@ from .models import Preferences
 
 class KeyAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
-        apikey = (request.META.get('X-APIKEY') or
+        apikey = (request.META.get('HTTP_X_APIKEY') or
                   request.GET.get('apikey', None))
         if isinstance(apikey, list):
             apikey = apikey[0]
