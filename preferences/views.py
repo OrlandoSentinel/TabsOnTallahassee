@@ -1,3 +1,7 @@
+import furl
+import requests
+from tot import settings
+
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -15,11 +19,12 @@ def _get_current_people(position):
         return Organization.objects.get(name='Florida House of Representatives').get_current_members()
 
 
-def _mark_selected(items, items_followed):
+def _mark_selected(items, items_followed, from_location=False):
     selected_items = []
     for item in items:
         item_dict = {}
         item_dict['item'] = item
+        item_dict['from_location'] = from_location
         if item in items_followed:
             item_dict['selected'] = True
         else:
@@ -67,14 +72,21 @@ def user_preferences(request):
     prefernces = get_object_or_404(Preferences, user=user) or Preferences.objects.create(user=user)
 
     address = prefernces.address
-    if address:
-        # Make a request to the API here
-        # Save the names and create a PersonFollow Object
-        address_senator = 'Devon'
-        address_representative = 'Bubba Ray'
-    else:
-        address_senator = None
-        address_representative = None
+    address_senator_name = None
+    address_senator_url = None
+    address_representative_name = None
+    address_representative_url = None
+    error_message = None
+
+    if request.session.get('error_message'):
+        error_message = request.session['error_message']
+
+    if request.session.get('senator'):
+        address_representative_name = request.session['representative']['name']
+        address_representative_url = request.session['representative']['url']
+
+        address_senator_name = request.session['senator']['name']
+        address_senator_url = request.session['senator']['url']
 
     return render(
         request,
@@ -86,8 +98,11 @@ def user_preferences(request):
             'locations': selected_locations,
             'subjects': selected_subjects,
             'address': address,
-            'address_senator': address_senator,
-            'address_representative': address_representative
+            'address_senator_name': address_senator_name,
+            'address_senator_url': address_senator_url,
+            'address_representative_url': address_representative_url,
+            'address_representative_name': address_representative_name,
+            'error_message': error_message
         }
     )
 
@@ -95,6 +110,7 @@ def user_preferences(request):
 @login_required
 def set_user_latlon(request):
     user = request.user
+    request.session = {}
     if request.is_ajax():
         lat = request.GET.get('lat', '')
         lon = request.GET.get('lon', '')
@@ -104,4 +120,23 @@ def set_user_latlon(request):
         preferences.lon = float(lon)
         preferences.address = address
         preferences.save()
+
+        api_resp = requests.get(settings.DOMAIN + '/api/people/?latitude={}&longitude={}'.format(preferences.lat, preferences.lon)).json()
+        if api_resp['count'] == 2:
+            for person in api_resp['results']:
+                if 'Senators' in person['image']:
+                    address_senator_url = person['url']
+                    address_senator_name = person['name']
+                    request.session['senator'] = {'name': address_senator_name, 'url': address_senator_url}
+                    senator_id = furl.furl(person['url']).pathstr.replace('/api/', '')[:-1]
+                    PersonFollow.objects.create(user=user, person_id=senator_id)
+                else:
+                    address_representative_url = person['url']
+                    address_representative_name = person['name']
+                    request.session['representative'] = {'name': address_representative_name, 'url': address_representative_url}
+                    representative_id = furl.furl(person['url']).pathstr.replace('/api/', '')[:-1]
+                    PersonFollow.objects.create(user=user, person_id=representative_id)
+            request.session['error_message'] = None
+        else:
+            request.session['error_message'] = 'No matching Senators or representatives for the address entered, be sure to enter a valid FL address'
     return redirect('../preferences/')
