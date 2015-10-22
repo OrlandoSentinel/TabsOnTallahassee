@@ -4,7 +4,6 @@ Configuration describing the shapefiles to be loaded.
 from django.contrib.gis.gdal.error import OGRIndexError
 from datetime import date
 import boundaries
-import os
 
 FL_FIPS = '12'
 state_fips = {'12': 'FL'}
@@ -43,7 +42,6 @@ def geoid_tiger_namer(feature):
     return geoid
 
 
-
 class index_namer(object):
     def __init__(self, prefix):
         self.prefix = prefix
@@ -64,8 +62,7 @@ defaults = dict(last_updated=LAST_UPDATE,
                 data_url=CENSUS_URL,
                 notes='',
                 extra='{}',
-               )
-
+                )
 
 boundaries.register('sldl-15',
                     singular='sldl-15',
@@ -74,7 +71,7 @@ boundaries.register('sldl-15',
                     id_func=geoid_tiger_namer,
                     start_date=date(2015, 1, 1),
                     **defaults
-                   )
+                    )
 
 boundaries.register('sldu-15',
                     singular='sldu-15',
@@ -83,25 +80,4 @@ boundaries.register('sldu-15',
                     id_func=geoid_tiger_namer,
                     start_date=date(2015, 1, 1),
                     **defaults
-                   )
-
-#boundaries.register('county-13',
-#                    singular='county-13',
-#                    file='county-13/',
-#                    encoding='latin-1',
-#                    name_func=tiger_namer,
-#                    id_func=geoid_tiger_namer,
-#                    start_date=date(2012, 1, 1),
-#                    end_date=date(2015, 1, 1),
-#                    **defaults
-#                   )
-
-#boundaries.register('place-14',
-#                    singular='place-14',
-#                    file='place-14/',
-#                    name_func=tiger_namer,
-#                    id_func=geoid_tiger_namer,
-#                    start_date=date(2015, 1, 1),
-#                    encoding='latin-1',
-#                    **defaults
-#                   )
+                    )

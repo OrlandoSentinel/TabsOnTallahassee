@@ -38,8 +38,9 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
     * **name** - by name (partial matches included)
     * **member_of** - people that are current members of Organization
     * **ever_member_of** - people that have had known membership in Oganization
-    * **latitude, longitude** - must be specified together, filters for individuals currently representing
-                                a district including the location in question
+    * **latitude, longitude** - must be specified together, filters for individuals
+                                currently representing a district including the
+                                location in question
     """
     serializer_class = SimplePersonSerializer
     full_serializer_class = FullPersonSerializer
@@ -64,8 +65,8 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
             queryset = queryset.member_of(ever_member_of, current_only=False)
         if latitude and longitude:
             queryset = queryset.filter(
-                memberships__post__division__geometries__boundary__shape__contains=
-                'POINT({} {})'.format(longitude, latitude)
+                memberships__post__division__geometries__boundary__shape__contains='POINT({} {})'
+                .format(longitude, latitude)
             )
         elif latitude or longitude:
             raise Exception()   # TODO: make meaningful exception
@@ -112,8 +113,10 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
     * **legislative_session** - bills within the session identified by this session identifier
     * **subject** - bills with given subject
     * **extras** - bills containing a superset of passed JSON
-    * **from_organization** - bills originating in given Organization (exact name or ``ocd-organization`` id)
-    * **sponsor** - bills sponsored by given entity (exact name or ``ocd-person``/``ocd-organization`` id)
+    * **from_organization** - bills originating in given Organization
+                              (exact name or ``ocd-organization`` id)
+    * **sponsor** - bills sponsored by given entity
+                    (exact name or ``ocd-person``/``ocd-organization`` id)
     """
     serializer_class = SimpleBillSerializer
     full_serializer_class = FullBillSerializer
@@ -176,7 +179,8 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
     * **voter** - votes where given Person voted (by exact name or ``ocd-person`` id)
     * **option** - votes where ``voter``'s vote was of type ``option`` (must provide ``voter``)
     * **bill** - votes related go a given Bill (by ``ocd-bill`` id)
-    * **organization** - votes within a given Organization (by exact name or ``ocd-organization`` id)
+    * **organization** - votes within a given Organization
+                         (by exact name or ``ocd-organization`` id)
     """
     serializer_class = SimpleVoteSerializer
     full_serializer_class = FullVoteSerializer

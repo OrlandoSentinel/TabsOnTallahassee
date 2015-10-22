@@ -1,5 +1,4 @@
 import os
-import datetime
 import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -156,12 +155,10 @@ BOUNDARIES_SHAPEFILES_DIR = 'shapefiles'
 IMAGO_COUNTRY = 'us'
 IMAGO_BOUNDARY_MAPPINGS = {
     'sldl-15': {'key': 'census_geoid_14',
-                #'start': datetime.date(2015,1,1),
                 'prefix': 'sldl-',
                 'ignore': '.*ZZZ',
                 },
     'sldu-15': {'key': 'census_geoid_14',
-                #'start': datetime.date(2015,1,1),
                 'prefix': 'sldu-',
                 'ignore': '.*ZZZ',
                 },

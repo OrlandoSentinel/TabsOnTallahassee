@@ -21,7 +21,7 @@ class AllowFieldLimitingMixin:
         meta = type('Meta', (serializer_class.Meta, object), {'fields': fields})
         meta.exclude = []
         LimitedFieldsSerializer = type('LimitedFieldsSerializer', (serializer_class,),
-            {'Meta': meta})
+                                       {'Meta': meta})
         self._serializer_class_for_fields[fields] = LimitedFieldsSerializer
         return LimitedFieldsSerializer
 
@@ -56,8 +56,8 @@ def django_obj_to_dict(obj, include=None, exclude=None, children=None,
                 continue
             if f.one_to_many:
                 od[f.name] = [django_obj_to_dict(child,
-                                                 children.get(f.name, {}).get('include',[]),
-                                                 children.get(f.name, {}).get('exclude',[]),
+                                                 children.get(f.name, {}).get('include', []),
+                                                 children.get(f.name, {}).get('exclude', []),
                                                  children.get(f.name, {}).get('children', {}),
                                                  obj,
                                                  depth-1
@@ -69,15 +69,14 @@ def django_obj_to_dict(obj, include=None, exclude=None, children=None,
                 if child == parent:
                     continue
                 od[f.name] = django_obj_to_dict(child,
-                                                children.get(f.name, {}).get('include',[]),
-                                                children.get(f.name, {}).get('exclude',[]),
+                                                children.get(f.name, {}).get('include', []),
+                                                children.get(f.name, {}).get('exclude', []),
                                                 children.get(f.name, {}).get('children', {}),
                                                 obj,
                                                 depth-1
                                                 )
             else:
-                import ipdb; ipdb.set_trace()
-                raise Exception('unknown relation: ' + f.name)
+                raise ValueError('unhandled relation: ' + f.name)
         else:
             od[f.name] = getattr(obj, f.name)
     return od

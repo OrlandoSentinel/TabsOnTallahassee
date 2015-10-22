@@ -57,7 +57,6 @@ class Command(BaseCommand):
                     default=False, help='Be somewhat quiet.'),
     )
 
-
     def handle(self, *args, **options):
         with transaction.atomic():
             DivisionGeometry.objects.all().delete()

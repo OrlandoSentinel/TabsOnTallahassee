@@ -1,7 +1,7 @@
 import json
 from django.test import TestCase
 from django.contrib.auth.models import User
-from opencivicdata.models import Person, Organization, Membership
+from opencivicdata.models import Organization, Membership
 from preferences.models import Preferences
 
 PERSON_FULL_FIELDS = ('identifiers', 'other_names', 'contact_details',
@@ -22,7 +22,8 @@ class ApiTests(TestCase):
         self.apikey = p.apikey
 
     def _api(self, method):
-        return self.client.get('/api/{}&format=vnd.api%2Bjson&apikey={}'.format(method, self.apikey))
+        return self.client.get('/api/{}&format=vnd.api%2Bjson&apikey={}'.format(
+            method, self.apikey))
 
     def test_jurisdiction_list(self):
         resp = self._api('jurisdictions/?')
@@ -147,7 +148,8 @@ class ApiTests(TestCase):
         self.assertEqual(data['meta']['pagination']['count'], 23)
 
     def test_bills_by_org_id(self):
-        resp = self._api('bills/?from_organization=ocd-organization/fe0255b6-09ae-4155-8173-c85d92b6b41c')
+        resp = self._api('bills/?from_organization='
+                         'ocd-organization/fe0255b6-09ae-4155-8173-c85d92b6b41c')
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 25)
 
@@ -214,7 +216,8 @@ class ApiTests(TestCase):
         self.assertEqual(data['meta']['pagination']['count'], 6)
 
     def test_vote_by_org_id(self):
-        resp = self._api('votes/?organization=ocd-organization/857ae9af-8682-42ea-a9d2-66b12b54f854')
+        resp = self._api('votes/?organization='
+                         'ocd-organization/857ae9af-8682-42ea-a9d2-66b12b54f854')
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 51)
 

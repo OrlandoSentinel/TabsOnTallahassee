@@ -259,12 +259,12 @@ class FloorVote(PDF):
         result = 'pass' if yes_count > no_count else 'fail'
 
         vote = VoteEvent(start_date=self.kwargs['date'],
-                    chamber=self.kwargs['chamber'],
-                    bill=self.kwargs['bill'],
-                    motion_text=motion,
-                    result=result,
-                    classification='passage',
-                    )
+                         chamber=self.kwargs['chamber'],
+                         bill=self.kwargs['bill'],
+                         motion_text=motion,
+                         result=result,
+                         classification='passage',
+                         )
         vote.add_source(self.url)
         vote.set_count('yes', yes_count)
         vote.set_count('no', no_count)
@@ -370,12 +370,12 @@ class UpperComVote(PDF):
         result = 'pass' if (yes_count > no_count) else 'fail'
 
         vote = VoteEvent(start_date=self.kwargs['date'],
-                    bill=self.kwargs['bill'],
-                    chamber='upper',
-                    motion_text=motion,
-                    classification='committee',
-                    result=result
-                    )
+                         bill=self.kwargs['bill'],
+                         chamber='upper',
+                         motion_text=motion,
+                         classification='committee',
+                         result=result
+                         )
         vote.add_source(self.url)
         vote.set_count('yes', yes_count)
         vote.set_count('no', no_count)
@@ -454,12 +454,12 @@ class HouseComVote(Page):
         motion = "{} ({})".format(action, committee)
 
         vote = VoteEvent(start_date=date,
-                    bill=self.kwargs['bill'],
-                    chamber='lower',
-                    motion_text=motion,
-                    result=result,
-                    classification='committee',
-                    )
+                         bill=self.kwargs['bill'],
+                         chamber='lower',
+                         motion_text=motion,
+                         result=result,
+                         classification='committee',
+                         )
         vote.add_source(self.url)
         vote.set_count('yes', yes_count)
         vote.set_count('no', no_count)

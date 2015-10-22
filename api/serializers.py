@@ -1,6 +1,5 @@
 from opencivicdata.models import (Person,
                                   Membership,
-                                  Post,
                                   Organization,
                                   Jurisdiction,
                                   Bill,
@@ -34,6 +33,7 @@ class SimpleMembershipSerializer(serializers.ModelSerializer):
                    'extras', 'locked_fields',
                    )
 
+
 class SimplePersonSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Person
@@ -64,6 +64,7 @@ class SimpleBillSerializer(serializers.HyperlinkedModelSerializer):
 
     legislative_session = InlineDictField(include=BILL_LEG_SESSION_FIELDS)
 
+
 class FullBillSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bill
@@ -74,7 +75,8 @@ class FullBillSerializer(serializers.HyperlinkedModelSerializer):
     other_titles = InlineListField(exclude=['id', 'bill'])
     other_identifiers = InlineListField(exclude=['id', 'bill'])
     actions = InlineListField(exclude=['id', 'bill'],
-                              children={'organization': {'include': ['id', 'classification', 'name']}}
+                              children={'organization':
+                                        {'include': ['id', 'classification', 'name']}}
                               )
     # TODO: actions.related_entities
     related_bills = InlineListField(exclude=['id', 'bill'])
@@ -101,6 +103,7 @@ class FullVoteSerializer(serializers.HyperlinkedModelSerializer):
                             )
     counts = InlineListField(exclude=['id', 'vote_event'])
     sources = InlineListField(exclude=['id', 'vote_event'])
+
 
 class SimpleVoteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
