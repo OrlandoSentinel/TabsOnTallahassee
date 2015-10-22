@@ -1,6 +1,9 @@
 # site
 Django==1.9b1
-opencivicdata-django==0.7.4
+
+#opencivicdata-django==0.7.4
+-e git://github.com/opencivicdata/python-opencivicdata-django.git#egg=python-opencivicdata-django
+
 represent-boundaries==0.7.4
 djangorestframework==3.2.4
 django-cors-headers==1.1.0
