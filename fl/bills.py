@@ -53,7 +53,7 @@ class BillList(Page):
             raise ValueError('Failed to identify bill type.')
 
         bill = Bill(bill_id, self.kwargs['session'], title,
-                    chamber='lower' if bill_type[0] == 'H' else 'upper',
+                    chamber='lower' if bill_id[0] == 'H' else 'upper',
                     classification=bill_type)
         bill.add_source(bill_url)
 
