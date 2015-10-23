@@ -3,6 +3,7 @@ Django==1.9b1
 opencivicdata-django==0.7.4
 represent-boundaries==0.7.4
 djangorestframework==3.2.4
+furl==0.4.8
 
 # scraper
 lxml
