@@ -70,6 +70,7 @@ def user_preferences(request):
         with transaction.atomic():
             PersonFollow.objects.filter(user=user).delete()
             TopicFollow.objects.filter(user=user).delete()
+            LocationFollow.objects.filter(user=user).delete()
             for senator in request.POST.getlist('senators'):
                 PersonFollow.objects.create(user=user, person_id=senator)
             for representative in request.POST.getlist('representatives'):
@@ -121,7 +122,7 @@ def set_user_latlon(request):
                     representative = {'name': person['name'], 'url': person['url'], 'id': furl.furl(person['url']).pathstr.replace('/api/', '')[:-1]}
                     preferences.rep_from_address = json.dumps(representative)
         else:
-            preferences.sen_from_address = preferences.rep_from_address = 'none found'
+            preferences.sen_from_address = preferences.rep_from_address = json.dumps({'name': 'none found'})
 
         preferences.save()
 
