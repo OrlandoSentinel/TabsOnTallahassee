@@ -39,29 +39,8 @@ $(document).ready(function() {
 
     {% include "preferences/location_form.html" %}
 
-    <div class="row">
-        {% if error_message %}
-
-        <div class="col-md-6">
-            <p><strong>{{ error_message }}</strong></p>
-        </div>
-
-        {% else %}
-
-        <div class="col-md-6">
-            <p><strong>Your representative is:</strong></p>
-            <p>{{ address_representative_name }}</p>
-        </div>
-
-        <div class="col-md-6">
-            <p><strong>Your senator is:</strong></p>
-            <p>{{ address_senator_name }}</p>
-        </div>
-
-        {% endif %}
-    </div>
-
     <hr/>
+
     {% include "preferences/form.html" %}
 
 {% endblock %}
