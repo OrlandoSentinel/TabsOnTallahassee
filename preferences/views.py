@@ -112,13 +112,13 @@ def set_user_latlon(request):
         preferences.address = address
 
         api_resp = requests.get(settings.DOMAIN + '/api/people/?latitude={}&longitude={}'.format(preferences.lat, preferences.lon)).json()
-        if api_resp['count'] == 2:
-            for person in api_resp['results']:
-                if 'Senators' in person['image']:
-                    senator = {'name': person['name'], 'url': person['url'], 'id': furl.furl(person['url']).pathstr.replace('/api/', '')[:-1]}
+        if api_resp['meta']['pagination']['count'] == 2:
+            for person in api_resp['data']:
+                if 'Senators' in person['attributes']['image']:
+                    senator = {'name': person['attributes']['name'], 'url': person['links']['self'], 'id': person['id']}
                     preferences.sen_from_address = json.dumps(senator)
                 else:
-                    representative = {'name': person['name'], 'url': person['url'], 'id': furl.furl(person['url']).pathstr.replace('/api/', '')[:-1]}
+                    representative = {'name': person['attributes']['name'], 'url': person['links']['self'], 'id': person['id']}
                     preferences.rep_from_address = json.dumps(representative)
         else:
             preferences.sen_from_address = preferences.rep_from_address = json.dumps({'name': 'none found'})
