@@ -129,4 +129,4 @@ def set_user_latlon(request):
         PersonFollow.objects.create(user=user, person_id=senator['id'])
         PersonFollow.objects.create(user=user, person_id=representative['id'])
 
-    return redirect('../preferences/')
+    return redirect(user_preferences)
