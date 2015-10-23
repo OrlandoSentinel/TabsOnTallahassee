@@ -20,7 +20,9 @@ $(document).ready(function() {
                         lat: lat,
                         lon: lon,
                         address: address.value
-                    }, function(json_response) {});
+                    }, function(json_response) {
+                        location.reload();
+                    });
                 }
             }
         });
