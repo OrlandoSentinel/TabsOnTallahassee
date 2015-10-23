@@ -1,4 +1,3 @@
-import furl
 import json
 import requests
 from tot import settings
@@ -107,11 +106,16 @@ def set_user_latlon(request):
         lon = request.GET.get('lon', '')
         address = request.GET.get('address', '')
         preferences = get_object_or_404(Preferences, user=user) or Preferences.objects.create(user=user)
+        apikey = str(preferences.apikey)
         preferences.lat = float(lat)
         preferences.lon = float(lon)
         preferences.address = address
 
-        api_resp = requests.get(settings.DOMAIN + '/api/people/?latitude={}&longitude={}'.format(preferences.lat, preferences.lon)).json()
+        api_resp = requests.get(
+            settings.DOMAIN + '/api/people/?latitude={}&longitude={}&apikey={}'.format(
+                preferences.lat, preferences.lon, apikey
+            )
+        ).json()
         if api_resp['meta']['pagination']['count'] == 2:
             for person in api_resp['data']:
                 if 'Senators' in person['attributes']['image']:
