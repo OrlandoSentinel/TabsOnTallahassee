@@ -9,6 +9,8 @@ class Preferences(models.Model):
     address = models.CharField(max_length=100, blank=True, null=True)
     lat = models.FloatField(null=True, blank=True)
     lon = models.FloatField(null=True, blank=True)
+    rep_from_address = models.CharField(max_length=255, blank=True, null=True)
+    sen_from_address = models.CharField(max_length=255, blank=True, null=True)
     apikey = models.UUIDField(default=uuid.uuid4)
 
 
