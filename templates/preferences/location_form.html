@@ -1,0 +1,38 @@
+<form action="" method="post" id="enter_location">
+{% csrf_token %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <p class="lead">Address</p>
+            {% if not address %}
+                <input type="text" name="address" id="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/>
+            {% else %}
+                <input type="text" name="address" id="address" value="{{address}}"/>
+            {% endif %}
+            <input type="submit"/>
+        </div>
+    </div>
+
+    <div class="row">
+        {% if error_message %}
+
+        <div class="col-md-6">
+            <p><strong>{{ error_message }}</strong></p>
+        </div>
+
+        {% else %}
+
+        <div class="col-md-6">
+            <p><strong>Your senator is:</strong></p>
+            <p><a href="{{ address_senator.url }}">{{ address_senator.name }}</a></p>
+        </div>
+
+        <div class="col-md-6">
+            <p><strong>Your representative is:</strong></p>
+            <p><a href="{{ address_representative.url }}">{{ address_representative.name }}</a></p>
+        </div>
+
+        {% endif %}
+    </div>
+
+</form>

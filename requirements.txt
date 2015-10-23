@@ -8,6 +8,7 @@ represent-boundaries==0.7.4
 djangorestframework==3.2.4
 django-cors-headers==1.1.0
 
+
 # scraper
 lxml
 pupa==0.5.0
@@ -19,5 +20,6 @@ markdown
 -e git://github.com/django-json-api/django-rest-framework-json-api.git#egg=drf-json-api
 # unreleased abandoned lib.. django/postgres object merging
 -e git://github.com/sunlightlabs/waterfall.git#egg=waterfall
+
 # unreleased version of django-reg
 -e git://github.com/macropin/django-registration.git@f1dfbd95c3a67308a7e2853e00e8662346b2c96a#egg=registration
