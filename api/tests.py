@@ -1,6 +1,8 @@
 import json
 from django.test import TestCase
-from opencivicdata.models import Person, Organization, Membership
+from django.contrib.auth.models import User
+from opencivicdata.models import Organization, Membership
+from preferences.models import Preferences
 
 PERSON_FULL_FIELDS = ('identifiers', 'other_names', 'contact_details',
                       'object_links', 'sources')
@@ -14,8 +16,14 @@ class ApiTests(TestCase):
 
     fixtures = ['fl_testdata.json']
 
+    def setUp(self):
+        u = User.objects.create_user('test')
+        p = Preferences.objects.create(user=u)
+        self.apikey = p.apikey
+
     def _api(self, method):
-        return self.client.get('/api/{}&format=vnd.api%2Bjson'.format(method))
+        return self.client.get('/api/{}&format=vnd.api%2Bjson&apikey={}'.format(
+            method, self.apikey))
 
     def test_jurisdiction_list(self):
         resp = self._api('jurisdictions/?')
@@ -104,13 +112,13 @@ class ApiTests(TestCase):
         resp = self._api('bills/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
-        assert data['meta']['pagination']['count'] == 345
+        self.assertEqual(data['meta']['pagination']['count'], 48)
         for field in BILL_FULL_FIELDS:
             assert field not in data['data'][0]['attributes']
         self.assertEqual(['from_organization'], list(data['data'][0]['relationships'].keys()))
 
     def test_bill_detail(self):
-        resp = self._api('ocd-bill/1a35a7c7-88d3-4570-a2a5-2a97229ccbc5/?')
+        resp = self._api('ocd-bill/3cc1d006-7059-465c-b72b-d0d4a845c55c/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
 
@@ -122,52 +130,55 @@ class ApiTests(TestCase):
     def test_bills_by_session(self):
         resp = self._api('bills/?legislative_session=2015B')
         data = json.loads(resp.content.decode('utf8'))
-        assert data['meta']['pagination']['count'] == 7
+        self.assertEqual(data['meta']['pagination']['count'], 7)
 
     def test_bills_by_subject(self):
         resp = self._api('bills/?subject=legislature')
         data = json.loads(resp.content.decode('utf8'))
-        assert data['meta']['pagination']['count'] == 4
+        self.assertEqual(data['meta']['pagination']['count'], 4)
 
     def test_bills_by_place(self):
         resp = self._api('bills/?extras={"places":["Citrus"]}')
         data = json.loads(resp.content.decode('utf8'))
-        assert data['meta']['pagination']['count'] == 7
+        self.assertEqual(data['meta']['pagination']['count'], 6)
 
-    #def test_bills_by_org_name(self):
-    #    resp = self._api('bills/?from_organization=Florida%20Legislature')
-    #    data = json.loads(resp.content.decode('utf8'))
-    #    assert data['meta']['pagination']['count'] == 345
-    #    # TODO: fix from_organization in scraper
+    def test_bills_by_org_name(self):
+        resp = self._api('bills/?from_organization=Florida House of Representatives')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 23)
 
-    #def test_bills_by_org_id(self):
-    #    resp = self._api('bills/?from_organization=Florida%20Legislature')
-    #    data = json.loads(resp.content.decode('utf8'))
-    #    assert data['meta']['pagination']['count'] == 345
-    #    # TODO: fix from_organization in scraper
+    def test_bills_by_org_id(self):
+        resp = self._api('bills/?from_organization='
+                         'ocd-organization/fe0255b6-09ae-4155-8173-c85d92b6b41c')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 25)
 
     def test_bills_by_sponsor_name(self):
-        resp = self._api('bills/?sponsor=Jenne')
+        resp = self._api('bills/?sponsor=Corcoran')
         data = json.loads(resp.content.decode('utf8'))
-        assert data['meta']['pagination']['count'] == 4
+        self.assertEqual(data['meta']['pagination']['count'], 4)
 
-    # TODO: resolve bills in database
-    #def test_bills_by_sponsor_id(self):
-    #    resp = self._api('bills/?sponsor=')
-    #    data = json.loads(resp.content.decode('utf8'))
-    #    assert data['meta']['pagination']['count'] == 4
+    def test_bills_by_sponsor_resolved_name(self):
+        resp = self._api('bills/?sponsor=Corcoran, Richard')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 4)
+
+    def test_bills_by_sponsor_id(self):
+        resp = self._api('bills/?sponsor=ocd-person/10394057-4944-4336-830b-6c4377fc6d45')
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 4)
 
     def test_vote_list(self):
         resp = self._api('votes/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
-        assert data['meta']['pagination']['count'] == 18
+        self.assertEqual(data['meta']['pagination']['count'], 83)
         for field in VOTE_FULL_FIELDS:
             assert field not in data['data'][0]['attributes']
         self.assertEqual({'bill', 'organization'}, set(data['data'][0]['relationships'].keys()))
 
     def test_vote_detail(self):
-        resp = self._api('ocd-vote/b9411cbe-5638-4a17-864f-52f940b7e9b4/?')
+        resp = self._api('ocd-vote/06c4f6c2-b9a2-4ee6-95ad-a40b80cfbc27/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
 
@@ -180,37 +191,37 @@ class ApiTests(TestCase):
         # an unresolved name
         resp = self._api('votes/?voter=Kerner')
         data = json.loads(resp.content.decode('utf8'))
-        self.assertEqual(data['meta']['pagination']['count'], 10)
+        self.assertEqual(data['meta']['pagination']['count'], 42)
 
     def test_vote_by_resolved_voter(self):
         # a resolved name
         resp = self._api('votes/?voter=Murphy, Amanda')
         data = json.loads(resp.content.decode('utf8'))
-        self.assertEqual(data['meta']['pagination']['count'], 5)
+        self.assertEqual(data['meta']['pagination']['count'], 42)
 
     def test_vote_by_resolved_voter_id(self):
-        # ocd-vote
         resp = self._api('votes/?voter=ocd-person/fc6f3850-ec2b-4529-88c5-80f663bb41f0')
         data = json.loads(resp.content.decode('utf8'))
-        self.assertEqual(data['meta']['pagination']['count'], 5)
+        self.assertEqual(data['meta']['pagination']['count'], 42)
 
     def test_vote_by_unresolved_voter_and_vote(self):
         # a resolved name
         resp = self._api('votes/?voter=Cummings&option=not voting')
         data = json.loads(resp.content.decode('utf8'))
-        self.assertEqual(data['meta']['pagination']['count'], 2)
+        self.assertEqual(data['meta']['pagination']['count'], 3)
 
     def test_vote_by_bill(self):
-        resp = self._api('votes/?bill=ocd-bill/6529705f-b6d1-4bb6-a583-18e52459ebbe')
+        resp = self._api('votes/?bill=ocd-bill/0672133f-acaf-440b-bc53-1b5dbcbb7971')
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 6)
 
     def test_vote_by_org_id(self):
-        resp = self._api('votes/?organization=ocd-organization/857ae9af-8682-42ea-a9d2-66b12b54f854')
+        resp = self._api('votes/?organization='
+                         'ocd-organization/857ae9af-8682-42ea-a9d2-66b12b54f854')
         data = json.loads(resp.content.decode('utf8'))
-        self.assertEqual(data['meta']['pagination']['count'], 12)
+        self.assertEqual(data['meta']['pagination']['count'], 51)
 
     def test_vote_by_org_name(self):
         resp = self._api('votes/?organization=Florida Senate')
         data = json.loads(resp.content.decode('utf8'))
-        self.assertEqual(data['meta']['pagination']['count'], 6)
+        self.assertEqual(data['meta']['pagination']['count'], 32)

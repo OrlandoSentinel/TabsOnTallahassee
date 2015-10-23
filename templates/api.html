@@ -12,6 +12,26 @@
               The Tabs on Tallahassee API uses the <a href="https://jsonapi.org">JSON API</a> format.
           </p>
 
+          <p> All API methods are accessible while
+              {% if request.user.is_anonymous %}
+              <a href="/login/">logged in</a>
+              {% else %}
+              logged in
+              {% endif %}
+              or by retreiving your API key from
+
+              {% if request.user.is_anonymous %}
+              your preferences page.
+              {% else %}
+              <a href="/preferences/">your preferences page</a>.
+              {% endif %}
+
+        </p>
+        <p>
+              Pass the API key as the <tt>X-APIKEY</tt> header (<b>recommended</b>)
+              or as the <tt>apikey</tt> url parameter.
+          </p>
+
 
           <h3>Endpoints</h3>
           <p>

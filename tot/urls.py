@@ -19,7 +19,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from preferences.views import EmailRegistrationView, user_preferences, set_user_latlon
 from bills.views import bill_list, latest_bill_activity
-from home import views
 from django.contrib.flatpages import views as flatpages_views
 
 
