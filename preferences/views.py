@@ -1,4 +1,5 @@
 import furl
+import json
 import requests
 from tot import settings
 
@@ -55,6 +56,16 @@ def user_preferences(request):
     selected_subjects = _mark_selected(subjects, subjects_followed)
     selected_locations = _mark_selected(locations, locations_followed)
 
+    preferences = get_object_or_404(Preferences, user=user) or Preferences.objects.create(user=user)
+    error_message = None
+    address_senator = None
+    address_representative = None
+    if preferences.sen_from_address and preferences.rep_from_address:
+        address_senator = json.loads(preferences.sen_from_address)
+        address_representative = json.loads(preferences.rep_from_address)
+        if address_senator['name'] == 'none found':
+            error_message = 'No senators could be found for your query: Please make sure you have entered a valid FL address'
+
     if request.method == 'POST':
         with transaction.atomic():
             PersonFollow.objects.filter(user=user).delete()
@@ -67,26 +78,8 @@ def user_preferences(request):
                 LocationFollow.objects.create(user=user, location=location)
             for subject in request.POST.getlist('subjects'):
                 TopicFollow.objects.create(user=user, topic=subject)
+
         return redirect('.')
-
-    prefernces = get_object_or_404(Preferences, user=user) or Preferences.objects.create(user=user)
-
-    address = prefernces.address
-    address_senator_name = None
-    address_senator_url = None
-    address_representative_name = None
-    address_representative_url = None
-    error_message = None
-
-    if request.session.get('error_message'):
-        error_message = request.session['error_message']
-
-    if request.session.get('senator'):
-        address_representative_name = request.session['representative']['name']
-        address_representative_url = request.session['representative']['url']
-
-        address_senator_name = request.session['senator']['name']
-        address_senator_url = request.session['senator']['url']
 
     return render(
         request,
@@ -97,11 +90,9 @@ def user_preferences(request):
             'representatives': selected_reps,
             'locations': selected_locations,
             'subjects': selected_subjects,
-            'address': address,
-            'address_senator_name': address_senator_name,
-            'address_senator_url': address_senator_url,
-            'address_representative_url': address_representative_url,
-            'address_representative_name': address_representative_name,
+            'address': preferences.address,
+            'address_senator': address_senator,
+            'address_representative': address_representative,
             'error_message': error_message
         }
     )
@@ -119,24 +110,22 @@ def set_user_latlon(request):
         preferences.lat = float(lat)
         preferences.lon = float(lon)
         preferences.address = address
-        preferences.save()
 
         api_resp = requests.get(settings.DOMAIN + '/api/people/?latitude={}&longitude={}'.format(preferences.lat, preferences.lon)).json()
         if api_resp['count'] == 2:
             for person in api_resp['results']:
                 if 'Senators' in person['image']:
-                    address_senator_url = person['url']
-                    address_senator_name = person['name']
-                    request.session['senator'] = {'name': address_senator_name, 'url': address_senator_url}
-                    senator_id = furl.furl(person['url']).pathstr.replace('/api/', '')[:-1]
-                    PersonFollow.objects.create(user=user, person_id=senator_id)
+                    senator = {'name': person['name'], 'url': person['url'], 'id': furl.furl(person['url']).pathstr.replace('/api/', '')[:-1]}
+                    preferences.sen_from_address = json.dumps(senator)
                 else:
-                    address_representative_url = person['url']
-                    address_representative_name = person['name']
-                    request.session['representative'] = {'name': address_representative_name, 'url': address_representative_url}
-                    representative_id = furl.furl(person['url']).pathstr.replace('/api/', '')[:-1]
-                    PersonFollow.objects.create(user=user, person_id=representative_id)
-            request.session['error_message'] = None
+                    representative = {'name': person['name'], 'url': person['url'], 'id': furl.furl(person['url']).pathstr.replace('/api/', '')[:-1]}
+                    preferences.rep_from_address = json.dumps(representative)
         else:
-            request.session['error_message'] = 'No matching Senators or representatives for the address entered, be sure to enter a valid FL address'
+            preferences.sen_from_address = preferences.rep_from_address = 'none found'
+
+        preferences.save()
+
+        PersonFollow.objects.create(user=user, person_id=senator['id'])
+        PersonFollow.objects.create(user=user, person_id=representative['id'])
+
     return redirect('../preferences/')
