@@ -6,7 +6,7 @@ from tot import settings
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from opencivicdata.models import Person, Organization
+from opencivicdata.models import Organization
 from bills.utils import get_all_subjects, get_all_locations
 from preferences.models import PersonFollow, LocationFollow, TopicFollow, Preferences
 from registration.backends.default.views import RegistrationView
@@ -20,12 +20,11 @@ def _get_current_people(position):
         return Organization.objects.get(name='Florida House of Representatives').get_current_members()
 
 
-def _mark_selected(items, items_followed, from_location=False):
+def _mark_selected(items, items_followed):
     selected_items = []
     for item in items:
         item_dict = {}
         item_dict['item'] = item
-        item_dict['from_location'] = from_location
         if item in items_followed:
             item_dict['selected'] = True
         else:
