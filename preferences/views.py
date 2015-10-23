@@ -54,7 +54,7 @@ def user_preferences(request):
     selected_subjects = _mark_selected(subjects, subjects_followed)
     selected_locations = _mark_selected(locations, locations_followed)
 
-    preferences = get_object_or_404(Preferences, user=user) or Preferences.objects.create(user=user)
+    preferences, _ = Preferences.objects.get_or_create(user=user)
     error_message = None
     address_senator = None
     address_representative = None

@@ -45,6 +45,15 @@ $(document).ready(function() {
 
     {% include "preferences/form.html" %}
 
+    <hr />
+
+    <h3> API Key </h3>
+
+    Your API Key is
+    <input readonly size="40" value="{{user.preferences.apikey}}" />.
+
+    For details on using the API visit the <a href="/api/">Tabs on Tallahassee API documentation</a>.
+
 {% endblock %}
 
 
