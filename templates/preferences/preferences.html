@@ -20,7 +20,7 @@ $(document).ready(function() {
                         lat: lat,
                         lon: lon,
                         address: address.value
-                    }, function(json_response) {
+                    }).always(function() {
                         location.reload();
                     });
                 }
