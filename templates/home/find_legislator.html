@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load staticfiles%}
+{% load staticfiles %}
 
 {% block head %}
 <script src='https://maps.googleapis.com/maps/api/js'></script>
@@ -15,7 +15,7 @@ $(document).ready(function() {
                     var latlng = results[0].geometry.location,
                             lat = latlng.lat(),
                             lon = latlng.lng();
-                    $.get('/set_user_latlon/', {
+                    $.get('../get_latlon/', {
                         user: results.name,
                         lat: lat,
                         lon: lon,
@@ -31,31 +31,11 @@ $(document).ready(function() {
 </script>
 {% endblock %}
 
-{% block title %}User Preferences{% endblock title %}
-{% block subtitle %}Enter your address to track your Senator and Representative, and select which other Senators, Representatives, locations, and subjects you'd like to follow.{% endblock subtitle %}
+{% block title %}Find Your Legislator{% endblock title %}
+{% block subtitle %}Enter an address to find your Senator and Representative{% endblock subtitle %}
 
 {% block content %}
 
-    {% include "preferences/location_form.html" %}
+{% include "preferences/location_form.html" %}
 
-    <hr/>
-
-    {% include "preferences/form.html" %}
-
-    <hr />
-
-    <h3> API Key </h3>
-
-    Your API Key is
-    <input readonly size="40" value="{{user.preferences.apikey}}" />.
-
-    For details on using the API visit the <a href="/api/">Tabs on Tallahassee API documentation</a>.
-
-{% endblock %}
-
-
-{% block bottomscript %}
-
-    $(".prefs-multiple").select2();
-
-{% endblock %}
+{% endblock content %}
