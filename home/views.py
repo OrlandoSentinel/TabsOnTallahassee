@@ -21,6 +21,11 @@ def about(request):
 def find_legislator(request):
     senator = request.session.get('sen_from_address')
     representative = request.session.get('rep_from_address')
+
+    if senator and representative:
+        senator = json.loads(senator)
+        representative = json.loads(representative)
+
     return render(
         request,
         'home/find_legislator.html',
@@ -29,8 +34,9 @@ def find_legislator(request):
 
 
 def get_latlon(request):
+    #  TODO - Thise does not actually save to the request session!!!
     request.session = {}
-    apikey = settings.app_api_key
+    apikey = 'placeholder!!!'
     if request.is_ajax():
         lat = request.GET.get('lat', '')
         lon = request.GET.get('lon', '')
@@ -51,5 +57,4 @@ def get_latlon(request):
                     request.session['rep_from_address'] = json.dumps(representative)
         else:
             request.session['sen_from_address'] = request.session['rep_from_address'] = json.dumps({'name': 'none found'})
-    import ipdb; ipdb.set_trace()
     return redirect(find_legislator)
