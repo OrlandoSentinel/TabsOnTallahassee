@@ -33,11 +33,11 @@
   sudo_user: "tot"
   notify:
     - restart django-application
-  #- name: checkout project directories
-  #  git: repo=https://github.com/jamesturk/tot.git dest=/home/tot/src/tot
-  #  sudo_user: "tot"
-  #  notify:
-  #    - restart django-application
+- name: checkout project directories
+  git: repo=https://github.com/jamesturk/tot.git dest=/home/tot/src/tot
+  sudo_user: "tot"
+  notify:
+    - restart django-application
 - name: add checkouts to python path
   lineinfile: dest=/home/tot/virt/lib/python3.4/site-packages/checkouts.pth create=yes state=present line=/home/tot/src/tot
   sudo_user: "tot"
