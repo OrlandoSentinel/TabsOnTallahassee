@@ -1,0 +1,15 @@
+[uwsgi]
+uid = tot
+gid = tot
+logto2 = /home/tot/logs/uwsgi.log
+socket = /home/tot/data/uwsgi.sock
+stats = /home/tot/data/stats.sock
+virtualenv = /home/tot/virt/
+master = true
+vacuum = true
+chmod-socket = 666
+processes = 4
+module = tot.wsgi:application
+{% for key, val in django_environment.items() %}
+env = {{key}}={{val}}
+{% endfor %}
