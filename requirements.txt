@@ -17,7 +17,7 @@ pupa==0.5.0
 markdown
 
 # needs my commits, should be in 2.0.0a3 or later
--e git://github.com/django-json-api/django-rest-framework-json-api.git#egg=drf-json-api
+-e git://github.com/django-json-api/django-rest-framework-json-api.git#egg=rest_framework_json_api
 # unreleased abandoned lib.. django/postgres object merging
 -e git://github.com/sunlightlabs/waterfall.git#egg=waterfall
 
