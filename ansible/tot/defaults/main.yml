@@ -1,0 +1,6 @@
+---
+django_environment:
+    SECRET_KEY: not-so-secret
+server_name: ""
+port: 80
+ssl_cert: ""

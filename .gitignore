@@ -63,3 +63,5 @@ target/
 */local.py
 
 .DS_Store
+
+.vagrant

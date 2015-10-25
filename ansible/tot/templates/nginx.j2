@@ -21,13 +21,9 @@ server {
 {% endif %}
 
     location / {
-        uwsgi_pass unix:///projects/{{project_name}}/data/uwsgi.sock;
+        uwsgi_pass unix:///home/tot/data/uwsgi.sock;
         include uwsgi_params;
     }
-
-{% for loc, root in nginx_locations.items() %}
-    location {{loc}} { root {{root}}; }
-{% endfor %}
 
     access_log /home/tot/logs/access.log combined;
     error_log /home/tot/logs/error.log;
