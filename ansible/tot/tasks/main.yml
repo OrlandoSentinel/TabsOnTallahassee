@@ -33,11 +33,11 @@
   sudo_user: "tot"
   notify:
     - restart django-application
-- name: checkout project directories
-  git: repo=https://github.com/jamesturk/tot.git dest=/home/tot/src/tot
-  sudo_user: "tot"
-  notify:
-    - restart django-application
+  #- name: checkout project directories
+  #  git: repo=https://github.com/jamesturk/tot.git dest=/home/tot/src/tot
+  #  sudo_user: "tot"
+  #  notify:
+  #    - restart django-application
 - name: add checkouts to python path
   lineinfile: dest=/home/tot/virt/lib/python3.4/site-packages/checkouts.pth create=yes state=present line=/home/tot/src/tot
   sudo_user: "tot"
@@ -58,15 +58,20 @@
     - restart nginx
 - name: ensure nginx is running and starts on boot
   service: name=nginx state=restarted enabled=yes
+- name: start uwsgi
+  service: name=uwsgi state=started args=tot
 - name: migrate
   command: /home/tot/virt/bin/python manage.py migrate --settings=tot.settings --noinput chdir=/home/tot/src/tot
   environment: django_environment
+- name: collectstatic
+  command: /home/tot/virt/bin/python manage.py collectstatic --settings=tot.settings --noinput chdir=/home/tot/src/tot
+  environment: django_environment
 - name: loadshapefiles
-  command: /home/tot/virt/bin/python manage.py loadshapefiles --settings=tot.settings --noinput chdir=/home/tot/src/tot
+  command: /home/tot/virt/bin/python manage.py loadshapefiles --settings=tot.settings chdir=/home/tot/src/tot
   environment: django_environment
 - name: loaddivisions
-  command: /home/tot/virt/bin/python manage.py loaddivisions --settings=tot.settings --noinput chdir=/home/tot/src/tot
+  command: /home/tot/virt/bin/python manage.py loaddivisions us --settings=tot.settings chdir=/home/tot/src/tot
   environment: django_environment
 - name: loadmappings
-  command: /home/tot/virt/bin/python manage.py loadmappings --settings=tot.settings --noinput chdir=/home/tot/src/tot
+  command: /home/tot/virt/bin/python manage.py loadmappings us --settings=tot.settings chdir=/home/tot/src/tot
   environment: django_environment
