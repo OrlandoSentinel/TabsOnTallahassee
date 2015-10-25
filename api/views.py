@@ -1,5 +1,7 @@
 import json
 from django.db.models import Q
+from django.db.models import Lookup
+from django.db.models.fields import TextField
 from rest_framework import generics
 from .serializers import (Jurisdiction, SimpleJurisdictionSerializer, FullJurisdictionSerializer,
                           Person, SimplePersonSerializer, FullPersonSerializer,
@@ -8,6 +10,24 @@ from .serializers import (Jurisdiction, SimpleJurisdictionSerializer, FullJurisd
                           Organization, SimpleOrganizationSerializer, FullOrganizationSerializer,
                           )
 from .utils import AllowFieldLimitingMixin
+
+
+@TextField.register_lookup
+class Fulltext(Lookup):
+    lookup_name = 'ftsearch'
+
+    def as_sql(self, compiler, connection):
+        """
+            this is a hack, but lets us avoid dropping to raw SQL which
+            makes combining w/ other filters impossible
+
+            a flexible implentation would be possible by looking up tsv column
+            name based on lhs
+        """
+        lhs, lhs_params = self.process_lhs(compiler, connection)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        return "tsv @@ to_tsquery('english', %s)" % (rhs), params
 
 
 class JurisdictionList(AllowFieldLimitingMixin, generics.ListAPIView):
@@ -130,6 +150,7 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
         extras = self.request.query_params.get('extras', None)
         from_org = self.request.query_params.get('from_organization', None)
         sponsor = self.request.query_params.get('sponsor', None)
+        q = self.request.query_params.get('q', None)
 
         if session:
             queryset = queryset.filter(legislative_session__identifier=session)
@@ -155,6 +176,8 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
                 queryset = queryset.filter(Q(sponsorships__name=sponsor) |
                                            Q(sponsorships__person__name=sponsor) |
                                            Q(sponsorships__organization__name=sponsor))
+        if q:
+            queryset = queryset.filter(versions__links__text__ftsearch=q).distinct()
 
         return queryset
 
