@@ -103,15 +103,11 @@ USE_L10N = True
 USE_TZ = True
 
 STATICFILES_DIRS = (
-    os.path.join(
-        os.path.dirname(__file__),
-        # '..', # up one level from the settings directory
-        'static',
-    ),
+    os.path.join(BASE_DIR, 'static'),
 )
-
-STATIC_ROOT = os.path.join('..', BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 SITE_ID = 1
 
