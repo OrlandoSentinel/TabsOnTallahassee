@@ -1,0 +1,47 @@
+[
+{
+ "model": "flatpages.flatpage",
+ "pk": 1,
+ "fields": {
+  "url": "/api/",
+  "title": "API Documentation",
+  "content": "",
+  "enable_comments": false,
+  "template_name": "api.html",
+  "registration_required": false,
+  "sites": [
+   1
+  ]
+ }
+},
+{
+ "model": "flatpages.flatpage",
+ "pk": 2,
+ "fields": {
+  "url": "/",
+  "title": "Tabs on Tallahassee",
+  "content": "",
+  "enable_comments": false,
+  "template_name": "index.html",
+  "registration_required": false,
+  "sites": [
+   1
+  ]
+ }
+},
+{
+ "model": "flatpages.flatpage",
+ "pk": 3,
+ "fields": {
+  "url": "/about/",
+  "title": "About Tabs on Tallahassee",
+  "content": "",
+  "enable_comments": false,
+  "template_name": "about.html",
+  "registration_required": false,
+  "sites": [
+   1
+  ]
+ }
+}
+]
