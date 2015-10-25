@@ -1,0 +1,5 @@
+---
+- name: restart django-application
+  service: name=uwsgi state=restarted args=tot
+- name: restart nginx
+  service: name=nginx state=restarted

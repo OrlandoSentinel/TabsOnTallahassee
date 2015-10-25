@@ -1,0 +1,28 @@
+---
+- name: Install tot
+  hosts: tot
+  user: ubuntu
+  sudo: yes
+  roles:
+    - role: common
+      hostname: api.opencivicdata.org
+      extra_packages:
+        - libpq-dev
+        - unzip
+        - gdal-bin
+    - role: common-roles/ebs
+      device_letter: l
+      volume_size: 10
+      ebs_path: /projects/api.opencivicdata.org/
+    - role: common-roles/django
+      project_name: api.opencivicdata.org
+      git_repositories:
+          - repo: "git://github.com/opencivicdata/api.opencivicdata.org.git"
+            dir: api.opencivicdata.org
+          - repo: "git://github.com/opencivicdata/imago.git"
+            dir: imago
+      wsgi_module: ocdapi.wsgi:application
+    - role: common-roles/https
+      when: deploy_type != "vagrant"
+    - role: api
+      project_name: api.opencivicdata.org
