@@ -130,6 +130,7 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     Filterable list of all Bill objects.
 
+    * **q** - full text search across all bill versions
     * **legislative_session** - bills within the session identified by this session identifier
     * **subject** - bills with given subject
     * **extras** - bills containing a superset of passed JSON
