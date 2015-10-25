@@ -1,3 +1,4 @@
+import time
 import json
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -167,6 +168,19 @@ class ApiTests(TestCase):
         resp = self._api('bills/?sponsor=ocd-person/10394057-4944-4336-830b-6c4377fc6d45')
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 4)
+
+    def test_bills_by_query(self):
+        start = time.time()
+        resp = self._api('bills/?q=election')
+        took = time.time() - start
+        self.assertEqual(resp.data['meta']['pagination']['count'], 16)
+        # if it took longer than 1 second there wasn't an index
+        self.assertLess(took, 1)
+
+    def test_bills_by_query_with_session(self):
+        # ensure that the fulltext search can be combined
+        resp = self._api('bills/?q=election&legislative_session=2015B')
+        self.assertEqual(resp.data['meta']['pagination']['count'], 3)
 
     def test_vote_list(self):
         resp = self._api('votes/?')
