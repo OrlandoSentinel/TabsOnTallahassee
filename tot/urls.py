@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
+from django.contrib.flatpages import views as flatpages_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from preferences.views import EmailRegistrationView, user_preferences, set_user_latlon
+from home.views import index, find_legislator, about, get_latlon
 from bills.views import bill_list, latest_bill_activity
-from django.contrib.flatpages import views as flatpages_views
+from preferences.views import EmailRegistrationView, user_preferences, set_user_latlon
 
 
 admin.site.site_header = 'Tabs on Tallahassee Admin'
@@ -33,10 +34,10 @@ urlpatterns = [
     url(r'^accounts/register/', EmailRegistrationView.as_view(), name='registration_register'),
     url(r'^preferences/', user_preferences, name='preferences'),
     url(r'^set_user_latlon/', set_user_latlon, name='set_user_latlon'),
-    url(r'^get_latlon/', 'home.views.get_latlon'),
-    url(r'^$', 'home.views.index'),
-    url(r'^find_legislator/', 'home.views.find_legislator'),
-    url(r'^about/', 'home.views.about'),
+    url(r'^get_latlon/', get_latlon),
+    url(r'^$', index),
+    url(r'^find_legislator/', find_legislator),
+    url(r'^about/', about),
     url(r'^bills/', bill_list, name='bills_list'),
     url(r'^latest/', latest_bill_activity, name='latest_bill_activity'),
     url(r'^admin/', include('opencivicdata.admin.urls')),
