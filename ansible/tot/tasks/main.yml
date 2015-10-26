@@ -75,3 +75,9 @@
 - name: loadmappings
   command: /home/tot/virt/bin/python manage.py loadmappings us --settings=tot.settings chdir=/home/tot/src/tot
   environment: django_environment
+
+# cron
+- name: write run-scrapers.sh
+  template: src=run-scrapers.sh dest=/home/tot/ mode="a+x"
+- name: add cron
+  cron: name="run scrapers" minute="0" hour="4,12,19" job="/home/tot/run-scrapers.sh"
