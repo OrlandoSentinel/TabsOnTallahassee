@@ -34,9 +34,7 @@ def find_legislator(request):
 
 
 def get_latlon(request):
-    #  TODO - Thise does not actually save to the request session!!!
-    request.session = {}
-    apikey = 'placeholder!!!'
+    apikey = 'placeholder'
     if request.is_ajax():
         lat = request.GET.get('lat', '')
         lon = request.GET.get('lon', '')
@@ -49,12 +47,18 @@ def get_latlon(request):
 
         if api_resp['meta']['pagination']['count'] == 2:
             for person in api_resp['data']:
+                person_dict = {
+                    'name': person['attributes']['name'],
+                    'url': person['links']['self'],
+                    'id': person['id'],
+                    'image': person['attributes']['image']
+                }
                 if 'Senators' in person['attributes']['image']:
-                    senator = {'name': person['attributes']['name'], 'url': person['links']['self'], 'id': person['id']}
-                    request.session['sen_from_address'] = json.dumps(senator)
+                    request.session['sen_from_address'] = json.dumps(person_dict)
                 else:
-                    representative = {'name': person['attributes']['name'], 'url': person['links']['self'], 'id': person['id']}
-                    request.session['rep_from_address'] = json.dumps(representative)
+                    request.session['rep_from_address'] = json.dumps(person_dict)
         else:
             request.session['sen_from_address'] = request.session['rep_from_address'] = json.dumps({'name': 'none found'})
+
+    request.session.modified = True
     return redirect(find_legislator)
