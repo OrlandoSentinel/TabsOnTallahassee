@@ -16,7 +16,7 @@ def find_legislator(request):
 
     return render(
         request,
-        'home/find_legislator.html',
+        'legislators/find_legislator.html',
         {'address_senator': senator, 'address_representative': representative, 'address': address}
     )
 
