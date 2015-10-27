@@ -5,18 +5,17 @@ import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '...'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-DOMAIN = 'http://localhost:8000'
-
-ALLOWED_HOSTS = ['*']
+if os.environ.get('DEBUG', 'true').lower() == 'false':
+    DEBUG = False
+    SECRET_KEY = os.environ['SECRET_KEY']
+    ALLOWED_HOSTS = ['*']
+    DOMAIN = 'http://localhost:8000'
+    # cached template loader?
+else:
+    DEBUG = True
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'debug-secret-key')
+    ALLOWED_HOSTS = ['*']
+    DOMAIN = 'http://localhost:8000'
 
 
 INSTALLED_APPS = [
@@ -73,14 +72,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'tot.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgis://pupa:pupa@localhost/opencivicdata')
+DATABASE_URL = os.environ.get('DATABASE_URL',
+                              'postgis://pupa:pupa@localhost/opencivicdata')
 DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
 
-
-# Password validation
-# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -101,54 +96,29 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-# Internationalization
-# https://docs.djangoproject.com/en/dev/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(
-        os.path.dirname(__file__),
-        # '..', # up one level from the settings directory
-        'static',
-    ),
+    os.path.join(BASE_DIR, 'static'),
 )
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/dev/howto/static-files/
-
-STATIC_ROOT = os.path.join('..', BASE_DIR, 'static')
-# STATIC_URL = '{}/static/'.format(DOMAIN)
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = DOMAIN + '/preferences/'
-
-ACCOUNT_ACTIVATION_DAYS = 7  # Account can be activated within 7 days
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# registration
+LOGIN_REDIRECT_URL = DOMAIN + '/preferences/'
+ACCOUNT_ACTIVATION_DAYS = 7  # Account can be activated within 7 days
 REGISTRATION_DEFAULT_FROM_EMAIL = 'tot@tot.com'
-
 REGISTRATION_AUTO_LOGIN = True
-
 INCLUDE_REGISTER_URL = False
-
-CURRENT_SESSION = '2016 Regular Session'
 
 # boundaries settings
 BOUNDARIES_SHAPEFILES_DIR = 'shapefiles'
@@ -163,6 +133,7 @@ BOUNDARY_MAPPINGS = {
                 },
 }
 
+# API stuff
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
     'PAGINATE_BY_PARAM': 'page_size',
@@ -195,3 +166,7 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken'
     'x-apikey',
 )
+
+
+# tot-specific
+CURRENT_SESSION = '2016 Regular Session'

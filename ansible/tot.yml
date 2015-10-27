@@ -1,0 +1,7 @@
+---
+- name: Install tot
+  hosts: tot
+  user: ubuntu
+  sudo: yes
+  roles:
+    - role: tot

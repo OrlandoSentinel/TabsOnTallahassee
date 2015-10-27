@@ -1,0 +1,83 @@
+---
+- name: install system packages
+  apt: pkg={{item}} update_cache=yes
+  with_items:
+      - build-essential
+      - git
+      - python-pycurl
+      - python-boto
+      - libpq-dev
+      - unzip
+      - gdal-bin
+      - python3
+      - python3-dev
+      - virtualenv
+      - uwsgi
+      - nginx
+      - uwsgi-plugin-python3
+      - libxslt-dev
+- name: make project dir
+  file: path=/home/tot state=directory
+- name: add project user
+  user: name=tot home=/home/tot shell=/bin/bash state=present
+- name: chown user directory
+  file: path=/home/tot owner=tot
+- name: add user subdirectories
+  file: path=/home/tot/{{item}} owner=tot state=directory
+  with_items:
+    - logs
+    - data
+  sudo_user: "tot"
+- name: create virtualenv
+  command: virtualenv -p python3.4 /home/tot/virt creates=/home/tot/virt
+  sudo_user: "tot"
+  notify:
+    - restart django-application
+- name: checkout project directories
+  git: repo=https://github.com/jamesturk/tot.git dest=/home/tot/src/tot
+  sudo_user: "tot"
+  notify:
+    - restart django-application
+- name: add checkouts to python path
+  lineinfile: dest=/home/tot/virt/lib/python3.4/site-packages/checkouts.pth create=yes state=present line=/home/tot/src/tot
+  sudo_user: "tot"
+- name: install requirements
+  pip: requirements=/home/tot/src/tot/requirements.txt virtualenv=/home/tot/virt/
+  sudo_user: "tot"
+  notify:
+    - restart django-application
+- name: write uwsgi template
+  template: src=uwsgi.j2 dest=/etc/uwsgi/apps-enabled/tot.ini
+  notify:
+    - restart django-application
+- name: remove nginx sites-enabled/default
+  file: path=/etc/nginx/sites-enabled/default state=absent
+- name: write nginx template
+  template: src=nginx.j2 dest=/etc/nginx/sites-enabled/tot
+  notify:
+    - restart nginx
+- name: ensure nginx is running and starts on boot
+  service: name=nginx state=restarted enabled=yes
+- name: start uwsgi
+  service: name=uwsgi state=started args=tot
+- name: migrate
+  command: /home/tot/virt/bin/python manage.py migrate --settings=tot.settings --noinput chdir=/home/tot/src/tot
+  environment: django_environment
+- name: collectstatic
+  command: /home/tot/virt/bin/python manage.py collectstatic --settings=tot.settings --noinput chdir=/home/tot/src/tot
+  environment: django_environment
+- name: loadshapefiles
+  command: /home/tot/virt/bin/python manage.py loadshapefiles --settings=tot.settings chdir=/home/tot/src/tot
+  environment: django_environment
+- name: loaddivisions
+  command: /home/tot/virt/bin/python manage.py loaddivisions us --settings=tot.settings chdir=/home/tot/src/tot
+  environment: django_environment
+- name: loadmappings
+  command: /home/tot/virt/bin/python manage.py loadmappings us --settings=tot.settings chdir=/home/tot/src/tot
+  environment: django_environment
+
+# cron
+- name: write run-scrapers.sh
+  template: src=run-scrapers.sh dest=/home/tot/ mode="a+x"
+- name: add cron
+  cron: name="run scrapers" minute="0" hour="4,12,19" job="/home/tot/run-scrapers.sh"

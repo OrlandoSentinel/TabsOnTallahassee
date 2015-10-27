@@ -10,7 +10,6 @@ from preferences.models import PersonFollow, TopicFollow, LocationFollow
 
 from opencivicdata.models import Bill, LegislativeSession
 
-current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
 all_letters = string.ascii_lowercase
 
@@ -18,6 +17,7 @@ all_letters = string.ascii_lowercase
 def bill_list(request):
     alphalist = True
     subjects = get_all_subjects()
+    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
     if request.POST.getlist('bill_subjects'):
         filter_subjects = request.POST.getlist('bill_subjects')
@@ -40,6 +40,7 @@ def bill_list(request):
 
 
 def latest_bill_activity(request):
+    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
     user = request.user
 
     if user.is_anonymous():
