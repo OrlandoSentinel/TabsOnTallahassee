@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'boundaries',
     'registration',
     'preferences',
+    'legislators',
     'api',
     'rest_framework',
     'corsheaders',
