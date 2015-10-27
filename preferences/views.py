@@ -100,7 +100,6 @@ def user_preferences(request):
 @login_required
 def set_user_latlon(request):
     user = request.user
-    request.session = {}
     if request.is_ajax():
         lat = request.GET.get('lat', '')
         lon = request.GET.get('lon', '')
@@ -118,18 +117,16 @@ def set_user_latlon(request):
         ).json()
         if api_resp['meta']['pagination']['count'] == 2:
             for person in api_resp['data']:
+                person_dict = {'name': person['attributes']['name'], 'url': person['links']['self'], 'id': person['id']}
                 if 'Senators' in person['attributes']['image']:
-                    senator = {'name': person['attributes']['name'], 'url': person['links']['self'], 'id': person['id']}
-                    preferences.sen_from_address = json.dumps(senator)
+                    preferences.sen_from_address = json.dumps(person_dict)
                 else:
-                    representative = {'name': person['attributes']['name'], 'url': person['links']['self'], 'id': person['id']}
-                    preferences.rep_from_address = json.dumps(representative)
+                    preferences.rep_from_address = json.dumps(person_dict)
+
+                PersonFollow.objects.create(user=user, person_id=person['id'])
         else:
             preferences.sen_from_address = preferences.rep_from_address = json.dumps({'name': 'none found'})
 
         preferences.save()
-
-        PersonFollow.objects.create(user=user, person_id=senator['id'])
-        PersonFollow.objects.create(user=user, person_id=representative['id'])
 
     return redirect(user_preferences)
