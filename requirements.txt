@@ -1,5 +1,6 @@
 # site
 Django==1.9b1
+django-debug-toolbar==1.4
 
 #opencivicdata-django==0.7.4
 -e git://github.com/opencivicdata/python-opencivicdata-django.git#egg=python-opencivicdata-django
