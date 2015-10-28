@@ -16,6 +16,7 @@ lxml
 pupa==0.5.0
 
 # api docs
+sphinx
 markdown
 
 # needs my commits, should be in 2.0.0a3 or later
