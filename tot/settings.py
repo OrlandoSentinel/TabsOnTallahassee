@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'corsheaders',
+    'debug_toolbar',
 ]
 
 

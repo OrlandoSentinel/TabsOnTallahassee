@@ -16,6 +16,7 @@
       - nginx
       - uwsgi-plugin-python3
       - libxslt-dev
+      - poppler-utils
 - name: make project dir
   file: path=/home/tot state=directory
 - name: add project user
