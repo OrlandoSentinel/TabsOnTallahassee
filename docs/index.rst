@@ -9,6 +9,7 @@ Contents:
    developing
    deployment
    scraping
+   admin
 
 Indices and tables
 ==================

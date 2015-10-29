@@ -54,10 +54,12 @@ A "clean" database has been created w/ the following steps::
     (tot)$ ./manage.py migrate
     (tot)$ ./manage.py loadshapefiles
     (tot)$ ./manage.py loadmappings us
+    (tot)$ ./manage.py loaddata fixtures/*.json
     (tot)$ pupa update fl people
     (tot)$ pupa update fl bills session=2015
     (tot)$ pupa update fl bills session=2015A
     (tot)$ pupa update fl bills session=2015B
+    (tot)$ pupa update fl bills session=2016
 
     # TODO: 204, 2015C, 2016
 
