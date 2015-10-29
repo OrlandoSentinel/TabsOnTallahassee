@@ -33,7 +33,6 @@ class Fulltext(Lookup):
 class JurisdictionList(AllowFieldLimitingMixin, generics.ListAPIView):
     serializer_class = SimpleJurisdictionSerializer
     full_serializer_class = FullJurisdictionSerializer
-    paginate_by = 50
 
     def get_queryset(self):
         queryset = Jurisdiction.objects.all()
@@ -64,7 +63,6 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     serializer_class = SimplePersonSerializer
     full_serializer_class = FullPersonSerializer
-    paginate_by = 50
 
     def get_queryset(self):
         queryset = Person.objects.all()
@@ -108,7 +106,6 @@ class PersonDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
 class OrganizationList(AllowFieldLimitingMixin, generics.ListAPIView):
     serializer_class = SimpleOrganizationSerializer
     full_serializer_class = FullOrganizationSerializer
-    paginate_by = 50
 
     def get_queryset(self):
         queryset = Organization.objects.all()
@@ -141,7 +138,6 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     serializer_class = SimpleBillSerializer
     full_serializer_class = FullBillSerializer
-    paginate_by = 50
 
     def get_queryset(self):
         queryset = Bill.objects.all()
@@ -208,7 +204,6 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     serializer_class = SimpleVoteSerializer
     full_serializer_class = FullVoteSerializer
-    paginate_by = 50
 
     def get_queryset(self):
         queryset = VoteEvent.objects.all()
