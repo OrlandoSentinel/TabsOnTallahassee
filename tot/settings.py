@@ -152,7 +152,15 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
+    'DEFAULT_THROTTLE_CLASSES': (
+        'api.throttling.BurstRateThrottle',
+        'api.throttling.SustainedRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'burst': '60/min',
+        'sustained': '10000/day',
+    },
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
