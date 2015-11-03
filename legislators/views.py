@@ -9,8 +9,8 @@ def find_legislator(request):
     senator = request.session.get('sen_from_address')
     representative = request.session.get('rep_from_address')
     address = request.session.get('address')
-    lat = request.session.get('lat')
-    lon = request.session.get('lon')
+    lat = request.session.get('lat') or '30.4'
+    lon = request.session.get('lon') or '-84.3'
 
     if senator and representative:
         senator = json.loads(senator)
@@ -22,8 +22,8 @@ def find_legislator(request):
             'address_senator': senator,
             'address_representative': representative,
             'address': address,
-            'lat': lat,
-            'lng': lon
+            'lat': float(lat),
+            'lng': float(lon)
         }
     )
 
