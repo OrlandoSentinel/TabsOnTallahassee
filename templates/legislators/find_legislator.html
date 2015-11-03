@@ -6,11 +6,11 @@
 <script src='{% static "js/gmaps.js" %}'></script>
 <script>
 $(document).ready(function() {
-    var map = new GMaps({
+    new GMaps({
         div: '#map',
-        lat: 38,
-        lng: -97,
-        zoom: 3
+        lat: {{ lat }},
+        lng: {{ lng }},
+        zoom: 10
     });
 
     $('#enter_location').submit(function(e){
@@ -42,7 +42,9 @@ $(document).ready(function() {
 {% block subtitle %}Enter an address to find your Senator and Representative{% endblock subtitle %}
 
 {% block content %}
-<div id="map"></div>
+<div class="row">
+    <div id="map" style="margin-left:100px;"></div>
+</div>
 
 {% include "preferences/location_form.html" %}
 
