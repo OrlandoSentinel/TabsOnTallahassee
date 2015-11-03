@@ -139,9 +139,7 @@ BOUNDARY_MAPPINGS = {
 
 # API stuff
 REST_FRAMEWORK = {
-    'PAGINATE_BY': 10,
-    'PAGINATE_BY_PARAM': 'page_size',
-    'MAX_PAGINATE_BY': 100,
+    'PAGE_SIZE': 50,
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework_json_api.pagination.PageNumberPagination',
     'URL_FIELD_NAME': 'resource_url',
@@ -156,7 +154,15 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
+    'DEFAULT_THROTTLE_CLASSES': (
+        'api.throttling.BurstRateThrottle',
+        'api.throttling.SustainedRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'burst': '60/min',
+        'sustained': '10000/day',
+    },
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
