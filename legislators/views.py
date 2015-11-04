@@ -9,6 +9,8 @@ def find_legislator(request):
     senator = request.session.get('sen_from_address')
     representative = request.session.get('rep_from_address')
     address = request.session.get('address')
+    lat = request.session.get('lat') or '30.4'
+    lon = request.session.get('lon') or '-84.3'
 
     if senator and representative:
         senator = json.loads(senator)
@@ -16,13 +18,18 @@ def find_legislator(request):
 
     return render(
         request,
-        'home/find_legislator.html',
-        {'address_senator': senator, 'address_representative': representative, 'address': address}
+        'legislators/find_legislator.html', {
+            'address_senator': senator,
+            'address_representative': representative,
+            'address': address,
+            'lat': float(lat),
+            'lng': float(lon)
+        }
     )
 
 
 def get_latlon(request):
-    apikey = 'placeholder'
+    apikey = settings.ANON_API_KEY
     if request.is_ajax():
         lat = request.GET.get('lat', '')
         lon = request.GET.get('lon', '')
@@ -49,6 +56,8 @@ def get_latlon(request):
         else:
             request.session['sen_from_address'] = request.session['rep_from_address'] = json.dumps({'name': 'none found'})
 
+    request.session['lat'] = lat
+    request.session['lon'] = lon
     request.session['address'] = address
     request.session.modified = True
     return redirect(find_legislator)

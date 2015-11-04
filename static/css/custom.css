@@ -36,3 +36,19 @@ form {
     padding-bottom: 10px;
     border-top-width: 5px;
 }
+
+#map {
+  padding-left: 10px;
+  padding-bottom: 10px;
+  display: block;
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+  -moz-box-shadow: 0px 5px 20px #ccc;
+  -webkit-box-shadow: 0px 5px 20px #CCC;
+  box-shadow: 0px 5px 20px #CCC;
+}
+
+img.legislator-image {
+  max-width: 150px;
+}

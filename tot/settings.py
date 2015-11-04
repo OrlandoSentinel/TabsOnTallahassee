@@ -17,6 +17,8 @@ else:
     ALLOWED_HOSTS = ['*']
     DOMAIN = 'http://localhost:8000'
 
+ANON_API_KEY = os.environ.get('ANON_API_KEY')
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',

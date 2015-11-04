@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 
 {% block head %}
@@ -6,6 +7,37 @@
 <script src='{% static "js/gmaps.js" %}'></script>
 <script>
 $(document).ready(function() {
+    var map = new GMaps({
+            div: '#map',
+            lat: {{ lat }},
+            lng: {{ lng }},
+            zoom: 10
+        });
+
+    map.removeMarkers();
+    map.addMarker({
+       lat: {{ lat }},
+       lng: {{ lng }}
+    });
+
+    GMaps.geolocate({
+        success: function(position) {
+            $("#locate").click(function() {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+                $.get('../get_latlon/', {
+                    // user: results.name,
+                    lat: lat,
+                    lon: lon
+                    // address: address.value
+                }).always(function() {
+                    location.reload();
+                });
+                return false;
+            });
+        }
+    });
+
     $('#enter_location').submit(function(e){
         e.preventDefault();
         GMaps.geocode({
@@ -35,6 +67,17 @@ $(document).ready(function() {
 {% block subtitle %}Enter an address to find your Senator and Representative{% endblock subtitle %}
 
 {% block content %}
+<div class="row">
+    <div id="map" style="margin-left:100px;"></div>
+</div>
+
+<form action="" method="post" id="locate">
+{% csrf_token %}
+    <div>
+        <p>Use your current location</p>
+        <input type="submit"/>
+    </div>
+</form>
 
 {% include "preferences/location_form.html" %}
 
