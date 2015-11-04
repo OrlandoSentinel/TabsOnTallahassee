@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 
 {% block head %}
@@ -17,6 +18,24 @@ $(document).ready(function() {
     map.addMarker({
        lat: {{ lat }},
        lng: {{ lng }}
+    });
+
+    GMaps.geolocate({
+        success: function(position) {
+            $("#locate").click(function() {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+                $.get('../get_latlon/', {
+                    // user: results.name,
+                    lat: lat,
+                    lon: lon
+                    // address: address.value
+                }).always(function() {
+                    location.reload();
+                });
+                return false;
+            });
+        }
     });
 
     $('#enter_location').submit(function(e){
@@ -51,6 +70,14 @@ $(document).ready(function() {
 <div class="row">
     <div id="map" style="margin-left:100px;"></div>
 </div>
+
+<form action="" method="post" id="locate">
+{% csrf_token %}
+    <div>
+        <p>Use your current location</p>
+        <input type="submit"/>
+    </div>
+</form>
 
 {% include "preferences/location_form.html" %}
 
