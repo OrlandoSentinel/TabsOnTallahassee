@@ -6,11 +6,17 @@
 <script src='{% static "js/gmaps.js" %}'></script>
 <script>
 $(document).ready(function() {
-    new GMaps({
-        div: '#map',
-        lat: {{ lat }},
-        lng: {{ lng }},
-        zoom: 10
+    var map = new GMaps({
+            div: '#map',
+            lat: {{ lat }},
+            lng: {{ lng }},
+            zoom: 10
+        });
+
+    map.removeMarkers();
+    map.addMarker({
+       lat: {{ lat }},
+       lng: {{ lng }}
     });
 
     $('#enter_location').submit(function(e){
