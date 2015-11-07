@@ -69,7 +69,6 @@ $(document).ready(function() {
 {% block content %}
 <div class="row">
     <div id="map" style="margin-left:100px;"></div>
-</div>
 
 <form action="" method="post" id="locate">
 {% csrf_token %}
@@ -78,6 +77,7 @@ $(document).ready(function() {
         <input type="submit"/>
     </div>
 </form>
+</div>
 
 {% include "preferences/location_form.html" %}
 
