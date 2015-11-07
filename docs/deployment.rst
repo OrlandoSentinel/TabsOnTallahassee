@@ -26,13 +26,63 @@ This means a homedir that looks something like::
        +-- _cache       - scraper cache directory
 
 
-Running Ansible
----------------
+EC2 Deployment
+--------------
 
-TBD
+Configure SES
+~~~~~~~~~~~~~
+
+SES should be configured to send emails to registered users.
+
+* Within the AWS Console select SES -> Identity Management -> Domains
+* Add desired domain, console will give instructions on adding DNS entries
+* After adding DNS entries domain should show up as verified, be sure to enable DKIM.
+
+Despite verification at this point you can only send emails to verified email addresses.
+
+While this will work for testing, it'll be necessary to use the console to make a support request to Amazon to remove this limitation.
 
 
-Configuration
--------------
+Create RDS instance
+~~~~~~~~~~~~~~~~~~~
+ tested with Postgres 9.4.4
 
-TBD
+Create EC2 instance
+~~~~~~~~~~~~~~~~~~~
+ tested with ami-a85629c2
+
+Set Security Groups
+~~~~~~~~~~~~~~~~~~~
+
+Suggested configuration is two groups:
+
+* tot-web - for EC2 instance(s), open to world on port 443 for HTTPS and 22 for selected IPs
+* tot-db - for DB instance(s), only open to tot-web
+
+Create Ansible Config
+~~~~~~~~~~~~~~~~~~~~~
+
+Create an ec2/ directory with the following contents:
+
+ec2/hosts::
+
+    tot ansible_ssh_host=<instance ip> ansible_ssh_user=ubuntu ansible_ssh_private_key_file=ec2/tot.pem
+
+ec2/hosts/tot.yml::
+
+    ---
+    django_environment:
+        SECRET_KEY: <random string>
+        DEBUG: false
+        DATABASE_URL: postgis://<rds username>:<rds password>@<rds host>:5432/<rds db name>
+    server_name: ""
+    port: 80
+    ssl_cert: ""
+
+TODO: SSL config
+TODO: add mail config
+
+Run Ansible Playbook
+~~~~~~~~~~~~~~~~~~~~
+
+    $ ansible-playbook tot.yml -i ec2/hosts

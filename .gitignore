@@ -65,3 +65,5 @@ target/
 .DS_Store
 
 .vagrant
+
+ansible/ec2
