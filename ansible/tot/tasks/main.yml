@@ -61,20 +61,8 @@
   service: name=nginx state=restarted enabled=yes
 - name: start uwsgi
   service: name=uwsgi state=started args=tot
-- name: migrate
-  command: /home/tot/virt/bin/python manage.py migrate --settings=tot.settings --noinput chdir=/home/tot/src/tot
-  environment: django_environment
 - name: collectstatic
   command: /home/tot/virt/bin/python manage.py collectstatic --settings=tot.settings --noinput chdir=/home/tot/src/tot
-  environment: django_environment
-- name: loadshapefiles
-  command: /home/tot/virt/bin/python manage.py loadshapefiles --settings=tot.settings chdir=/home/tot/src/tot
-  environment: django_environment
-- name: loaddivisions
-  command: /home/tot/virt/bin/python manage.py loaddivisions us --settings=tot.settings chdir=/home/tot/src/tot
-  environment: django_environment
-- name: loadmappings
-  command: /home/tot/virt/bin/python manage.py loadmappings us --settings=tot.settings chdir=/home/tot/src/tot
   environment: django_environment
 
 # cron
