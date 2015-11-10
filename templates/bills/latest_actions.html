@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for bill_detail in latest_bills %}
+
+    <div>
+
+        <p><strong>{{ bill_detail.identifier }}</strong></p>
+        <p>{{ bill_detail.title }}</p>
+        <p>
+            <span>Sponsor(s): </span>
+            {% for sponsor in bill_detail.sponsors %}
+                {{ sponsor }}
+            {% endfor %}
+        </p>
+
+        <p>Latest action: {{ bill_detail.latest_action }}</p>
+
+        <a href="../detail/{{ bill_detail.bill_id }}" class="btn btn-primary">More on this bill</a>
+
+        <hr/>
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+
+
+{% block bottomscript %}
+    $(".prefs-multiple").select2();
+
+{% endblock %}
