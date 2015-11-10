@@ -180,3 +180,6 @@ CORS_ALLOW_HEADERS = (
 
 # tot-specific
 CURRENT_SESSION = '2016 Regular Session'
+
+# Number of latest actions to display
+NUMBER_OF_LATEST_ACTIONS = 5
