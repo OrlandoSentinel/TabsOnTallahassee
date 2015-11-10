@@ -8,7 +8,7 @@ from preferences.views import _mark_selected, _get_current_people
 from bills.utils import get_all_subjects, get_all_locations
 from preferences.models import PersonFollow, TopicFollow, LocationFollow
 
-from opencivicdata.models import Bill, LegislativeSession
+from opencivicdata.models import Bill, LegislativeSession, BillAction
 
 
 all_letters = string.ascii_lowercase
@@ -36,6 +36,40 @@ def bill_list(request):
         request,
         'bills/all.html',
         {'bills': sorted_bills, 'subjects': subjects, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
+    )
+
+
+def latest_bill_actions(request):
+    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
+    latest_actions = BillAction.objects.all().select_related('bill')
+
+    latest_bills = []
+    for action in latest_actions[:settings.NUMBER_OF_LATEST_ACTIONS]:
+        bill = action.bill
+        bill_detail = {}
+        sponsorships = bill.sponsorships.values()
+
+        sponsors = []
+        for sponsor in sponsorships:
+            sponsors.append(sponsor.get('name'))
+
+        bill_detail['bill_id'] = bill.id
+        bill_detail['title'] = bill.title
+        bill_detail['sponsors'] = sponsors
+        bill_detail['identifier'] = bill.identifier
+        bill_detail['latest_action'] = action.classification
+
+        latest_bills.append(bill_detail)
+
+    context = {
+        'latest_bills': latest_bills,
+        'current_session': current_session.name
+    }
+
+    return render(
+        request,
+        'bills/latest_actions.html',
+        context
     )
 
 
@@ -122,7 +156,7 @@ def sort_bills_by_keyword(bills):
 
 def organize_bill_info(all_bills, sorter='subject'):
     bills = {}
-    for bill in all_bills:
+    for bill in all_bills[:settings.NUMBER_OF_LATEST_ACTIONS]:
         bill_detail = {}
         bill_detail['title'] = bill.title
         bill_detail['startswith'] = bill.title[0].lower()
@@ -162,6 +196,7 @@ def organize_bill_info(all_bills, sorter='subject'):
 def filter_organize_bills(topics_followed, locations_followed):
     topic_bills = []
     location_bills = []
+    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
     subj_q = Q()
     if topics_followed:
@@ -179,3 +214,13 @@ def filter_organize_bills(topics_followed, locations_followed):
     organized_locations = organize_bill_info(all_bills=location_bills, sorter='location')
 
     return organized_subjects, organized_locations
+
+
+def bill_detail(request, bill_id):
+    bill = Bill.objects.get(id=bill_id)
+
+    return render(
+        request,
+        'bills/detail.html',
+        {'bill': bill}
+    )
