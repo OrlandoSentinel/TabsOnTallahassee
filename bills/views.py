@@ -10,7 +10,6 @@ from preferences.models import PersonFollow, TopicFollow, LocationFollow
 
 from opencivicdata.models import Bill, LegislativeSession, BillAction
 
-
 all_letters = string.ascii_lowercase
 
 
@@ -159,6 +158,8 @@ def organize_bill_info(all_bills, sorter='subject'):
     for bill in all_bills[:settings.NUMBER_OF_LATEST_ACTIONS]:
         bill_detail = {}
         bill_detail['title'] = bill.title
+        bill_detail['identifier'] = bill.identifier
+        bill_detail['id'] = bill.id
         bill_detail['startswith'] = bill.title[0].lower()
         bill_detail['from_organization'] = bill.from_organization.name
         bill_detail['legislative_session'] = bill.legislative_session.name
@@ -224,6 +225,7 @@ def bill_detail(request, bill_id):
     for sponsor in sponsor_objects:
         sponsor_detail = {}
         sponsor_detail['name'] = sponsor.name
+        sponsor_detail['primary'] = sponsor.primary
         if sponsor.person:
             sponsor_detail['image'] = sponsor.person.image
             sponsor_detail['party'] = sponsor.person.memberships.organization.name
@@ -233,7 +235,13 @@ def bill_detail(request, bill_id):
 
     history = ['TO', 'DO']
     versions = bill.versions.all()
-    votes = bill.votes.all()
+
+    vote_objects = bill.votes.all()
+    votes = []
+    for vote in vote_objects:
+        vote_detail = {}
+        vote_detail['count'] = vote.counts.value
+        votes.append(vote_detail)
 
     context = {
         'identifier': bill.identifier,
