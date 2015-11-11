@@ -219,8 +219,46 @@ def filter_organize_bills(topics_followed, locations_followed):
 def bill_detail(request, bill_id):
     bill = Bill.objects.get(id=bill_id)
 
+    sponsor_objects = bill.sponsorships.all()
+    sponsors = []
+    for sponsor in sponsor_objects:
+        sponsor_detail = {}
+        sponsor_detail['name'] = sponsor.name
+        if sponsor.person:
+            sponsor_detail['image'] = sponsor.person.image
+            sponsor_detail['party'] = sponsor.person.memberships.organization.name
+            sponsor_detail['district'] = sponsor.person.memberships.organization.jurisdiction.name
+
+        sponsors.append(sponsor_detail)
+
+    history = ['TO', 'DO']
+    versions = bill.versions.all()
+    votes = bill.votes.all()
+
+    context = {
+        'identifier': bill.identifier,
+        'summary': bill.title,
+        'sponsors': sponsors,
+        'history': history,
+        'subjects': bill.subject,
+        'locations': bill.extras.get('places'),
+        'versions': versions,
+        'votes': votes
+    }
+
     return render(
         request,
         'bills/detail.html',
-        {'bill': bill}
+        context
     )
+
+    # Bill title
+    # Bill summary
+    # Bill sponsor(s) with photo, party and district represented
+    # Bill co-sponsor(s) with photo, party and district represented
+    # Bill history (pulling from the list of actions in the database James is building), pretty much the same way GovTrack does it with the timeline approach
+    # Documents related to the bill (also from database)
+    # Subjects the bill touches (also from the database)
+    # Locations the bill touches (also from the database)
+    # A way to see the text of the different versions of the bill. That information is also in the database. We like the way GovTrack does it in the history section when you click the “see changes” link and see the differences side by side.
+    # A way to view the votes taken on a bill in the House and Senate. We like the way GovTrack does it — essentially just a glorified list: https://www.govtrack.us/congress/votes/114-2015/s272
