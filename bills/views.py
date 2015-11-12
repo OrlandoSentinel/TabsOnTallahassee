@@ -13,7 +13,7 @@ from opencivicdata.models import Bill, LegislativeSession, BillAction
 all_letters = string.ascii_lowercase
 
 
-def bill_list(request):
+def bill_list_by_topic(request):
     alphalist = True
     subjects = get_all_subjects()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
@@ -35,6 +35,34 @@ def bill_list(request):
         request,
         'bills/all.html',
         {'bills': sorted_bills, 'subjects': subjects, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
+    )
+
+
+def bill_list_by_location(request):
+    ''' TODO
+    Sort bills based on Location
+    '''
+    alphalist = True
+    locations = get_all_locations()
+    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
+
+    if request.POST.getlist('bill_locations'):
+        filter_locations = request.POST.getlist('bill_locations')
+        all_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=filter_locations).order_by("title")
+    else:
+        filter_locations = []
+        all_bills = Bill.objects.filter(legislative_session=current_session).order_by("title")
+
+    locations = _mark_selected(locations, filter_locations)
+
+    bills = organize_bill_info(all_bills=all_bills, sorter='location')
+
+    sorted_bills = sort_bills_by_keyword(bills)
+
+    return render(
+        request,
+        'bills/all.html',
+        {'bills': sorted_bills, 'locations': locations, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
     )
 
 
@@ -260,6 +288,7 @@ def bill_detail(request, bill_id):
         context
     )
 
+    # If there's no information then have a message that says no information for now
     # Bill title
     # Bill summary
     # Bill sponsor(s) with photo, party and district represented
