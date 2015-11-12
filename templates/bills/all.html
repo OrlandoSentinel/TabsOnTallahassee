@@ -46,8 +46,7 @@
                 <p class="lead"><strong>{{ billlist.name }}</strong></p>
                     {% for bill in billlist.bills %}
                     <div>
-                        <p><a href='../detail/{{ bill.id }}'> {{ bill.identifier }} </a></p>
-                        <p>{{ bill.title }} </p>
+                        <p><a href='../detail/{{ bill.id }}'> {{ bill.identifier }} </a> - {{ bill.title }} </p>
                     </div>
                     {% endfor %}
                 {% endfor %}
