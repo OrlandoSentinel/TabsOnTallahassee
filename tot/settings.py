@@ -10,6 +10,10 @@ if os.environ.get('DEBUG', 'true').lower() == 'false':
     SECRET_KEY = os.environ['SECRET_KEY']
     ALLOWED_HOSTS = ['*']
     DOMAIN = 'http://localhost:8000'
+    # enable once SSL is ready
+    #SECURE_SSL_REDIRECT = True
+    #CSRF_COOKIE_SECURE = True
+    #SESSION_COOKIE_SECURE = True
     # cached template loader?
 else:
     DEBUG = True
@@ -177,6 +181,11 @@ CORS_ALLOW_HEADERS = (
     'x-apikey',
 )
 
+# security check settings
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+CSRF_COOKIE_HTTPONLY = True
+X_FRAME_OPTIONS = 'DENY'
 
 # tot-specific
 CURRENT_SESSION = '2016 Regular Session'
