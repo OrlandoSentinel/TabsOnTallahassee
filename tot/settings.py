@@ -8,6 +8,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if os.environ.get('DEBUG', 'true').lower() == 'false':
     DEBUG = False
     SECRET_KEY = os.environ['SECRET_KEY']
+    # ADMINS list should be 'Name Email, Name Email, Name Email...'
+    ADMINS = [a.rsplit(' ', 1) for a in os.environ.get('ADMINS', '').split(',')]
     ALLOWED_HOSTS = ['*']
     DOMAIN = 'http://localhost:8000'
     # enable once SSL is ready
