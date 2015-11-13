@@ -19,9 +19,10 @@ if os.environ.get('DEBUG', 'true').lower() == 'false':
     EMAIL_USE_TLS = True
     DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
     # enable once SSL is ready
+    #SECURE_HSTS_SECONDS = 3600
     #SECURE_SSL_REDIRECT = True
-    #CSRF_COOKIE_SECURE = True
     #SESSION_COOKIE_SECURE = True
+    #CSRF_COOKIE_SECURE = True
     # cached template loader?
 else:
     DEBUG = True
