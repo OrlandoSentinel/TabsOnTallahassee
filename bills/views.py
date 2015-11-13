@@ -39,15 +39,14 @@ def bill_list_by_topic(request):
 
 
 def bill_list_by_location(request):
-    ''' TODO
-    Sort bills based on Location
+    '''Sort bills based on Location
     '''
     alphalist = True
     locations = get_all_locations()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
-    if request.POST.getlist('bill_locations'):
-        filter_locations = request.POST.getlist('bill_locations')
+    if request.POST.getlist('bill_sorters'):
+        filter_locations = request.POST.getlist('bill_sorters')
         all_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=filter_locations).order_by("title")
     else:
         filter_locations = []

@@ -207,4 +207,4 @@ X_FRAME_OPTIONS = 'DENY'
 CURRENT_SESSION = '2016 Regular Session'
 
 # Number of latest actions to display
-NUMBER_OF_LATEST_ACTIONS = 5
+NUMBER_OF_LATEST_ACTIONS = 20
