@@ -17,7 +17,7 @@ if os.environ.get('DEBUG', 'true').lower() == 'false':
     EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
     EMAIL_PORT = '587'
     EMAIL_USE_TLS = True
-    DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
+    REGISTRATION_DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
     # enable once SSL is ready
     #SECURE_HSTS_SECONDS = 3600
     #SECURE_SSL_REDIRECT = True
@@ -30,6 +30,7 @@ else:
     ALLOWED_HOSTS = ['*']
     DOMAIN = 'http://localhost:8000'
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    REGISTRATION_DEFAULT_FROM_EMAIL = 'tot@tot.com'
 
 
 ANON_API_KEY = os.environ.get('ANON_API_KEY')
@@ -100,6 +101,7 @@ WSGI_APPLICATION = 'tot.wsgi.application'
 DATABASE_URL = os.environ.get('DATABASE_URL',
                               'postgis://pupa:pupa@localhost/opencivicdata')
 DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
+CONN_MAX_AGE = 60
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -139,7 +141,6 @@ SITE_ID = 1
 # registration
 LOGIN_REDIRECT_URL = DOMAIN + '/preferences/'
 ACCOUNT_ACTIVATION_DAYS = 7  # Account can be activated within 7 days
-REGISTRATION_DEFAULT_FROM_EMAIL = 'tot@tot.com'
 REGISTRATION_AUTO_LOGIN = True
 INCLUDE_REGISTER_URL = False
 
