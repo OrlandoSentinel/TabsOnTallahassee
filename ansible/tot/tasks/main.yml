@@ -29,6 +29,9 @@
     - logs
     - data
   sudo_user: "tot"
+- name: add env_vars for project user
+  template: src=env_vars.j2 dest=/home/tot/env_vars mode=640
+  sudo_user: "tot"
 - name: create virtualenv
   command: virtualenv -p python3.4 /home/tot/virt creates=/home/tot/virt
   sudo_user: "tot"

@@ -7,18 +7,35 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if os.environ.get('DEBUG', 'true').lower() == 'false':
     DEBUG = False
-    SECRET_KEY = os.environ['SECRET_KEY']
     ALLOWED_HOSTS = ['*']
     DOMAIN = 'http://localhost:8000'
+    SECRET_KEY = os.environ['SECRET_KEY']
+    # ADMINS list should be 'Name Email, Name Email, Name Email...'
+    ADMINS = [a.rsplit(' ', 1) for a in os.environ.get('ADMINS', '').split(',')]
+    EMAIL_HOST = os.environ['EMAIL_HOST']
+    EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+    EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+    EMAIL_PORT = '587'
+    EMAIL_USE_TLS = True
+    REGISTRATION_DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
+    # enable once SSL is ready
+    #SECURE_HSTS_SECONDS = 3600
+    #SECURE_SSL_REDIRECT = True
+    #SESSION_COOKIE_SECURE = True
+    #CSRF_COOKIE_SECURE = True
     # cached template loader?
 else:
     DEBUG = True
     SECRET_KEY = os.environ.get('SECRET_KEY', 'debug-secret-key')
     ALLOWED_HOSTS = ['*']
     DOMAIN = 'http://localhost:8000'
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    REGISTRATION_DEFAULT_FROM_EMAIL = 'tot@tot.com'
+
 
 ANON_API_KEY = os.environ.get('ANON_API_KEY')
 
+EMAIL_SUBJECT_PREFIX = '[ToT] '
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -60,13 +77,18 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': [
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
             ],
         },
     },
@@ -79,6 +101,7 @@ WSGI_APPLICATION = 'tot.wsgi.application'
 DATABASE_URL = os.environ.get('DATABASE_URL',
                               'postgis://pupa:pupa@localhost/opencivicdata')
 DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
+CONN_MAX_AGE = 60
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -115,12 +138,9 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 SITE_ID = 1
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 # registration
 LOGIN_REDIRECT_URL = DOMAIN + '/preferences/'
 ACCOUNT_ACTIVATION_DAYS = 7  # Account can be activated within 7 days
-REGISTRATION_DEFAULT_FROM_EMAIL = 'tot@tot.com'
 REGISTRATION_AUTO_LOGIN = True
 INCLUDE_REGISTER_URL = False
 
@@ -177,6 +197,11 @@ CORS_ALLOW_HEADERS = (
     'x-apikey',
 )
 
+# security check settings
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+CSRF_COOKIE_HTTPONLY = True
+X_FRAME_OPTIONS = 'DENY'
 
 # tot-specific
 CURRENT_SESSION = '2016 Regular Session'
