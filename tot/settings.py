@@ -33,7 +33,7 @@ else:
 
 ANON_API_KEY = os.environ.get('ANON_API_KEY')
 
-EMAIL_SUBJECT_PREFIX = '[ToT ]'
+EMAIL_SUBJECT_PREFIX = '[ToT] '
 
 INSTALLED_APPS = [
     'django.contrib.admin',
