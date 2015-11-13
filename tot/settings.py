@@ -7,11 +7,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if os.environ.get('DEBUG', 'true').lower() == 'false':
     DEBUG = False
+    ALLOWED_HOSTS = ['*']
+    DOMAIN = 'http://localhost:8000'
     SECRET_KEY = os.environ['SECRET_KEY']
     # ADMINS list should be 'Name Email, Name Email, Name Email...'
     ADMINS = [a.rsplit(' ', 1) for a in os.environ.get('ADMINS', '').split(',')]
-    ALLOWED_HOSTS = ['*']
-    DOMAIN = 'http://localhost:8000'
+    EMAIL_HOST = os.environ['EMAIL_HOST']
+    EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+    EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+    EMAIL_PORT = '587'
+    EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
     # enable once SSL is ready
     #SECURE_SSL_REDIRECT = True
     #CSRF_COOKIE_SECURE = True
@@ -22,9 +28,12 @@ else:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'debug-secret-key')
     ALLOWED_HOSTS = ['*']
     DOMAIN = 'http://localhost:8000'
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 ANON_API_KEY = os.environ.get('ANON_API_KEY')
 
+EMAIL_SUBJECT_PREFIX = '[ToT ]'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -126,8 +135,6 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 SITE_ID = 1
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # registration
 LOGIN_REDIRECT_URL = DOMAIN + '/preferences/'
