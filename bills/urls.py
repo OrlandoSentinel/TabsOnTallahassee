@@ -7,5 +7,5 @@ urlpatterns = [
     url(r'^by_location', views.bill_list_by_location),
     url(r'^latest_activity/', views.latest_bill_activity),
     url(r'^latest/', views.latest_bill_actions),
-    url(r'^detail/(?P<bill_id>(.*))/$', views.bill_detail, name='bill_detail'),
+    url(r'^detail/(?P<bill_session>(.*))/(?P<bill_identifier>(.*))/$', views.bill_detail, name='bill_detail'),
 ]
