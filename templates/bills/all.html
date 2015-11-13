@@ -10,20 +10,20 @@
     <div class="col-xs-12">
     {% endif %}
 
-    {% if subjects %}
+    {% if sorters %}
     <div>
         <h2>{{ current_session }}</h2>
 
 
         <form action="" method="post">
         {% csrf_token %}
-            <div> Filter by subject 
-                <select multiple name="bill_subjects" class="prefs-multiple">
-                    {% for subject in subjects %}
-                        {% if subject.selected %}
-                            <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+            <div> Filter by {{ sorter_type }} 
+                <select multiple name="bill_sorters" class="prefs-multiple">
+                    {% for sorter in sorters %}
+                        {% if sorter.selected %}
+                            <option value="{{ sorter.item }}" selected="True">{{ sorter.item }}</option>
                         {% else %}
-                            <option value="{{ subject.item }}">{{ subject.item }}</option>
+                            <option value="{{ sorter.item }}">{{ sorter.item }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
@@ -46,7 +46,7 @@
                 <p class="lead"><strong>{{ billlist.name }}</strong></p>
                     {% for bill in billlist.bills %}
                     <div>
-                        <p><a href='../detail/{{ bill.id }}'> {{ bill.identifier }} </a> - {{ bill.title }} </p>
+                        <p><a href='../detail/{{ bill.session }}/{{ bill.identifier }}'> {{ bill.identifier }} </a> - {{ bill.title }} </p>
                     </div>
                     {% endfor %}
                 {% endfor %}
