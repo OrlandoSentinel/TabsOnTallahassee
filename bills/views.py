@@ -18,8 +18,8 @@ def bill_list_by_topic(request):
     subjects = get_all_subjects()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
-    if request.POST.getlist('bill_subjects'):
-        filter_subjects = request.POST.getlist('bill_subjects')
+    if request.POST.getlist('bill_sorters'):
+        filter_subjects = request.POST.getlist('bill_sorters')
         all_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=filter_subjects).order_by("title")
     else:
         filter_subjects = []
@@ -34,7 +34,7 @@ def bill_list_by_topic(request):
     return render(
         request,
         'bills/all.html',
-        {'bills': sorted_bills, 'subjects': subjects, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
+        {'bills': sorted_bills, 'sorter_type': 'subject', 'sorters': subjects, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
     )
 
 
@@ -62,7 +62,7 @@ def bill_list_by_location(request):
     return render(
         request,
         'bills/all.html',
-        {'bills': sorted_bills, 'locations': locations, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
+        {'bills': sorted_bills, 'sorter_type': 'location', 'sorters': locations, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
     )
 
 
@@ -191,6 +191,7 @@ def organize_bill_info(all_bills, sorter='subject'):
         bill_detail['startswith'] = bill.title[0].lower()
         bill_detail['from_organization'] = bill.from_organization.name
         bill_detail['legislative_session'] = bill.legislative_session.name
+        bill_detail['session'] = bill.legislative_session
         bill_detail['subject'] = bill.subject
         bill_detail['actions'] = []
         bill_detail['sponsorships'] = []
@@ -245,8 +246,8 @@ def filter_organize_bills(topics_followed, locations_followed):
     return organized_subjects, organized_locations
 
 
-def bill_detail(request, bill_id):
-    bill = Bill.objects.get(id=bill_id)
+def bill_detail(request, bill_session, bill_identifier):
+    bill = Bill.objects.get(legislative_session=bill_session, identifier=bill_identifier)
 
     sponsor_objects = bill.sponsorships.all()
     sponsors = []
