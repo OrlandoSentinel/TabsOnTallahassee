@@ -27,7 +27,7 @@ def bill_list_by_topic(request):
 
     subjects = _mark_selected(subjects, filter_subjects)
 
-    bills = organize_bill_info(all_bills=all_bills, sorter='subject')
+    bills = organize_basic_bill_info(all_bills=all_bills, sorter='subject')
 
     sorted_bills = sort_bills_by_keyword(bills)
 
@@ -54,7 +54,7 @@ def bill_list_by_location(request):
 
     locations = _mark_selected(locations, filter_locations)
 
-    bills = organize_bill_info(all_bills=all_bills, sorter='location')
+    bills = organize_basic_bill_info(all_bills=all_bills, sorter='location')
 
     sorted_bills = sort_bills_by_keyword(bills)
 
@@ -100,10 +100,18 @@ def latest_bill_actions(request):
 
 
 def latest_bill_activity(request):
+    ''' List the latest bill activity for both anonymous and logged in users.
+    Logged in will be based on user preferences.
+    Anonymous can add filters or jump to an unfiltered list.
+    '''
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
     user = request.user
 
     if user.is_anonymous():
+        ''' If the user isn't logged in, give them two options. One to add
+        some filters, the other to jump right to latest news.
+        Use the request session to store those prefs temporarially
+        '''
         senators = _get_current_people(position='senator')
         representatives = _get_current_people(position='representative')
         locations = get_all_locations()
@@ -128,6 +136,7 @@ def latest_bill_activity(request):
         marked_locations = _mark_selected(locations, request.session['filters']['locations'])
         marked_subjects = _mark_selected(subjects, request.session['filters']['subjects'])
 
+        # A check to see if there are filters - if this is '' then will evaluate to false
         filters_exist = ''.join([value for key, value in request.session['filters'].items()][0])
 
         if filters_exist:
@@ -138,7 +147,7 @@ def latest_bill_activity(request):
             bills = organized_subjects.copy()
             bills.update(organized_locations)
         else:
-            bills = organize_bill_info(Bill.objects.filter(legislative_session=current_session))
+            bills = organize_basic_bill_info(Bill.objects.filter(legislative_session=current_session))
 
         sorted_bills = sort_bills_by_keyword(bills)
 
@@ -153,7 +162,10 @@ def latest_bill_activity(request):
         }
 
     else:
-        # people_followed = PersonFollow.objects.filter(user=user)
+        ''' If the user is logged in, then allow them to add some filters
+        to the latest bill page
+        '''
+        # people_followed = PersonFollow.objects.filter(user=user)  #  TODO -- add followed legislators to this
         topics_followed = [item.topic for item in TopicFollow.objects.filter(user=user)]
         locations_followed = [item.location for item in LocationFollow.objects.filter(user=user)]
 
@@ -180,7 +192,7 @@ def sort_bills_by_keyword(bills):
     return sorted(real_bills, key=lambda x: x["name"])
 
 
-def organize_bill_info(all_bills, sorter='subject'):
+def organize_basic_bill_info(all_bills, sorter='subject'):
     bills = {}
     for bill in all_bills[:settings.NUMBER_OF_LATEST_ACTIONS]:
         bill_detail = {}
@@ -188,23 +200,9 @@ def organize_bill_info(all_bills, sorter='subject'):
         bill_detail['identifier'] = bill.identifier
         bill_detail['id'] = bill.id
         bill_detail['startswith'] = bill.title[0].lower()
-        bill_detail['from_organization'] = bill.from_organization.name
-        bill_detail['legislative_session'] = bill.legislative_session.name
-        bill_detail['session'] = bill.legislative_session
+
         bill_detail['subject'] = bill.subject
-        bill_detail['actions'] = []
-        bill_detail['sponsorships'] = []
         bill_detail['locations'] = bill.extras['places']
-
-        for action in bill.actions.all():
-            bill_detail['actions'].append({'description': action.description, 'date': action.date})
-
-        for sponsorship in bill.sponsorships.all():
-            bill_detail['sponsorships'].append({
-                'sponsor': sponsorship.name,
-                'id': sponsorship.id,
-                'primary': sponsorship.primary
-            })
 
         if sorter == 'subject':
             for subject in bill.subject:
@@ -223,6 +221,10 @@ def organize_bill_info(all_bills, sorter='subject'):
 
 
 def filter_organize_bills(topics_followed, locations_followed):
+    ''' Takes a list of topics you follow and locations you follow, and filters
+    a bill set based on those topics and locations.
+    Returns a tuple with those querysets of bills.
+    '''
     topic_bills = []
     location_bills = []
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
@@ -239,8 +241,8 @@ def filter_organize_bills(topics_followed, locations_followed):
             location_q |= Q(extras__places__contains=[location])
         location_bills = Bill.objects.filter(location_q, legislative_session=current_session)
 
-    organized_subjects = organize_bill_info(topic_bills)
-    organized_locations = organize_bill_info(all_bills=location_bills, sorter='location')
+    organized_subjects = organize_basic_bill_info(topic_bills)
+    organized_locations = organize_basic_bill_info(all_bills=location_bills, sorter='location')
 
     return organized_subjects, organized_locations
 
@@ -248,9 +250,8 @@ def filter_organize_bills(topics_followed, locations_followed):
 def bill_detail(request, bill_session, bill_identifier):
     bill = Bill.objects.get(legislative_session=bill_session, identifier=bill_identifier)
 
-    sponsor_objects = bill.sponsorships.all()
     sponsors = []
-    for sponsor in sponsor_objects:
+    for sponsor in bill.sponsorships.all():
         sponsor_detail = {}
         sponsor_detail['name'] = sponsor.name
         sponsor_detail['primary'] = sponsor.primary
@@ -260,6 +261,10 @@ def bill_detail(request, bill_session, bill_identifier):
             sponsor_detail['district'] = sponsor.person.memberships.organization.jurisdiction.name
 
         sponsors.append(sponsor_detail)
+
+        actions = []
+        for action in bill.actions.all():
+            actions.append({'description': action.description, 'date': action.date})
 
     history = ['TO', 'DO']
     versions = bill.versions.all()
@@ -279,6 +284,7 @@ def bill_detail(request, bill_session, bill_identifier):
         'subjects': bill.subject,
         'locations': bill.extras.get('places'),
         'versions': versions,
+        'actions': actions,
         'votes': votes
     }
 
