@@ -4,6 +4,27 @@ import dj_database_url
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': [
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
+            ],
+        },
+    },
+]
+
 
 if os.environ.get('DEBUG', 'true').lower() == 'false':
     DEBUG = False
@@ -31,6 +52,10 @@ else:
     DOMAIN = 'http://localhost:8000'
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     REGISTRATION_DEFAULT_FROM_EMAIL = 'tot@tot.com'
+    TEMPLATES[0]['OPTIONS']['loaders'] = [
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    ]
 
 
 ANON_API_KEY = os.environ.get('ANON_API_KEY')
@@ -73,26 +98,6 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'tot.urls'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-            'loaders': [
-                ('django.template.loaders.cached.Loader', [
-                    'django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader',
-                ]),
-            ],
-        },
-    },
-]
 
 
 WSGI_APPLICATION = 'tot.wsgi.application'
