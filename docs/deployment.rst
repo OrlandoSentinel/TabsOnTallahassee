@@ -75,12 +75,16 @@ ec2/hosts/tot.yml::
         SECRET_KEY: <random string>
         DEBUG: false
         DATABASE_URL: postgis://<rds username>:<rds password>@<rds host>:5432/<rds db name>
+        ADMINS: Name email@example.com, Name 2 email2@example.com
+        EMAIL_HOST: email-smtp.us-east-1.amazonaws.com
+        EMAIL_HOST_USER: <smtp-username>
+        EMAIL_HOST_PASSWORD: <smtp-password>
+        DEFAULT_FROM_EMAIL: noreply@example.com
     server_name: ""
     port: 80
     ssl_cert: ""
 
 TODO: SSL config
-TODO: add mail config
 
 Run Ansible Playbook
 ~~~~~~~~~~~~~~~~~~~~

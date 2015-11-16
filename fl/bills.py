@@ -343,6 +343,9 @@ class UpperComVote(PDF):
                         (?:,[A-Z\s]+?)?         # Leadership has an all-caps title
                         (?:\s{2,}.*)?           # Name ends when many spaces are seen
                         ''', line).group(1)
+                # sometimes members have trailing X's from other motions in the
+                # vote sheet we aren't collecting
+                member = re.sub('(\s+X)+', '', member)
                 # Usually non-voting members won't even have a code listed
                 # Only a couple of codes indicate an actual vote:
                 # "VA" (vote after roll call) and "VC" (vote change)
