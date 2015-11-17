@@ -46,7 +46,7 @@
                 <p class="lead"><strong>{{ billlist.name }}</strong></p>
                     {% for bill in billlist.bills %}
                     <div>
-                        <p><a href='../detail/{{ bill.session }}/{{ bill.identifier }}'> {{ bill.identifier }} </a> - {{ bill.title }} </p>
+                        <p><a href="{% url 'bill_detail' bill.legislative_session_identifier bill.identifier %}" > {{ bill.identifier }} </a> - {{ bill.title }} </p>
                     </div>
                     {% endfor %}
                 {% endfor %}
