@@ -2,22 +2,22 @@
 
 {% block content %}
 
-{% for bill_detail in latest_bills %}
+{% for bill in latest_bills %}
 
     <div>
 
-        <p><strong>{{ bill_detail.identifier }}</strong></p>
-        <p>{{ bill_detail.title }}</p>
+        <p><strong>{{ bill.identifier }}</strong></p>
+        <p>{{ bill.title }}</p>
         <p>
             <span>Sponsor(s): </span>
-            {% for sponsor in bill_detail.sponsors %}
-                {{ sponsor }}
+            {% for sponsor in bill.sponsorships.all %}
+                {{ sponsor.name }}
             {% endfor %}
         </p>
 
-        <p>Latest action: {{ bill_detail.latest_action }}</p>
+        <p>Latest action: {{ bill.latest_action.description }} -  {{ bill.latest_action.date }}</p>
 
-        <a href="../detail/{{ bill_detail.bill_id }}" class="btn btn-primary">More on this bill</a>
+        <a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" class="btn btn-primary">More on this bill</a>
 
         <hr/>
     </div>
