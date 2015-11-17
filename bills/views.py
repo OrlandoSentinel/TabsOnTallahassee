@@ -1,14 +1,14 @@
 import string
 
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 
 from tot import settings
 from preferences.views import _mark_selected, _get_current_people
 from bills.utils import get_all_subjects, get_all_locations
 from preferences.models import PersonFollow, TopicFollow, LocationFollow
 
-from opencivicdata.models import Bill, LegislativeSession, BillAction
+from opencivicdata.models import Bill, LegislativeSession
 
 all_letters = string.ascii_lowercase
 
@@ -18,12 +18,17 @@ def bill_list_by_topic(request):
     subjects = get_all_subjects()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
-    if request.POST.getlist('bill_sorters'):
-        filter_subjects = request.POST.getlist('bill_sorters')
-        all_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=filter_subjects).order_by("title")
+    if request.GET.getlist('bill_subjects'):
+        filter_subjects = request.POST.getlist('bill_subjects')
+        all_bills = Bill.objects.filter(
+            legislative_session=current_session,
+            subject__contains=filter_subjects
+        ).order_by("title").prefetch_related('legislative_session')
     else:
         filter_subjects = []
-        all_bills = Bill.objects.filter(legislative_session=current_session).order_by("title")
+        all_bills = Bill.objects.filter(
+            legislative_session=current_session
+        ).order_by("title").prefetch_related('legislative_session')
 
     subjects = _mark_selected(subjects, filter_subjects)
 
@@ -34,7 +39,14 @@ def bill_list_by_topic(request):
     return render(
         request,
         'bills/all.html',
-        {'bills': sorted_bills, 'sorter_type': 'subject', 'sorters': subjects, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
+        {
+            'bills': sorted_bills,
+            'sorter_type': 'subject',
+            'sorters': subjects,
+            'current_session': current_session.name,
+            'letters': all_letters,
+            'alphalist': alphalist
+        }
     )
 
 
@@ -61,34 +73,42 @@ def bill_list_by_location(request):
     return render(
         request,
         'bills/all.html',
-        {'bills': sorted_bills, 'sorter_type': 'location', 'sorters': locations, 'current_session': current_session.name, 'letters': all_letters, 'alphalist': alphalist}
+        {
+            'bills': sorted_bills,
+            'sorter_type': 'location',
+            'sorters': locations,
+            'current_session': current_session.name,
+            'letters': all_letters,
+            'alphalist': alphalist
+        }
     )
 
 
-def latest_bill_actions(request):
+def bill_list_current_session(request):
+    ''' List of all bills for the current session.
+    Organized by latest action.
+    '''
+    # TODO - add filters for non-logged in users
+    # TODO - filter also based on logged in users preferences
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
-    latest_actions = BillAction.objects.all().select_related('bill')
 
-    latest_bills = []
-    for action in latest_actions[:settings.NUMBER_OF_LATEST_ACTIONS]:
-        bill = action.bill
-        bill_detail = {}
-        sponsorships = bill.sponsorships.values()
+    filters = {
+        'legislative_session__name': settings.CURRENT_SESSION
+    }
 
-        sponsors = []
-        for sponsor in sponsorships:
-            sponsors.append(sponsor.get('name'))
+    bills = Bill.objects.filter(**filters).order_by(
+        '-actions__date').select_related('legislative_session').prefetch_related(
+            'sponsorships', 'actions')  # [:settings.NUMBER_OF_LATEST_ACTIONS]
 
-        bill_detail['bill_id'] = bill.id
-        bill_detail['title'] = bill.title
-        bill_detail['sponsors'] = sponsors
-        bill_detail['identifier'] = bill.identifier
-        bill_detail['latest_action'] = action.classification
-
-        latest_bills.append(bill_detail)
+    # force DB query now and append latest_action to each bill
+    bills = list(bills)
+    for bill in bills:
+        # use all() so the prefetched actions can be used, could possibly impove
+        # via smarter use of Prefetch()
+        bill.latest_action = list(bill.actions.all())[-1]
 
     context = {
-        'latest_bills': latest_bills,
+        'latest_bills': bills,
         'current_session': current_session.name
     }
 
@@ -99,89 +119,39 @@ def latest_bill_actions(request):
     )
 
 
-def latest_bill_activity(request):
-    ''' List the latest bill activity for both anonymous and logged in users.
-    Logged in will be based on user preferences.
-    Anonymous can add filters or jump to an unfiltered list.
+def bill_list_latest(request):
+    ''' List of bills with a latest action for the current session.
+    Organized by latest action.
     '''
+    # TODO - add filters for non-logged in users
+    # TODO - filter also based on logged in users preferences
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
-    user = request.user
 
-    if user.is_anonymous():
-        ''' If the user isn't logged in, give them two options. One to add
-        some filters, the other to jump right to latest news.
-        Use the request session to store those prefs temporarially
-        '''
-        senators = _get_current_people(position='senator')
-        representatives = _get_current_people(position='representative')
-        locations = get_all_locations()
-        subjects = get_all_subjects()
+    filters = {
+        'legislative_session__name': settings.CURRENT_SESSION
+    }
 
-        request.session['filters'] = request.session.get('filters', {})
-        request.session['filters']['senators'] = request.session['filters'].get('senators', [])
-        request.session['filters']['representatives'] = request.session['filters'].get('representatives', [])
-        request.session['filters']['locations'] = request.session['filters'].get('locations', [])
-        request.session['filters']['subjects'] = request.session['filters'].get('subjects', [])
+    bills = Bill.objects.filter(**filters).order_by(
+        '-actions__date').select_related('legislative_session').prefetch_related(
+            'sponsorships', 'actions')[:settings.NUMBER_OF_LATEST_ACTIONS]
 
-        if request.method == 'POST':
-            request.session['filters'] = {}
-            request.session['filters']['senators'] = request.POST.getlist('senators')
-            request.session['filters']['representatives'] = request.POST.getlist('representatives')
-            request.session['filters']['locations'] = request.POST.getlist('locations')
-            request.session['filters']['subjects'] = request.POST.getlist('subjects')
-            return redirect('.')
+    # force DB query now and append latest_action to each bill
+    bills = list(bills)
+    for bill in bills:
+        # use all() so the prefetched actions can be used, could possibly impove
+        # via smarter use of Prefetch()
+        bill.latest_action = list(bill.actions.all())[-1]
 
-        marked_senators = _mark_selected(senators, request.session['filters']['senators'])
-        marked_representatives = _mark_selected(representatives, request.session['filters']['representatives'])
-        marked_locations = _mark_selected(locations, request.session['filters']['locations'])
-        marked_subjects = _mark_selected(subjects, request.session['filters']['subjects'])
+    context = {
+        'latest_bills': bills,
+        'current_session': current_session.name
+    }
 
-        # A check to see if there are filters - if this is '' then will evaluate to false
-        filters_exist = ''.join([value for key, value in request.session['filters'].items()][0])
-
-        if filters_exist:
-            organized_subjects, organized_locations = filter_organize_bills(
-                request.session['filters']['subjects'],
-                request.session['filters']['locations']
-            )
-            bills = organized_subjects.copy()
-            bills.update(organized_locations)
-        else:
-            bills = organize_basic_bill_info(Bill.objects.filter(legislative_session=current_session))
-
-        sorted_bills = sort_bills_by_keyword(bills)
-
-        context = {
-            'bills': sorted_bills,
-            'current_session': current_session.name,
-            'senators': marked_senators,
-            'representatives': marked_representatives,
-            'subjects': marked_subjects,
-            'locations': marked_locations,
-            'are_filters': filters_exist
-        }
-
-    else:
-        ''' If the user is logged in, then allow them to add some filters
-        to the latest bill page
-        '''
-        # people_followed = PersonFollow.objects.filter(user=user)  #  TODO -- add followed legislators to this
-        topics_followed = [item.topic for item in TopicFollow.objects.filter(user=user)]
-        locations_followed = [item.location for item in LocationFollow.objects.filter(user=user)]
-
-        organized_subjects, organized_locations = filter_organize_bills(topics_followed, locations_followed)
-
-        bills = organized_subjects.copy()
-        bills.update(organized_locations)
-
-        sorted_bills = sort_bills_by_keyword(bills)
-
-        context = {
-            'bills': sorted_bills,
-            'current_session': current_session.name
-        }
-
-    return render(request, 'bills/latest.html', context)
+    return render(
+        request,
+        'bills/latest_actions.html',
+        context
+    )
 
 
 def sort_bills_by_keyword(bills):
@@ -194,12 +164,13 @@ def sort_bills_by_keyword(bills):
 
 def organize_basic_bill_info(all_bills, sorter='subject'):
     bills = {}
-    for bill in all_bills[:settings.NUMBER_OF_LATEST_ACTIONS]:
+    for bill in all_bills:
         bill_detail = {}
         bill_detail['title'] = bill.title
         bill_detail['identifier'] = bill.identifier
         bill_detail['id'] = bill.id
         bill_detail['startswith'] = bill.title[0].lower()
+        bill_detail['legislative_session_identifier'] = bill.legislative_session.identifier
 
         bill_detail['subject'] = bill.subject
         bill_detail['locations'] = bill.extras['places']
@@ -248,43 +219,28 @@ def filter_organize_bills(topics_followed, locations_followed):
 
 
 def bill_detail(request, bill_session, bill_identifier):
-    bill = Bill.objects.get(legislative_session=bill_session, identifier=bill_identifier)
+    bill = Bill.objects.get(legislative_session__identifier=bill_session, identifier=bill_identifier)
 
-    sponsors = []
-    for sponsor in bill.sponsorships.all():
-        sponsor_detail = {}
-        sponsor_detail['name'] = sponsor.name
-        sponsor_detail['primary'] = sponsor.primary
-        if sponsor.person:
-            sponsor_detail['image'] = sponsor.person.image
-            sponsor_detail['party'] = sponsor.person.memberships.organization.name
-            sponsor_detail['district'] = sponsor.person.memberships.organization.jurisdiction.name
+    sponsors = bill.sponsorships.all().select_related('person', 'organization')
 
-        sponsors.append(sponsor_detail)
+    for sponsor in sponsors:
+        sponsor.party = sponsor.person.memberships.filter(
+            organization__classification='party'
+        )[0].organization.name
 
-        actions = []
-        for action in bill.actions.all():
-            actions.append({'description': action.description, 'date': action.date})
+    history = bill.actions.all()
 
-    history = ['TO', 'DO']
+    documents = bill.documents.all()
     versions = bill.versions.all()
 
-    vote_objects = bill.votes.all()
-    votes = []
-    for vote in vote_objects:
-        vote_detail = {}
-        vote_detail['count'] = vote.counts.value
-        votes.append(vote_detail)
+    votes = bill.votes.all()
 
     context = {
-        'identifier': bill.identifier,
-        'summary': bill.title,
+        'bill': bill,
         'sponsors': sponsors,
         'history': history,
-        'subjects': bill.subject,
-        'locations': bill.extras.get('places'),
+        'documents': documents,
         'versions': versions,
-        'actions': actions,
         'votes': votes
     }
 
@@ -295,11 +251,6 @@ def bill_detail(request, bill_session, bill_identifier):
     )
 
     # If there's no information then have a message that says no information for now
-    # Bill title
-    # Bill summary
-    # Bill sponsor(s) with photo, party and district represented
-    # Bill co-sponsor(s) with photo, party and district represented
-    # Bill history (pulling from the list of actions in the database James is building), pretty much the same way GovTrack does it with the timeline approach
     # Documents related to the bill (also from database)
     # Subjects the bill touches (also from the database)
     # Locations the bill touches (also from the database)
