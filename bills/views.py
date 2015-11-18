@@ -32,13 +32,15 @@ def bill_list_by_topic(request):
 
     subjects = _mark_selected(subjects, filter_subjects)
 
-    bills = add_startswith(all_bills=all_bills, sorter='subject')
+    bills = group_bills_by_sorter(all_bills=all_bills, sorter='subject')
+
+    sorted_bills = sort_bills_by_keyword(bills)
 
     return render(
         request,
         'bills/all.html',
         {
-            'bills': bills,
+            'bills': sorted_bills,
             'sorter_type': 'subject',
             'sorters': subjects,
             'current_session': current_session.name,
@@ -69,13 +71,15 @@ def bill_list_by_location(request):
 
     locations = _mark_selected(locations, filter_locations)
 
-    bills = add_startswith(all_bills=all_bills, sorter='location')
+    bills = group_bills_by_sorter(all_bills=all_bills, sorter='location')
+
+    sorted_bills = sort_bills_by_keyword(bills)
 
     return render(
         request,
         'bills/all.html',
         {
-            'bills': bills,
+            'bills': sorted_bills,
             'sorter_type': 'location',
             'sorters': locations,
             'current_session': current_session.name,
@@ -155,13 +159,45 @@ def bill_list_latest(request):
     )
 
 
-def add_startswith(all_bills, sorter='subject'):
+def group_bills_by_sorter(all_bills, sorter='subject'):
+    ''' Takes a queryset of bills.
+    Adds locations and startswith to bill object
+    Returns a dict of bills sorted by location or subject,
+    dependng on the sorter.
+    This is done to add the bill to the list for each subject and
+    location its attached to.
+    '''
+    bills = {}
     for bill in all_bills:
+        bill.locations = bill.extras['places']
         bill.startswith = bill.title[0].lower()
-        if sorter == 'location':
-            bill.location = bill.extras.get('locations')
 
-    return all_bills
+        if sorter == 'subject':
+            for subject in bill.subject:
+                if subject in bills.keys():
+                    bills[subject].append(bill)
+                else:
+                    bills[subject] = [bill]
+        if sorter == 'location':
+            for location in bill.extras['places']:
+                if location in bills.keys():
+                    bills[location].append(bill)
+                else:
+                    bills[location] = [bill]
+
+    return bills
+
+
+def sort_bills_by_keyword(bills):
+    ''' Prepare the bills to go into the view.
+    Sorts them, and makes sure there's a sorter for the template to use
+    to render the correct list
+    '''
+    real_bills = []
+    for keyword, bill_list in bills.items():
+        real_bills.append({'name': keyword, 'sorter': keyword[0].lower(), 'bills': bill_list})
+
+    return sorted(real_bills, key=lambda x: x["name"])
 
 
 def filter_organize_bills(topics_followed, locations_followed):
@@ -185,8 +221,8 @@ def filter_organize_bills(topics_followed, locations_followed):
             location_q |= Q(extras__places__contains=[location])
         location_bills = Bill.objects.filter(location_q, legislative_session=current_session)
 
-    organized_subjects = organize_basic_bill_info(topic_bills)
-    organized_locations = organize_basic_bill_info(all_bills=location_bills, sorter='location')
+    organized_subjects = group_bills_by_sorter(topic_bills)
+    organized_locations = group_bills_by_sorter(all_bills=location_bills, sorter='location')
 
     return organized_subjects, organized_locations
 

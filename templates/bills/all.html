@@ -34,24 +34,22 @@
     {% endif %}
 
         {% if bills %}
-            {% regroup bills by startswith as sorted_bill_list %}
+            {% regroup bills by sorter as sorted_bill_list %}
 
             {% for billdict in sorted_bill_list %}
-
             <div id="{{ billdict.grouper }}">
 
                 <div class="heading"><strong>{{ billdict.grouper.upper }}</strong></div>
 
-                {% regroup billdict.list by subject as sorted_bills %}
-
-                {% for billlist in sorted_bills %}
-                    <div><strong>{{ billlist.grouper }}</strong></div>
-
-                    {% for bill in billlist.list %}
+                {% for billlist in billdict.list %}
+                
+                <p class="lead"><strong>{{ billlist.name }}</strong></p>
+                    {% for bill in billlist.bills %}
+                    <div>
                         <p><a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" > {{ bill.identifier }} </a> - {{ bill.title }} </p>
+                    </div>
                     {% endfor %}
                 {% endfor %}
-
             </div>
 
             <hr/>
