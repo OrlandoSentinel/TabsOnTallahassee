@@ -108,7 +108,9 @@ class OrganizationList(AllowFieldLimitingMixin, generics.ListAPIView):
     full_serializer_class = FullOrganizationSerializer
 
     def get_queryset(self):
-        queryset = Organization.objects.all()
+        queryset = Organization.objects.all().select_related('jurisdiction',
+                                                             'parent',
+                                                             )
         return queryset
 
 
@@ -140,7 +142,7 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
     full_serializer_class = FullBillSerializer
 
     def get_queryset(self):
-        queryset = Bill.objects.all()
+        queryset = Bill.objects.all().select_related('legislative_session__jurisdiction', 'from_organization')
 
         session = self.request.query_params.get('legislative_session', None)
         subject = self.request.query_params.get('subject', None)
@@ -185,7 +187,12 @@ class BillDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
 
     Includes all fields by default, can be limited w/ ``fields`` parameter.
     """
-    queryset = Bill.objects.all()
+    queryset = Bill.objects.all().select_related('from_organization').prefetch_related(
+        'actions__organization',
+        'actions__related_entities',
+        'versions__links',
+        'documents__links',
+    )
     serializer_class = FullBillSerializer
     full_serializer_class = FullBillSerializer
 
@@ -206,7 +213,10 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
     full_serializer_class = FullVoteSerializer
 
     def get_queryset(self):
-        queryset = VoteEvent.objects.all()
+        queryset = VoteEvent.objects.all().select_related('bill__legislative_session__jurisdiction',
+                                                          'legislative_session',
+                                                          'organization'
+                                                          )
 
         voter = self.request.query_params.get('voter', None)
         option = self.request.query_params.get('option', None)
@@ -242,6 +252,6 @@ class VoteDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
 
     Includes all fields by default, can be limited w/ ``fields`` parameter.
     """
-    queryset = VoteEvent.objects.all()
+    queryset = VoteEvent.objects.all().select_related('legislative_session')
     serializer_class = FullVoteSerializer
     full_serializer_class = FullVoteSerializer

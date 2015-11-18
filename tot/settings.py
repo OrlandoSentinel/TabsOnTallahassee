@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'opencivicdata.apps.BaseConfig',
+    'pupa',
     'glossary',
     'boundaries',
     'registration',
