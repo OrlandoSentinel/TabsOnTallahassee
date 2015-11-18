@@ -61,7 +61,7 @@ def bill_list_by_location(request):
         filter_locations = request.GET.getlist('bill_sorters')
         all_bills = Bill.objects.filter(
             legislative_session=current_session,
-            subject__contains=filter_locations
+            extras__places__contains=filter_locations
         ).order_by("title").prefetch_related('legislative_session')
     else:
         filter_locations = []
@@ -82,6 +82,35 @@ def bill_list_by_location(request):
             'bills': sorted_bills,
             'sorter_type': 'location',
             'sorters': locations,
+            'current_session': current_session.name,
+            'letters': all_letters,
+            'alphalist': alphalist
+        }
+    )
+
+
+def bill_list_by_legislator(request):
+    '''Sort bills based on Legislator that's the primary sponsor
+    '''
+    alphalist = True
+    legislators = _get_current_people
+    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
+
+    all_bills = Bill.objects.filter(
+        legislative_session=current_session
+    ).order_by("title").prefetch_related('legislative_session', 'sponsorships')
+
+    bills = group_bills_by_sorter(all_bills=all_bills, sorter='legislator')
+
+    sorted_bills = sort_bills_by_keyword(bills)
+
+    return render(
+        request,
+        'bills/all.html',
+        {
+            'bills': sorted_bills,
+            'sorter_type': 'location',
+            'sorters': legislators,
             'current_session': current_session.name,
             'letters': all_letters,
             'alphalist': alphalist
@@ -174,18 +203,22 @@ def group_bills_by_sorter(all_bills, sorter='subject'):
 
         if sorter == 'subject':
             for subject in bill.subject:
-                if subject in bills.keys():
-                    bills[subject].append(bill)
-                else:
-                    bills[subject] = [bill]
-        if sorter == 'location':
+                check_add_to_dict(subject, bills, bill)
+        elif sorter == 'location':
             for location in bill.extras['places']:
-                if location in bills.keys():
-                    bills[location].append(bill)
-                else:
-                    bills[location] = [bill]
+                check_add_to_dict(location, bills, bill)
+        elif sorter == 'legislator':
+            for sponsor in bill.sponsorships.all():
+                check_add_to_dict(sponsor.name, bills, bill)
 
     return bills
+
+
+def check_add_to_dict(key, dictionary, item):
+    if key in dictionary.keys():
+        dictionary[key].append(item)
+    else:
+        dictionary[key] = [item]
 
 
 def sort_bills_by_keyword(bills):
@@ -261,7 +294,5 @@ def bill_detail(request, bill_session, bill_identifier):
 
     # If there's no information then have a message that says no information for now
     # Documents related to the bill (also from database)
-    # Subjects the bill touches (also from the database)
-    # Locations the bill touches (also from the database)
     # A way to see the text of the different versions of the bill. That information is also in the database. We like the way GovTrack does it in the history section when you click the “see changes” link and see the differences side by side.
     # A way to view the votes taken on a bill in the House and Senate. We like the way GovTrack does it — essentially just a glorified list: https://www.govtrack.us/congress/votes/114-2015/s272
