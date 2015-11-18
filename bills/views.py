@@ -19,7 +19,7 @@ def bill_list_by_topic(request):
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
     if request.GET.getlist('bill_subjects'):
-        filter_subjects = request.POST.getlist('bill_subjects')
+        filter_subjects = request.GET.getlist('bill_subjects')
         all_bills = Bill.objects.filter(
             legislative_session=current_session,
             subject__contains=filter_subjects
@@ -32,15 +32,13 @@ def bill_list_by_topic(request):
 
     subjects = _mark_selected(subjects, filter_subjects)
 
-    bills = organize_basic_bill_info(all_bills=all_bills, sorter='subject')
-
-    sorted_bills = sort_bills_by_keyword(bills)
+    bills = add_startswith(all_bills=all_bills, sorter='subject')
 
     return render(
         request,
         'bills/all.html',
         {
-            'bills': sorted_bills,
+            'bills': bills,
             'sorter_type': 'subject',
             'sorters': subjects,
             'current_session': current_session.name,
@@ -57,24 +55,27 @@ def bill_list_by_location(request):
     locations = get_all_locations()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
-    if request.POST.getlist('bill_sorters'):
-        filter_locations = request.POST.getlist('bill_sorters')
-        all_bills = Bill.objects.filter(legislative_session=current_session, subject__contains=filter_locations).order_by("title")
+    if request.GET.getlist('bill_sorters'):
+        filter_locations = request.GET.getlist('bill_sorters')
+        all_bills = Bill.objects.filter(
+            legislative_session=current_session,
+            subject__contains=filter_locations
+        ).order_by("title").prefetch_related('legislative_session')
     else:
         filter_locations = []
-        all_bills = Bill.objects.filter(legislative_session=current_session).order_by("title")
+        all_bills = Bill.objects.filter(
+            legislative_session=current_session
+        ).order_by("title").prefetch_related('legislative_session')
 
     locations = _mark_selected(locations, filter_locations)
 
-    bills = organize_basic_bill_info(all_bills=all_bills, sorter='location')
-
-    sorted_bills = sort_bills_by_keyword(bills)
+    bills = add_startswith(all_bills=all_bills, sorter='location')
 
     return render(
         request,
         'bills/all.html',
         {
-            'bills': sorted_bills,
+            'bills': bills,
             'sorter_type': 'location',
             'sorters': locations,
             'current_session': current_session.name,
@@ -154,41 +155,13 @@ def bill_list_latest(request):
     )
 
 
-def sort_bills_by_keyword(bills):
-    real_bills = []
-    for keyword, bill_list in bills.items():
-        real_bills.append({'name': keyword, 'sorter': keyword[0].lower(), 'bills': bill_list})
-
-    return sorted(real_bills, key=lambda x: x["name"])
-
-
-def organize_basic_bill_info(all_bills, sorter='subject'):
-    bills = {}
+def add_startswith(all_bills, sorter='subject'):
     for bill in all_bills:
-        bill_detail = {}
-        bill_detail['title'] = bill.title
-        bill_detail['identifier'] = bill.identifier
-        bill_detail['id'] = bill.id
-        bill_detail['startswith'] = bill.title[0].lower()
-        bill_detail['legislative_session_identifier'] = bill.legislative_session.identifier
-
-        bill_detail['subject'] = bill.subject
-        bill_detail['locations'] = bill.extras['places']
-
-        if sorter == 'subject':
-            for subject in bill.subject:
-                if subject in bills.keys():
-                    bills[subject].append(bill_detail)
-                else:
-                    bills[subject] = [bill_detail]
+        bill.startswith = bill.title[0].lower()
         if sorter == 'location':
-            for location in bill.extras['places']:
-                if location in bills.keys():
-                    bills[location].append(bill_detail)
-                else:
-                    bills[location] = [bill_detail]
+            bill.location = bill.extras.get('locations')
 
-    return bills
+    return all_bills
 
 
 def filter_organize_bills(topics_followed, locations_followed):
