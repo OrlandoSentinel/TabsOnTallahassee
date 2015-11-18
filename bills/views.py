@@ -18,8 +18,8 @@ def bill_list_by_topic(request):
     subjects = get_all_subjects()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
-    if request.GET.getlist('bill_subjects'):
-        filter_subjects = request.GET.getlist('bill_subjects')
+    if request.GET.getlist('bill_sorters'):
+        filter_subjects = request.GET.getlist('bill_sorters')
         all_bills = Bill.objects.filter(
             legislative_session=current_session,
             subject__contains=filter_subjects
