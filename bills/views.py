@@ -1,4 +1,5 @@
 import string
+import requests
 
 from django.db.models import Q
 from django.shortcuts import render
@@ -148,9 +149,15 @@ def bill_list_current_session(request):
     else:
         filter_subjects = []
 
+    if request.GET.get('search_text'):
+        search_text = request.GET.get('search_text')
+        filters['versions__links__text__ftsearch'] = search_text
+    else:
+        search_text = ''
+
     bills = Bill.objects.filter(**filters).order_by(
         '-actions__date').select_related('legislative_session').prefetch_related(
-            'sponsorships', 'actions')  # [:settings.NUMBER_OF_LATEST_ACTIONS]
+            'sponsorships', 'actions').distinct()  # [:settings.NUMBER_OF_LATEST_ACTIONS]
 
     # force DB query now and append latest_action to each bill
     bills = list(bills)
@@ -164,7 +171,8 @@ def bill_list_current_session(request):
     context = {
         'latest_bills': bills,
         'current_session': current_session.name,
-        'subjects': subjects
+        'subjects': subjects,
+        'search_text': search_text
     }
 
     return render(
