@@ -24,7 +24,7 @@
     <form action="" method="get">
     {% csrf_token %}
         <div> Filter by Bill Text
-            <input type="text" name="search_text">
+            <input type="text" name="search_text" value="{{ search_text }}">
             <input type="submit" class="btn btn-primary" value="GO"/>
         </div>
     </form>
