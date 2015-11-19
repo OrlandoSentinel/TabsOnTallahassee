@@ -33,7 +33,7 @@
   template: src=env_vars.j2 dest=/home/tot/env_vars mode=640
   sudo_user: "tot"
 - name: create virtualenv
-  command: virtualenv -p python3.4 /home/tot/virt creates=/home/tot/virt
+  command: virtualenv -p python3.4 /home/tot/virt{{ ansible_date_time.date }}-{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }}
   sudo_user: "tot"
   notify:
     - restart django-application
@@ -43,13 +43,15 @@
   notify:
     - restart django-application
 - name: add checkouts to python path
-  lineinfile: dest=/home/tot/virt/lib/python3.4/site-packages/checkouts.pth create=yes state=present line=/home/tot/src/tot
+  lineinfile: dest=/home/tot/virt{{ansible_date_time.date }}-{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }}/lib/python3.4/site-packages/checkouts.pth create=yes state=present line=/home/tot/src/tot
   sudo_user: "tot"
 - name: install requirements
-  pip: requirements=/home/tot/src/tot/requirements.txt virtualenv=/home/tot/virt/
+  pip: requirements=/home/tot/src/tot/requirements.txt virtualenv=/home/tot/virt{{ansible_date_time.date }}-{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }}
   sudo_user: "tot"
   notify:
     - restart django-application
+- name: link virtualenv
+  file: src=/home/tot/virt{{ ansible_date_time.date }}-{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }} dest=/home/tot/virt state=link
 - name: write uwsgi template
   template: src=uwsgi.j2 dest=/etc/uwsgi/apps-enabled/tot.ini
   notify:
