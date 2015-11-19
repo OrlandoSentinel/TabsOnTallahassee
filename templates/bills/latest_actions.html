@@ -2,9 +2,8 @@
 
 {% block content %}
 
+<h2>{{ current_session }}</h2>
 <div>
-    <h2>{{ current_session }}</h2>
-
     <form action="" method="get">
     {% csrf_token %}
         <div> Filter by Subject
@@ -17,7 +16,16 @@
                     {% endif %}
                 {% endfor %}
             </select>
-            <input type="submit"/>
+            <input type="submit" class="btn btn-primary" value="GO"/>
+        </div>
+    </form>
+</div>
+<div>
+    <form action="" method="get">
+    {% csrf_token %}
+        <div> Filter by Bill Text
+            <input type="text" name="search_text">
+            <input type="submit" class="btn btn-primary" value="GO"/>
         </div>
     </form>
 </div>
