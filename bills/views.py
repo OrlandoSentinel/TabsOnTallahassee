@@ -10,7 +10,7 @@ from preferences.models import PersonFollow, TopicFollow, LocationFollow
 
 from opencivicdata.models import Bill, LegislativeSession
 
-all_letters = string.ascii_lowercase
+ALL_LETTERS = string.ascii_lowercase
 
 
 def bill_list_by_topic(request):
@@ -44,7 +44,7 @@ def bill_list_by_topic(request):
             'sorter_type': 'subject',
             'sorters': subjects,
             'current_session': current_session.name,
-            'letters': all_letters,
+            'letters': ALL_LETTERS,
             'alphalist': alphalist
         }
     )
@@ -83,7 +83,7 @@ def bill_list_by_location(request):
             'sorter_type': 'location',
             'sorters': locations,
             'current_session': current_session.name,
-            'letters': all_letters,
+            'letters': ALL_LETTERS,
             'alphalist': alphalist
         }
     )
@@ -125,7 +125,7 @@ def bill_list_by_legislator(request):
             'sorter_type': 'legislator',
             'sorters': legislators,
             'current_session': current_session.name,
-            'letters': all_letters,
+            'letters': ALL_LETTERS,
             'alphalist': alphalist
         }
     )
@@ -136,10 +136,17 @@ def bill_list_current_session(request):
     Organized by latest action.
     '''
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
+    subjects = get_all_subjects()
 
     filters = {
         'legislative_session__name': settings.CURRENT_SESSION
     }
+
+    if request.GET.getlist('subjects'):
+        filter_subjects = request.GET.getlist('subjects')
+        filters['subject__contains'] = filter_subjects
+    else:
+        filter_subjects = []
 
     bills = Bill.objects.filter(**filters).order_by(
         '-actions__date').select_related('legislative_session').prefetch_related(
@@ -152,9 +159,12 @@ def bill_list_current_session(request):
         # via smarter use of Prefetch()
         bill.latest_action = list(bill.actions.all())[-1]
 
+    subjects = _mark_selected(subjects, filter_subjects)
+
     context = {
         'latest_bills': bills,
-        'current_session': current_session.name
+        'current_session': current_session.name,
+        'subjects': subjects
     }
 
     return render(
