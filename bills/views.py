@@ -93,12 +93,25 @@ def bill_list_by_legislator(request):
     '''Sort bills based on Legislator that's the primary sponsor
     '''
     alphalist = True
-    legislators = _get_current_people
+    legislators = list(_get_current_people(position='senator'))
+    legislators += list(_get_current_people(position='representative'))
+    legislators = [person.name for person in legislators]
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
-    all_bills = Bill.objects.filter(
-        legislative_session=current_session
-    ).order_by("title").prefetch_related('legislative_session', 'sponsorships')
+    if request.GET.getlist('bill_sorters'):
+        filter_whole_legislators = request.GET.getlist('bill_sorters')
+        filter_legislators = [name.split(',')[0].strip() for name in filter_whole_legislators]
+        all_bills = Bill.objects.filter(
+            legislative_session=current_session,
+            sponsorships__name__in=filter_legislators
+        ).order_by("title").prefetch_related('legislative_session')
+    else:
+        filter_whole_legislators = []
+        all_bills = Bill.objects.filter(
+            legislative_session=current_session
+        ).order_by("title").prefetch_related('legislative_session', 'sponsorships')
+
+    legislators = _mark_selected(legislators, filter_whole_legislators)
 
     bills = group_bills_by_sorter(all_bills=all_bills, sorter='legislator')
 
@@ -109,7 +122,7 @@ def bill_list_by_legislator(request):
         'bills/all.html',
         {
             'bills': sorted_bills,
-            'sorter_type': 'location',
+            'sorter_type': 'legislator',
             'sorters': legislators,
             'current_session': current_session.name,
             'letters': all_letters,
@@ -122,8 +135,6 @@ def bill_list_current_session(request):
     ''' List of all bills for the current session.
     Organized by latest action.
     '''
-    # TODO - add filters for non-logged in users
-    # TODO - filter also based on logged in users preferences
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
     filters = {
