@@ -160,7 +160,9 @@ def bill_list_current_session(request):
             'sponsorships', 'actions').distinct()  # [:settings.NUMBER_OF_LATEST_ACTIONS]
 
     # force DB query now and append latest_action to each bill
-    bills = list(bills)
+    # set is called first to remove duplicates - distinct does not work above because
+    # of the 'order-by' paramater - that adds a field and causes distinct to not work as expected
+    bills = set(bills)
     for bill in bills:
         # use all() so the prefetched actions can be used, could possibly impove
         # via smarter use of Prefetch()
