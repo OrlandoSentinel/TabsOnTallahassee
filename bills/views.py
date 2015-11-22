@@ -143,17 +143,16 @@ def bill_list_current_session(request):
         'legislative_session__name': settings.CURRENT_SESSION
     }
 
+    filter_subjects = []
+    search_text = ''
+
     if request.GET.getlist('subjects'):
         filter_subjects = request.GET.getlist('subjects')
         filters['subject__contains'] = filter_subjects
-    else:
-        filter_subjects = []
 
     if request.GET.get('search_text'):
         search_text = request.GET.get('search_text')
         filters['versions__links__text__ftsearch'] = search_text
-    else:
-        search_text = ''
 
     bills = Bill.objects.filter(**filters).order_by(
         '-actions__date').select_related('legislative_session').prefetch_related(
