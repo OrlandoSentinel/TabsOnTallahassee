@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{ current_session }}</h2>
+<div>
+    <form action="" method="get">
+    {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div>Filter by Subject
+                    <select multiple name="subjects" class="prefs-multiple">
+                        {% for subject in subjects %}
+                            {% if subject.selected %}
+                                <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+                            {% else %}
+                                <option value="{{ subject.item }}">{{ subject.item }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12">Filter by bill text
+                <input type="text" name="search_text" value="{{ search_text }}">
+            </div>
+            <div class="col-sm-12">
+                <input type="submit" class="btn btn-primary btn-lg" value="GO"/>
+            </div>
+        </div>
+    </form>
+</div>
+
+<hr/>
+
+
+{% if latest_bills %}
+    {% for bill in latest_bills %}
+        <div>
+
+            <p><strong>{{ bill.identifier }}</strong></p>
+            <p>{{ bill.title }}</p>
+            <p>
+                <span>Sponsor(s): </span>
+                {% for sponsor in bill.sponsorships.all %}
+                    {{ sponsor.name }}
+                {% endfor %}
+            </p>
+
+            <p>Latest action: {{ bill.latest_action.description }} -  {{ bill.latest_action.date }}</p>
+
+            <a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" class="btn btn-primary">More on this bill</a>
+
+            <hr/>
+        </div>
+    {% endfor %}
+{% else %}
+    <div>
+        <p class="lead">No results for this query</p>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+{% block bottomscript %}
+    $(".prefs-multiple").select2();
+{% endblock %}

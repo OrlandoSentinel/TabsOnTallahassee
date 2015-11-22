@@ -178,7 +178,7 @@ def bill_list_current_session(request):
 
     return render(
         request,
-        'bills/latest_actions.html',
+        'bills/current_session.html',
         context
     )
 
