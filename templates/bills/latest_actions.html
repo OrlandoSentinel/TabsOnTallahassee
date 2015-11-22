@@ -2,7 +2,9 @@
 
 {% block content %}
 
-<h2>{{ current_session }}</h2>
+<h2>Latest Bill Activity</h2>
+
+{% if user.is_anonymous %}
 <div>
     <form action="" method="get">
     {% csrf_token %}
@@ -29,33 +31,53 @@
         </div>
     </form>
 </div>
+{% else %}
+    <p>Based on your <a href="{% url 'preferences' %}">user preferences</a></p>
+{% endif %}
+
 
 <hr/>
 
 
-{% if latest_bills %}
-    {% for bill in latest_bills %}
+{% if bills_by_selected_filter %}
+    {% for entry in bills_by_selected_filter %}
+
+        <div>
+            <p>Latest bill activity:</p>
+            <span>
+                <strong>{{ entry.heading|title }}</strong>
+                <br/>__________________
+            </span>
         <div>
 
-            <p><strong>{{ bill.identifier }}</strong></p>
-            <p>{{ bill.title }}</p>
-            <p>
-                <span>Sponsor(s): </span>
-                {% for sponsor in bill.sponsorships.all %}
-                    {{ sponsor.name }}
-                {% endfor %}
-            </p>
+        {% if entry.bills %}
+            {% for bill in entry.bills %}
+            <div class="individual_bill">
+                <p><strong>{{ bill.identifier }}</strong></p>
+                <p>{{ bill.title }}</p>
+                <p>
+                    <span>Sponsor(s): </span>
+                    {% for sponsor in bill.sponsorships.all %}
+                        {{ sponsor.name }}
+                    {% endfor %}
+                </p>
 
-            <p>Latest action: {{ bill.latest_action.description }} -  {{ bill.latest_action.date }}</p>
+                <p>Latest action: {{ bill.latest_action.description }} -  {{ bill.latest_action.date }}</p>
 
-            <a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" class="btn btn-primary">More on this bill</a>
-
+                <a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" class="btn btn-primary">More on this bill</a>
+                <br/>
+                <br/>
+            </div>
+            {% endfor %}
             <hr/>
-        </div>
+        {% else %}
+            <div>No recent activity</div>
+            <hr/>
+        {% endif %}
     {% endfor %}
 {% else %}
     <div>
-        <p class="lead">No results for this query</p>
+        <p class="lead">No Preferences selected</p>
     </div>
 {% endif %}
 
