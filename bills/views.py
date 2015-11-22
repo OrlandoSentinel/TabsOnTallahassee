@@ -4,12 +4,14 @@ import requests
 from django.db.models import Q
 from django.shortcuts import render
 
+from django.contrib.auth.models import User
+
 from tot import settings
 from preferences.views import _mark_selected, _get_current_people
 from bills.utils import get_all_subjects, get_all_locations
 from preferences.models import PersonFollow, TopicFollow, LocationFollow
 
-from opencivicdata.models import Bill, LegislativeSession
+from opencivicdata.models import Bill, LegislativeSession, Person
 
 ALL_LETTERS = string.ascii_lowercase
 
@@ -183,31 +185,67 @@ def bill_list_current_session(request):
     )
 
 
+def get_user_preferences(user):
+    user = User.objects.get(username=user)
+
+    person_follows = [person['person_id'] for person in user.person_follows.values()]
+    topic_follows = [topic['topic'] for topic in user.topic_follows.values()]
+    location_follows = [location['location'] for location in user.location_follows.values()]
+
+    return person_follows, topic_follows, location_follows
+
+
 def bill_list_latest(request):
-    ''' List of bills with a latest action for the current session.
-    Organized by latest action.
+    ''' List of bills with a latest action for the current session, based on preferences.
+    Organized by topic, legislator, topic, and then by latest action.
     '''
+    user = request.user
+
     # TODO - add filters for non-logged in users
-    # TODO - filter also based on logged in users preferences
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
     filters = {
         'legislative_session__name': settings.CURRENT_SESSION
     }
 
-    bills = Bill.objects.filter(**filters).order_by(
+    all_bills = Bill.objects.filter(**filters).order_by(
         '-actions__date').select_related('legislative_session').prefetch_related(
-            'sponsorships', 'actions')[:settings.NUMBER_OF_LATEST_ACTIONS]
+            'sponsorships', 'actions')
 
-    # force DB query now and append latest_action to each bill
-    bills = list(bills)
-    for bill in bills:
+    # This will be a list of dicts.
+    # There will be one entry for each of the topics, locations,legislators followed.
+    bills_by_selected_filter = []
+
+    if not user.is_anonymous():
+        people, topics, locations = get_user_preferences(user)
+
+        if people:
+            for person in people:
+                person_name = Person.objects.get(id=person).name
+                person_bills = all_bills.filter(sponsorships__id__contains=person)[:settings.NUMBER_OF_LATEST_ACTIONS]
+                person_detail = {'heading': person_name, 'bills': person_bills}
+                bills_by_selected_filter.append(person_detail)
+        if topics:
+            for topic in topics:
+                topic_bills = all_bills.filter(subject__contains=[topic])[:settings.NUMBER_OF_LATEST_ACTIONS]
+                topic_detail = {'heading': topic, 'bills': topic_bills}
+                bills_by_selected_filter.append(topic_detail)
+
+        # if locations:
+        #     for location in locations:
+        #         location_bills = all_bills.filter(extras__places__contains=location)
+        #         location_detail = {'heading': location, 'bills': location_bills}
+        #         bills_by_selected_filter.append(location_detail)
+
+    for item in bills_by_selected_filter:
+        for bill in item['bills']:
         # use all() so the prefetched actions can be used, could possibly impove
         # via smarter use of Prefetch()
-        bill.latest_action = list(bill.actions.all())[-1]
+            bill.latest_action = list(bill.actions.all())[-1]
 
     context = {
-        'latest_bills': bills,
+        'user': user,
+        'bills_by_selected_filter': bills_by_selected_filter,
         'current_session': current_session.name
     }
 
