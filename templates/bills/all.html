@@ -3,31 +3,29 @@
 {% block content %}
 
 <div class="row">
-
     {% if alphalist %}
     <div class="col-xs-10">
     {% else %}
     <div class="col-xs-12">
     {% endif %}
 
-    {% if subjects %}
+    {% if sorters %}
     <div>
         <h2>{{ current_session }}</h2>
 
-
-        <form action="" method="post">
+        <form action="" method="get">
         {% csrf_token %}
-            <div> Filter by subject 
-                <select multiple name="bill_subjects" class="prefs-multiple">
-                    {% for subject in subjects %}
-                        {% if subject.selected %}
-                            <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+            <div> Filter by {{ sorter_type }} 
+                <select multiple name="bill_sorters" class="prefs-multiple">
+                    {% for sorter in sorters %}
+                        {% if sorter.selected %}
+                            <option value="{{ sorter.item }}" selected="True">{{ sorter.item }}</option>
                         {% else %}
-                            <option value="{{ subject.item }}">{{ subject.item }}</option>
+                            <option value="{{ sorter.item }}">{{ sorter.item }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
-                <input type="submit"/>
+                <input type="submit" class="btn btn-primary" value="GO"/>
             </div>
         </form>
     </div>
@@ -43,24 +41,10 @@
 
                 {% for billlist in billdict.list %}
                 
-                    <h1>{{ billlist.name }}</h1>
+                <p class="lead"><strong>{{ billlist.name }}</strong></p>
                     {% for bill in billlist.bills %}
                     <div>
-                        <h3> {{ bill.title }} </h3>
-                            <p> {{ bill.from_organization }} </p>
-
-                            <p> {{ bill.legislative_session }}</p>
-                            <p> {{ bill.subject }}</p>
-
-                            {% for action in bill.actions %}
-                                <p>{{ action.description }}</p>
-                                <p>{{ action.date }}</p>
-                            {% endfor %}
-
-                            {% for sponsor in bill.sponsorships %}
-                                <p>{{ sponsor.primary }}</p>
-                                <p>{{ sponsor.sponsor }}</p>
-                            {% endfor %}
+                        <p><a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" > {{ bill.identifier }} </a> - {{ bill.title }} </p>
                     </div>
                     {% endfor %}
                 {% endfor %}
@@ -86,7 +70,7 @@
     </div>
     {% endif %}
 
-    </div>
+</div>
 {% endblock %}
 
 

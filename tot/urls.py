@@ -3,7 +3,6 @@ from django.conf.urls import url, include
 from django.contrib.flatpages import views as flatpages_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from bills.views import bill_list, latest_bill_activity
 from preferences.views import EmailRegistrationView, user_preferences, set_user_latlon
 
 
@@ -19,8 +18,7 @@ urlpatterns = [
     url(r'^preferences/', user_preferences, name='preferences'),
     url(r'^set_user_latlon/', set_user_latlon, name='set_user_latlon'),
     url('^', include('legislators.urls')),
-    url(r'^bills/', bill_list, name='bills_list'),
-    url(r'^latest/', latest_bill_activity, name='latest_bill_activity'),
+    url('bills/', include('bills.urls')),
     url(r'^admin/', include('opencivicdata.admin.urls')),
 
     # flatpages
