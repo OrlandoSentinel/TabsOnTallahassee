@@ -23,7 +23,6 @@ urlpatterns = [
     url(r'^$', bill_list_latest, name='latest'),
 
     # flatpages
-    # url(r'^$', flatpages_views.flatpage, {'url': '/'}, name='home'),
     url(r'^about/$', flatpages_views.flatpage, {'url': '/about/'}, name='about'),
     url(r'^api/$', flatpages_views.flatpage, {'url': '/api/'}, name='api-docs'),
 ]
