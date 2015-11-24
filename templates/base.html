@@ -29,24 +29,24 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                   </button>
-                  <a class="navbar-brand" href="#Home">Tabs on Tallahassee</a>
+                  <a class="navbar-brand" href="{% url 'latest' %}">Tabs on Tallahassee</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                   <ul class="nav navbar-nav">
-                    <li class="active"><a href="/latest">Home/Latest News<span class="sr-only">(current)</span></a></li>
+                    <li class="active"><a href="{% url 'latest' %}">Home/Latest News<span class="sr-only">(current)</span></a></li>
                     <li><a href="/about/">About</a></li>
                     <li><a href="/find_legislator/">Find your legislator</a></li>
                     <li><a href="/glossary">Legislative glossary</a></li>
                     <li class="dropdown">
                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bills<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="/bills/by_topic">Bills by topic</a></li>
-                      <li><a href="/bills/by_location">Bills by location</a></li>
-                      <li><a href="/bills/by_legislator">Bills by Legislator</a></li>
-                      <li><a href="/bills/current_session">Bills in Current Session</a></li>
-                      <li><a href="/bills/latest_activity">Latest Bill Activity</a></li>
+                      <li><a href="{% url 'by_topic' %}">Bills by topic</a></li>
+                      <li><a href="{% url 'by_location' %}">Bills by location</a></li>
+                      <li><a href="{% url 'by_legislator' %}">Bills by Legislator</a></li>
+                      <li><a href="{% url 'current_session' %}">Bills in Current Session</a></li>
+                      <li><a href="{% url 'latest' %}">Latest Bill Activity</a></li>
                     </ul>
                   </li>
                   </ul>
@@ -61,7 +61,7 @@
                       <li class="dropdown">
                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello {{user}}<span class="caret"></span></a>
                       <ul class="dropdown-menu">
-                        <li><a href="/preferences/">Preferences</a></li>
+                        <li><a href="{% url 'preferences' %}">Preferences</a></li>
                         <li><a href="/api/">API</a></li>
                         <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
                       </ul>

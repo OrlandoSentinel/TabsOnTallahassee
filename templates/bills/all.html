@@ -41,7 +41,7 @@
 
                 {% for billlist in billdict.list %}
                 
-                <p class="lead"><strong>{{ billlist.name }}</strong></p>
+                <p class="lead"><strong>{{ billlist.name|title }}</strong></p>
                     {% for bill in billlist.bills %}
                     <div>
                         <p><a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" > {{ bill.identifier }} </a> - {{ bill.title }} </p>
