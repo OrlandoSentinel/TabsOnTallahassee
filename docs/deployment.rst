@@ -12,7 +12,7 @@ The basics of deployment are (see ``tot/tasks/main.yml`` for detail):
     * builds a virtualenv in ``/home/tot/virt/``
     * installs tot entries for uwsgi and nginx
     * writes a ``/home/tot/run-scrapers.sh`` script and installs a cron job
-      that calls it at [TODO]
+      that calls it at regular intervals
 
 This means a homedir that looks something like::
 
@@ -81,10 +81,9 @@ ec2/hosts/tot.yml::
         EMAIL_HOST_PASSWORD: <smtp-password>
         DEFAULT_FROM_EMAIL: noreply@example.com
     server_name: ""
-    port: 80
-    ssl_cert: ""
+    ssl_cert: "..."
+    ssl_key: "..."
 
-TODO: SSL config
 
 Run Ansible Playbook
 ~~~~~~~~~~~~~~~~~~~~

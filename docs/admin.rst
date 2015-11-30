@@ -60,6 +60,13 @@ After selecting the legislators a long list of the data that'll be modified will
 
 Once the data to be merged has been reviewed, the merge can be confirmed and the entities will be updated as shown in the merge plan.
 
+Pupa Runlog
+-----------
+
+View a list of scraper runs.
+
+Runs are either marked as successes or failures.  If a run is a success it will have details such as how many objects it created/updated and if a run fails it will have an exception traceback showing what failed.  In the case of repeated failures it is typically necessary to make modifications to the scraper as it is likely the site structure has changed.
+
 Glossary
 --------
 
@@ -70,7 +77,3 @@ Preferences
 
 TBD
 
-Pupa Runlog
------------
-
-TBD
