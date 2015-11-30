@@ -41,10 +41,9 @@ if os.environ.get('DEBUG', 'true').lower() == 'false':
     REGISTRATION_DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
     # enable once SSL is ready
     #SECURE_HSTS_SECONDS = 3600
-    #SECURE_SSL_REDIRECT = True
-    #SESSION_COOKIE_SECURE = True
-    #CSRF_COOKIE_SECURE = True
-    # cached template loader?
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 else:
     DEBUG = True
     SECRET_KEY = os.environ.get('SECRET_KEY', 'debug-secret-key')

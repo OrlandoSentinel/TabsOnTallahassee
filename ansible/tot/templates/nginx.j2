@@ -1,12 +1,12 @@
 {% if server_name  %}
 server {
-    listen {{port}};
+    listen 80;
     server_name _;
     rewrite ^ $scheme://{{server_name}}$uri permanent;
 }
 {% endif %}
 server {
-    listen {{port}};
+    listen 80;
 {% if server_name %}
     server_name {{server_name}};
 {% endif %}
