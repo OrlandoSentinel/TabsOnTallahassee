@@ -9,7 +9,7 @@ from bills.views import bill_list_latest
 admin.site.site_header = 'Tabs on Tallahassee Admin'
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^tot-admin/', admin.site.urls),
     url(r'^glossary/', include('glossary.urls')),
     url('^', include('django.contrib.auth.urls')),
     url(r'^api/', include('api.urls')),
@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^set_user_latlon/', set_user_latlon, name='set_user_latlon'),
     url('^', include('legislators.urls')),
     url('bills/', include('bills.urls')),
-    url(r'^admin/', include('opencivicdata.admin.urls')),
+    url(r'^tot-admin/', include('opencivicdata.admin.urls')),
     url(r'^$', bill_list_latest, name='latest'),
 
     # flatpages
