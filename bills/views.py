@@ -234,12 +234,15 @@ def bill_list_latest(request):
 
     if user.is_anonymous():
         subjects = get_all_subjects()
+        locations = get_all_locations()
 
-        people, topics, locations = get_anonymous_selections(request)
+        people, topics, selected_locations = get_anonymous_selections(request)
 
         subjects = _mark_selected(subjects, topics)
+        locations = _mark_selected(locations, selected_locations)
 
         context['subjects'] = subjects
+        context['locations'] = locations
 
     else:
         people, topics, locations = get_user_preferences(user)
