@@ -2,19 +2,18 @@
 
 {% block content %}
 
-<h2>Latest Bill Activity</h2>
 
 {% if user.is_anonymous %}
 <div>
-    {% include "preferences/form.html" %}
+    <h2>Welcome to Tabs on Tallahassee</h2>
+    {% include "bills/bill_selection_form.html" %}
 </div>
 {% else %}
+    <h2>Latest Bill Activity</h2>
     <p>Based on your <a href="{% url 'preferences' %}">user preferences</a></p>
 {% endif %}
 
-
 <hr/>
-
 
 {% if bills_by_selected_filter %}
     {% for entry in bills_by_selected_filter %}
@@ -53,9 +52,11 @@
         {% endif %}
     {% endfor %}
 {% else %}
-    <div>
-        <p class="lead">No Preferences selected</p>
-    </div>
+    {% if not user.is_anonymous %}
+        <div>
+            <p class="lead">No Preferences selected</p>
+        </div>
+    {% endif %}
 {% endif %}
 
 {% endblock %}
