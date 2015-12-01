@@ -195,9 +195,13 @@ def get_user_preferences(user):
 
 
 def get_anonymous_selections(request):
-    person_follows = None
-    topic_follows = None
-    location_follows = None
+    senators = request.GET.getlist('senators')
+    representatives = request.GET.getlist('senators')
+
+    person_follows = senators + representatives
+
+    topic_follows = request.GET.getlist('subjects')
+    location_follows = request.GET.getlist('locations')
 
     return person_follows, topic_follows, location_follows
 
@@ -207,9 +211,14 @@ def bill_list_latest(request):
     Organized by topic, legislator, topic, and then by latest action.
     '''
     user = request.user
+    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
+
+    context = {
+        'user': user,
+        'current_session': current_session
+    }
 
     # TODO - add filters for non-logged in users
-    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
     filters = {
         'legislative_session__name': settings.CURRENT_SESSION
@@ -224,7 +233,14 @@ def bill_list_latest(request):
     bills_by_selected_filter = []
 
     if user.is_anonymous():
+        subjects = get_all_subjects()
+
         people, topics, locations = get_anonymous_selections(request)
+
+        subjects = _mark_selected(subjects, topics)
+
+        context['subjects'] = subjects
+
     else:
         people, topics, locations = get_user_preferences(user)
 
@@ -252,11 +268,7 @@ def bill_list_latest(request):
         # via smarter use of Prefetch()
             bill.latest_action = list(bill.actions.all())[-1]
 
-    context = {
-        'user': user,
-        'bills_by_selected_filter': bills_by_selected_filter,
-        'current_session': current_session.name
-    }
+    context['bills_by_selected_filter'] = bills_by_selected_filter
 
     return render(
         request,
