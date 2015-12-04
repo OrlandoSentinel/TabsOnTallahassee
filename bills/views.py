@@ -259,11 +259,11 @@ def bill_list_latest(request):
             topic_detail = {'heading': topic, 'bills': topic_bills}
             bills_by_selected_filter.append(topic_detail)
 
-    # if locations:
-    #     for location in locations:
-    #         location_bills = all_bills.filter(extras__places__contains=location)
-    #         location_detail = {'heading': location, 'bills': location_bills}
-    #         bills_by_selected_filter.append(location_detail)
+    if selected_locations:
+        for place in selected_locations:
+            location_bills = all_bills.filter(extras__places__in=place)
+            location_detail = {'heading': place, 'bills': location_bills}
+            bills_by_selected_filter.append(location_detail)
 
     for item in bills_by_selected_filter:
         for bill in item['bills']:
