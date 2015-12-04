@@ -1,0 +1,12 @@
+Requires Virtualenv docker-compose, and docker-machine:
+
+    $ brew install docker-compose
+    $ brew cask install docker-machine virtualbox
+
+To run a dev environment w/ Docker:
+
+    $ docker-machine create --driver virtualbox --virtualbox-memory "2048" tot
+    $ eval $(docker-machine env tot)
+    $ docker-compose up
+    $ open http://($docker-machine ip tot):8000
+
