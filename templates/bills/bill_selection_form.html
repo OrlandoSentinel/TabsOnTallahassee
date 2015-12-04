@@ -3,7 +3,13 @@
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
-
+  <div class="panel-heading">
+    <ol class="breadcrumb">
+      <li><a data-toggle="collapse" data-parent="#accordion" href="#legislators">Legislators</a></li>
+      <li><a data-toggle="collapse" data-parent="#accordion" href="#locations">Locations</a></li>
+      <li><a data-toggle="collapse" data-parent="#accordion" href="#subjects">Topics</a></li>
+    </ol>
+  </div>
     <div id="welcome" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="welcomeHeading">
       <div class="panel-body">
         <div class="well">
@@ -62,14 +68,14 @@
                   {% endif %}
               {% endfor %}
           </select>
-            <div class="row">
-                <div class="col-md-12">
-                    <input class="btn" type="submit"/>
-                </div>
-            </div>
-          </form>
       </div>
+  <div class="row">
+      <div class="col-md-12">
+          <input class="btn btn-primary" type="submit" value="Go!"/>
+      </div>
+  </div>
     </div>
     </div>
   </div>
+</form>
 </div>
