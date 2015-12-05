@@ -142,7 +142,8 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
     full_serializer_class = FullBillSerializer
 
     def get_queryset(self):
-        queryset = Bill.objects.all().select_related('legislative_session__jurisdiction', 'from_organization')
+        queryset = Bill.objects.all().select_related('legislative_session__jurisdiction',
+                                                     'from_organization')
 
         session = self.request.query_params.get('legislative_session', None)
         subject = self.request.query_params.get('subject', None)
