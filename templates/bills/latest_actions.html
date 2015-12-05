@@ -1,4 +1,21 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+<script src='https://maps.googleapis.com/maps/api/js'></script>
+<script src='{% static "js/gmaps.js" %}'></script>
+<script>
+$(document).ready(function() {
+
+    $("button").click(function(){
+        $.ajax({url: '{% url "latest_latlon" %}', success: function(result){
+            $("#leg_info").html('test.');
+        }});
+    });
+
+});
+</script>
+{% endblock %}
 
 {% block content %}
 
