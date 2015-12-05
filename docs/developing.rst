@@ -63,6 +63,19 @@ A "clean" database has been created w/ the following steps::
 
     # TODO: 204, 2015C, 2016
 
+Using Docker
+------------
+
+It's also possible to use docker-machine to run a development server.
+
+To run a dev environment w/ Docker::
+
+    $ docker-machine create --driver virtualbox --virtualbox-memory "2048" tot
+    $ eval $(docker-machine env tot)
+    $ docker-compose up
+    $ open http://$(docker-machine ip tot):8000
+
+
 Directory Layout
 ----------------
 
