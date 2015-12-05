@@ -29,8 +29,20 @@ def find_legislator(request):
     )
 
 
-def legislator_detail(request, legislator_identifier):
-    pass
+def legislator_detail(request, legislator_id):
+    request_url = '{}/api/{}/?apikey={}'.format(
+        settings.DOMAIN,
+        legislator_id,
+        settings.ANON_API_KEY
+    )
+
+    context = requests.get(request_url).json()
+
+    return render(
+        request,
+        'bills/detail.html',
+        context
+    )
 
 
 def latest_latlon(request):
