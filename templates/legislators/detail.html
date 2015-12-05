@@ -3,7 +3,35 @@
 {% block content %}
 
 <div>
-    TODO
+    <h1>{{ legislator.name }}</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ legislator.image }}" class="legislator-image">
+        </div>
+        <div class="col-md-8">
+            <hr/>
+            <div>{{ post }}</div>
+            <div>{{ party }}</div>
+            <div><a href="#contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact</a></div>
+            <div id="contact_details" class="collapse">
+                <div><i>Email: <a href="mailto:{{ contact_details.email }}"> {{ contact_details.email }}</a></strong></div>
+                <div class="col-md-6">
+                    <div><strong>Capitol:</strong></div>
+                    {% for entry in contact_details.capitol %}
+                        <div><i>{{ entry.type }}</i></div>
+                        <div>{{ entry.value }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <div><strong>District:</strong></div>
+                    {% for entry in contact_details.district %}
+                        <div><i>{{ entry.type }}</i></div>
+                        <div>{{ entry.value }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
