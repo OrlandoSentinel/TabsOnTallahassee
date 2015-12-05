@@ -47,7 +47,7 @@ $(document).ready(function() {
                     var latlng = results[0].geometry.location,
                             lat = latlng.lat(),
                             lon = latlng.lng();
-                    $.get('../get_latlon/', {
+                    $.get('{% url "get_latlon" %}', {
                         user: results.name,
                         lat: lat,
                         lon: lon,
