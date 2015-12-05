@@ -27,7 +27,22 @@
         <p class="lead">Enter your address to find your legislators</p>
         <p>We won't store it. We only need it to find your area's legislators.</p>
 
-        {% include "preferences/location_form.html" %}
+        <input type="text" name="address" id="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/><button>Go!</button>
+
+            <div class="leg_info">
+              <div class="col-md-6">
+                  <p><strong>Your senator is:</strong></p>
+                  <p><a href="{{ address_senator.url }}">{{ address_senator.name }}</a></p>
+                  <a href="{{ address_senator.url }}"><img src="{{ address_senator.image }}" class="legislator-image"></a>
+              </div>
+
+              <div class="col-md-6">
+                  <p><strong>Your representative is:</strong></p>
+                  <p><a href="{{ address_representative.url }}">{{ address_representative.name }}</a></p>
+                  <a href="{{ address_representative.url }}"><img src=" {{ address_representative.image }}" class="legislator-image"></a>
+              </div>
+            </div>
+            <div id="map" style="margin-left:100px;"></div>
 
         <a role="button" class="btn btn-primary" data-toggle="collapse" data-parent="#accordion" href="#locations" aria-expanded="false" aria-controls="locations">Next</a>
       </div>
