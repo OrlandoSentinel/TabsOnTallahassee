@@ -29,6 +29,10 @@ def find_legislator(request):
     )
 
 
+def legislator_detail(request, legislator_identifier):
+    pass
+
+
 def latest_latlon(request):
     # TODO - Fix so that it gets API info and does not refresh.
     return redirect('/#legislators')
