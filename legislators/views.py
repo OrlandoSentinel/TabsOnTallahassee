@@ -3,6 +3,8 @@ import requests
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
+from opencivicdata.models import Person
+
 from tot import settings
 
 
@@ -30,18 +32,33 @@ def find_legislator(request):
 
 
 def legislator_detail(request, legislator_id):
-    request_url = '{}/api/{}/?apikey={}'.format(
-        settings.DOMAIN,
-        legislator_id,
-        settings.ANON_API_KEY
-    )
+    legislator = Person.objects.get(id=legislator_id)
+    memberships = legislator.memberships.all()
+    post = memberships.filter(post__isnull=False)[0]
+    party = memberships.filter(organization__classification='party')[0].organization.name
+    if party == 'Democratic':
+        party = 'Democrat'
 
-    context = requests.get(request_url).json()
+    # Parsed out seperately for nicer rendering in the templates
+    raw_contact_details = legislator.contact_details.all()
+    contact_details = {'email': '', 'capitol': [], 'district': []}
+    for entry in raw_contact_details:
+        if entry.type == 'email':
+            contact_details['email'] = entry.value
+        if entry.note == 'capitol':
+            contact_details['capitol'].append(entry)
+        if entry.note == 'district':
+            contact_details['district'].append(entry)
 
     return render(
         request,
-        'bills/detail.html',
-        context
+        'legislators/detail.html',
+        {
+            'legislator': legislator,
+            'contact_details': contact_details,
+            'post': post.post,
+            'party': party
+        }
     )
 
 
