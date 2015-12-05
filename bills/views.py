@@ -1,5 +1,4 @@
 import string
-import requests
 
 from django.db.models import Q
 from django.shortcuts import render
@@ -195,14 +194,31 @@ def get_user_preferences(user):
     return person_follows, topic_follows, location_follows
 
 
+def get_anonymous_selections(request):
+    senators = request.GET.getlist('senators')
+    representatives = request.GET.getlist('senators')
+
+    person_follows = senators + representatives
+
+    topic_follows = request.GET.getlist('subjects')
+    location_follows = request.GET.getlist('locations')
+
+    return person_follows, topic_follows, location_follows
+
+
 def bill_list_latest(request):
     ''' List of bills with a latest action for the current session, based on preferences.
     Organized by topic, legislator, topic, and then by latest action.
     '''
     user = request.user
+    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
+
+    context = {
+        'user': user,
+        'current_session': current_session
+    }
 
     # TODO - add filters for non-logged in users
-    current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
     filters = {
         'legislative_session__name': settings.CURRENT_SESSION
@@ -216,26 +232,38 @@ def bill_list_latest(request):
     # There will be one entry for each of the topics, locations,legislators followed.
     bills_by_selected_filter = []
 
-    if not user.is_anonymous():
+    if user.is_anonymous():
+        subjects = get_all_subjects()
+        locations = get_all_locations()
+
+        people, topics, selected_locations = get_anonymous_selections(request)
+
+        subjects = _mark_selected(subjects, topics)
+        locations = _mark_selected(locations, selected_locations)
+
+        context['subjects'] = subjects
+        context['locations'] = locations
+
+    else:
         people, topics, locations = get_user_preferences(user)
 
-        if people:
-            for person in people:
-                person_name = Person.objects.get(id=person).name
-                person_bills = all_bills.filter(sponsorships__id__contains=person)[:settings.NUMBER_OF_LATEST_ACTIONS]
-                person_detail = {'heading': person_name, 'bills': person_bills}
-                bills_by_selected_filter.append(person_detail)
-        if topics:
-            for topic in topics:
-                topic_bills = all_bills.filter(subject__contains=[topic])[:settings.NUMBER_OF_LATEST_ACTIONS]
-                topic_detail = {'heading': topic, 'bills': topic_bills}
-                bills_by_selected_filter.append(topic_detail)
+    if people:
+        for person in people:
+            person_name = Person.objects.get(id=person).name
+            person_bills = all_bills.filter(sponsorships__id__contains=person)[:settings.NUMBER_OF_LATEST_ACTIONS]
+            person_detail = {'heading': person_name, 'bills': person_bills}
+            bills_by_selected_filter.append(person_detail)
+    if topics:
+        for topic in topics:
+            topic_bills = all_bills.filter(subject__contains=[topic])[:settings.NUMBER_OF_LATEST_ACTIONS]
+            topic_detail = {'heading': topic, 'bills': topic_bills}
+            bills_by_selected_filter.append(topic_detail)
 
-        # if locations:
-        #     for location in locations:
-        #         location_bills = all_bills.filter(extras__places__contains=location)
-        #         location_detail = {'heading': location, 'bills': location_bills}
-        #         bills_by_selected_filter.append(location_detail)
+    if selected_locations:
+        for place in selected_locations:
+            location_bills = all_bills.filter(extras__places__in=place)
+            location_detail = {'heading': place, 'bills': location_bills}
+            bills_by_selected_filter.append(location_detail)
 
     for item in bills_by_selected_filter:
         for bill in item['bills']:
@@ -243,11 +271,7 @@ def bill_list_latest(request):
         # via smarter use of Prefetch()
             bill.latest_action = list(bill.actions.all())[-1]
 
-    context = {
-        'user': user,
-        'bills_by_selected_filter': bills_by_selected_filter,
-        'current_session': current_session.name
-    }
+    context['bills_by_selected_filter'] = bills_by_selected_filter
 
     return render(
         request,
