@@ -1,6 +1,7 @@
 import json
 import requests
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 
 from tot import settings
 
@@ -26,6 +27,11 @@ def find_legislator(request):
             'lng': float(lon)
         }
     )
+
+
+def latest_latlon(request):
+    # TODO - Fix so that it gets API info and does not refresh.
+    return redirect('/#legislators')
 
 
 def get_latlon(request):
