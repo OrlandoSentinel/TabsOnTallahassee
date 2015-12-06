@@ -89,7 +89,7 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
         elif latitude or longitude:
             raise Exception()   # TODO: make meaningful exception
 
-        return queryset
+        return queryset.distinct()
 
 
 class PersonDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):

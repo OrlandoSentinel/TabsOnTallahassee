@@ -2,7 +2,7 @@ import time
 import json
 from django.test import TestCase
 from django.contrib.auth.models import User
-from opencivicdata.models import Organization, Membership
+from opencivicdata.models import Organization, Membership, Person
 from preferences.models import Preferences
 
 PERSON_FULL_FIELDS = ('identifiers', 'other_names', 'contact_details',
@@ -70,6 +70,14 @@ class ApiTests(TestCase):
         resp = self._api('people/?name=John')
         data = json.loads(resp.content.decode('utf8'))
         assert len(data['data']) == 4
+
+    def test_person_list_by_name_no_duplicates(self):
+        p = Person.objects.get(name='Soto, Darren')
+        p.other_names.create(name='Darren Soto')
+        p.other_names.create(name='Soto')
+        resp = self._api('people/?name=Soto')
+        data = json.loads(resp.content.decode('utf8'))
+        assert len(data['data']) == 1
 
     def test_person_list_by_member_of(self):
         resp = self._api('people/?member_of=Republican')
