@@ -50,6 +50,14 @@ def legislator_detail(request, legislator_id):
         if entry.note == 'district':
             contact_details['district'].append(entry)
 
+    recent_votes = legislator.votes.all().order_by(
+        '-vote_event__start_date')[:settings.NUMBER_OF_LATEST_ACTIONS]
+    sponsored_bills = [
+        sponsorship.bill for sponsorship in legislator.billsponsorship_set.all()
+    ]
+    for bill in sponsored_bills:
+        bill.latest_action = list(bill.actions.all())[-1]
+
     return render(
         request,
         'legislators/detail.html',
@@ -57,7 +65,9 @@ def legislator_detail(request, legislator_id):
             'legislator': legislator,
             'contact_details': contact_details,
             'post': post.post,
-            'party': party
+            'party': party,
+            'recent_votes': recent_votes,
+            'sponsored_bills': sponsored_bills
         }
     )
 
