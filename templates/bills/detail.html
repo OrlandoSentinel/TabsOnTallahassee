@@ -24,8 +24,10 @@
         {% else %}
             <p>Co-sponsor:</p>
         {% endif %}
-        <img src="{{ sponsor.person.image }}">
-        <p>{{ sponsor.entity_name }}</p>
+        <a href="{% url 'legislator_detail' sponsor.person.id %}">
+            <img src="{{ sponsor.person.image }}">
+            <p>{{ sponsor.entity_name }}</p>
+        </a>
         <p>{{ sponsor.party }}</p>
     {% endfor %}
 </div>
