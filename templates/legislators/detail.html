@@ -12,6 +12,7 @@
             <hr/>
             <div>{{ post }}</div>
             <div>{{ party }}</div>
+            <div><a href="#voting_history" class="btn btn-primary" role="button" data-toggle="collapse">Voting History</a></div>
             <div><a href="#contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact</a></div>
             <div id="contact_details" class="collapse">
                 <div><i>Email: <a href="mailto:{{ contact_details.email }}"> {{ contact_details.email }}</a></strong></div>
@@ -30,6 +31,43 @@
                     {% endfor %}
                 </div>
             </div>
+            <div><a href="#add_to_prefs" class="btn btn-primary">Track this Legislator</a></div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-12">
+            <p class="lead">Recent Votes</p>
+            <hr/>
+            {% for vote in recent_votes %}
+            <div><strong>{{ vote.vote_event.bill.identifier }}</strong></div>
+            <div><i>{{ vote.vote_event.bill.title }}</i></div>
+            <div>Vote: {{ vote.option }}</div>
+            <a href="{% url 'bill_detail' vote.vote_event.bill.legislative_session.identifier vote.vote_event.bill.identifier %}" class="btn btn-primary">More on this bill</a>
+            <br/>
+            <br/>
+            {% endfor %}
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-12">
+            <p class="lead">Sponsored Legislation</p>
+            {% for bill in sponsored_bills %}
+            <div><strong>{{ bill.identifier }}</strong></div>
+            <div>{{ bill.title }}</div>
+            <div><strong>Sponsor(s):</strong>
+                <ul>
+                {% for sponsor in bill.sponsorships.all %}
+                <li>{{ sponsor.entity_name }}</li>
+                {% endfor %}
+                <ul>
+            </div>
+            <div><strong>Latest action:</strong> {{ bill.latest_action.date }} - {{ bill.latest_action.description }}</div>
+            <a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" class="btn btn-primary">More on this bill</a>
+            <br/>
+            <br/>
+            {% endfor %}
         </div>
     </div>
 </div>
