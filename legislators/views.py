@@ -33,7 +33,9 @@ def find_legislator(request):
 
 def legislator_detail(request, legislator_id):
     legislator = Person.objects.get(id=legislator_id)
-    memberships = legislator.memberships.all()
+    memberships = legislator.memberships.all().select_related(
+        'organization__classification'
+    ).select_related('post')
     post = memberships.filter(post__isnull=False)[0]
     party = memberships.filter(organization__classification='party')[0].organization.name
     if party == 'Democratic':
@@ -50,10 +52,17 @@ def legislator_detail(request, legislator_id):
         if entry.note == 'district':
             contact_details['district'].append(entry)
 
-    votes = legislator.votes.all().order_by('-vote_event__start_date')[:20]
+    votes = legislator.votes.all().prefetch_related(
+        'vote_event__bill__legislative_session'
+    ).order_by(
+        '-vote_event__start_date'
+    )[:20]  # TODO - how to handle vote history?
+
     recent_votes = votes[:settings.NUMBER_OF_LATEST_ACTIONS]
     sponsored_bills = [
-        sponsorship.bill for sponsorship in legislator.billsponsorship_set.all()
+        sponsorship.bill for sponsorship in legislator.billsponsorship_set.all().prefetch_related(
+            'bill__actions'
+        ).prefetch_related('bill__sponsorships')
     ]
     for bill in sponsored_bills:
         bill.latest_action = list(bill.actions.all())[-1]
