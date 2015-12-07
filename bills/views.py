@@ -245,7 +245,7 @@ def bill_list_latest(request):
         context['locations'] = locations
 
     else:
-        people, topics, locations = get_user_preferences(user)
+        people, topics, selected_locations = get_user_preferences(user)
 
     if people:
         for person in people:

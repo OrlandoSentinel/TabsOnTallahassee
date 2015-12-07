@@ -1,9 +1,11 @@
 import json
 import requests
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+
+from opencivicdata.models import Person
 
 from tot import settings
+from preferences.models import PersonFollow
 
 
 def find_legislator(request):
@@ -25,6 +27,67 @@ def find_legislator(request):
             'address': address,
             'lat': float(lat),
             'lng': float(lon)
+        }
+    )
+
+
+def legislator_detail(request, legislator_id):
+    legislator = Person.objects.get(id=legislator_id)
+    memberships = legislator.memberships.all().select_related(
+        'organization__classification'
+    ).select_related('post')
+    post = memberships.filter(post__isnull=False)[0]
+    party = memberships.filter(organization__classification='party')[0].organization.name
+    if party == 'Democratic':
+        party = 'Democrat'
+
+    # Parsed out seperately for nicer rendering in the templates
+    raw_contact_details = legislator.contact_details.all()
+    contact_details = {'email': '', 'capitol': [], 'district': []}
+    for entry in raw_contact_details:
+        if entry.type == 'email':
+            contact_details['email'] = entry.value
+        if entry.note == 'capitol':
+            contact_details['capitol'].append(entry)
+        if entry.note == 'district':
+            contact_details['district'].append(entry)
+
+    votes = legislator.votes.all().prefetch_related(
+        'vote_event__bill__legislative_session'
+    ).order_by(
+        '-vote_event__start_date'
+    )[:20]  # TODO - how to handle vote history?
+
+    recent_votes = votes[:settings.NUMBER_OF_LATEST_ACTIONS]
+    sponsored_bills = [
+        sponsorship.bill for sponsorship in legislator.billsponsorship_set.all().prefetch_related(
+            'bill__actions'
+        ).prefetch_related('bill__sponsorships')
+    ]
+    for bill in sponsored_bills:
+        bill.latest_action = list(bill.actions.all())[-1]
+
+    message = ''
+    if request.method == 'POST':
+        try:
+            PersonFollow.objects.get(user=request.user, person_id=legislator_id)
+            message = 'You are already following {}.'.format(legislator.name)
+        except PersonFollow.DoesNotExist:
+            PersonFollow.objects.create(user=request.user, person_id=legislator_id)
+            message = 'You are now following {}.'.format(legislator.name)
+
+    return render(
+        request,
+        'legislators/detail.html',
+        {
+            'legislator': legislator,
+            'contact_details': contact_details,
+            'post': post.post,
+            'party': party,
+            'votes': votes,
+            'recent_votes': recent_votes,
+            'sponsored_bills': sponsored_bills,
+            'message': message
         }
     )
 
