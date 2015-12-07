@@ -30,8 +30,8 @@
 
         <div class="col-md-6">
             <p><strong>Your representative is:</strong></p>
-            <p><a href="{% url 'legislator_detail' address_representative.id }}">{{ address_representative.name }}</a></p>
-            <a href="{% url 'legislator_detail' address_representative.id }}"><img src=" {{ address_representative.image }}" class="legislator-image"></a>
+            <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name }}</a></p>
+            <a href="{% url 'legislator_detail' address_representative.id %}"><img src=" {{ address_representative.image }}" class="legislator-image"></a>
         </div>
 
         {% endif %}
