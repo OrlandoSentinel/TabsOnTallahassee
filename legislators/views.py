@@ -1,11 +1,11 @@
 import json
 import requests
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 
 from opencivicdata.models import Person
 
 from tot import settings
+from preferences.models import PersonFollow
 
 
 def find_legislator(request):
@@ -50,13 +50,18 @@ def legislator_detail(request, legislator_id):
         if entry.note == 'district':
             contact_details['district'].append(entry)
 
-    recent_votes = legislator.votes.all().order_by(
-        '-vote_event__start_date')[:settings.NUMBER_OF_LATEST_ACTIONS]
+    votes = legislator.votes.all().order_by('-vote_event__start_date')[:20]
+    recent_votes = votes[:settings.NUMBER_OF_LATEST_ACTIONS]
     sponsored_bills = [
         sponsorship.bill for sponsorship in legislator.billsponsorship_set.all()
     ]
     for bill in sponsored_bills:
         bill.latest_action = list(bill.actions.all())[-1]
+
+    message = ''
+    if request.method == 'POST':
+        PersonFollow.objects.create(user=request.user, person_id=legislator_id)
+        message = 'You are now following {}.'.format(legislator.name)
 
     return render(
         request,
@@ -66,8 +71,10 @@ def legislator_detail(request, legislator_id):
             'contact_details': contact_details,
             'post': post.post,
             'party': party,
+            'votes': votes,
             'recent_votes': recent_votes,
-            'sponsored_bills': sponsored_bills
+            'sponsored_bills': sponsored_bills,
+            'message': message
         }
     )
 

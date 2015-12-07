@@ -13,6 +13,14 @@
             <div>{{ post }}</div>
             <div>{{ party }}</div>
             <div><a href="#voting_history" class="btn btn-primary" role="button" data-toggle="collapse">Voting History</a></div>
+            <div id="voting_history" class="collapse">
+                <ul>
+                {% for vote in votes %}
+                <li>
+                    <a href="{% url 'bill_detail' vote.vote_event.bill.legislative_session.identifier vote.vote_event.bill.identifier %}">{{ vote.vote_event.bill.identifier }}</a> - {{ vote.vote_event.bill.title }}
+                <div>Vote: {{ vote.option }}</div>
+                {% endfor %}
+            </div>
             <div><a href="#contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact</a></div>
             <div id="contact_details" class="collapse">
                 <div><i>Email: <a href="mailto:{{ contact_details.email }}"> {{ contact_details.email }}</a></strong></div>
@@ -31,7 +39,15 @@
                     {% endfor %}
                 </div>
             </div>
-            <div><a href="#add_to_prefs" class="btn btn-primary">Track this Legislator</a></div>
+            {% if not user.is_anonymous %}
+            <form id="add_legislator" action="" method="post">
+                {% csrf_token %}
+                <input class="btn btn-primary" type="submit" value="Track this Legislator">
+            </form>
+            {% endif %}
+            {% if message %}
+            <p> {{ message }} See your <a href="{% url 'preferences' %}">preferences page to update.</a></p>
+            {% endif %}
         </div>
     </div>
     <hr/>
