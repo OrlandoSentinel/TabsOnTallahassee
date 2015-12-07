@@ -60,8 +60,12 @@ def legislator_detail(request, legislator_id):
 
     message = ''
     if request.method == 'POST':
-        PersonFollow.objects.create(user=request.user, person_id=legislator_id)
-        message = 'You are now following {}.'.format(legislator.name)
+        try:
+            PersonFollow.objects.get(user=request.user, person_id=legislator_id)
+            message = 'You are already following {}.'.format(legislator.name)
+        except PersonFollow.DoesNotExist:
+            PersonFollow.objects.create(user=request.user, person_id=legislator_id)
+            message = 'You are now following {}.'.format(legislator.name)
 
     return render(
         request,
