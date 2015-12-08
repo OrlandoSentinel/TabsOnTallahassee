@@ -358,9 +358,10 @@ def bill_detail(request, bill_session, bill_identifier):
     sponsors = bill.sponsorships.all().select_related('person', 'organization')
 
     for sponsor in sponsors:
-        sponsor.party = sponsor.person.memberships.filter(
-            organization__classification='party'
-        )[0].organization.name
+        if sponsor.person:
+            sponsor.party = sponsor.person.memberships.filter(
+                organization__classification='party'
+            )[0].organization.name
 
     history = bill.actions.all()
 
