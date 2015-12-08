@@ -15,9 +15,19 @@ def find_legislator(request):
     lat = request.session.get('lat') or '30.4'
     lon = request.session.get('lon') or '-84.3'
 
+    senator_contact_details = None
+    representative_contact_details = None
+
     if senator and representative:
         senator = json.loads(senator)
+        if senator['name'] != 'none found':
+            senator_obj = Person.objects.get(id=senator['id'])
+            senator_contact_details = get_contact_details(senator_obj)
+
         representative = json.loads(representative)
+        if representative['name'] != 'none found':
+            rep_obj = Person.objects.get(id=representative['id'])
+            representative_contact_details = get_contact_details(rep_obj)
 
     return render(
         request,
@@ -26,9 +36,26 @@ def find_legislator(request):
             'address_representative': representative,
             'address': address,
             'lat': float(lat),
-            'lng': float(lon)
+            'lng': float(lon),
+            'senator_contact_details': senator_contact_details,
+            'representative_contact_details': representative_contact_details
         }
     )
+
+
+def get_contact_details(legislator):
+    # Parsed out seperately for nicer rendering in the templates
+    raw_contact_details = legislator.contact_details.all()
+    contact_details = {'email': '', 'capitol': [], 'district': []}
+    for entry in raw_contact_details:
+        if entry.type == 'email':
+            contact_details['email'] = entry.value
+        if entry.note == 'capitol':
+            contact_details['capitol'].append(entry)
+        if entry.note == 'district':
+            contact_details['district'].append(entry)
+
+    return contact_details
 
 
 def legislator_detail(request, legislator_id):
@@ -41,16 +68,7 @@ def legislator_detail(request, legislator_id):
     if party == 'Democratic':
         party = 'Democrat'
 
-    # Parsed out seperately for nicer rendering in the templates
-    raw_contact_details = legislator.contact_details.all()
-    contact_details = {'email': '', 'capitol': [], 'district': []}
-    for entry in raw_contact_details:
-        if entry.type == 'email':
-            contact_details['email'] = entry.value
-        if entry.note == 'capitol':
-            contact_details['capitol'].append(entry)
-        if entry.note == 'district':
-            contact_details['district'].append(entry)
+    contact_details = get_contact_details(legislator)
 
     votes = legislator.votes.all().prefetch_related(
         'vote_event__bill__legislative_session'
