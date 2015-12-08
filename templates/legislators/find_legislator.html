@@ -81,4 +81,75 @@ $(document).ready(function() {
 
 {% include "preferences/location_form.html" %}
 
+<div class="row">
+{% if error_message %}
+
+<div class="col-md-6">
+    <p><strong>{{ error_message }}</strong></p>
+</div>
+
+{% else %}
+
+<div class="col-md-6">
+{% if senator_contact_details %}
+
+    <p><strong>Your senator is:</strong></p>
+    <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name }}</a></p>
+    <a href="{% url 'legislator_detail' address_senator.id %}"><img src="{{ address_senator.image }}" class="legislator-image"></a>
+    
+    <div><a href="#sen_contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact Legislator</a></div>
+    <div id="sen_contact_details" class="collapse">
+        <div><i>Email: <a href="mailto:{{ senator_contact_details.email }}"> {{ senator_contact_details.email }}</a></strong></div>
+        <div class="col-md-6">
+            <div><strong>Capitol:</strong></div>
+            {% for entry in senator_contact_details.capitol %}
+                <div><i>{{ entry.type }}</i></div>
+                <div>{{ entry.value }}</div>
+            {% endfor %}
+        </div>
+        <div class="col-md-6">
+            <div><strong>District:</strong></div>
+            {% for entry in senator_contact_details.district %}
+                <div><i>{{ entry.type }}</i></div>
+                <div>{{ entry.value }}</div>
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    <p>No senator found</p>
+{% endif %}
+</div>
+
+
+<div class="col-md-6">
+{% if representative_contact_details %}
+    <p><strong>Your representative is:</strong></p>
+    <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name }}</a></p>
+    <a href="{% url 'legislator_detail' address_representative.id %}"><img src=" {{ address_representative.image }}" class="legislator-image"></a>
+    <div><a href="#rep_contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact Legislator</a></div>
+    <div id="rep_contact_details" class="collapse">
+        <div><i>Email: <a href="mailto:{{ representative_contact_details.email }}"> {{ representative_contact_details.email }}</a></strong></div>
+        <div class="col-md-6">
+            <div><strong>Capitol:</strong></div>
+            {% for entry in representative_contact_details.capitol %}
+                <div><i>{{ entry.type }}</i></div>
+                <div>{{ entry.value }}</div>
+            {% endfor %}
+        </div>
+        <div class="col-md-6">
+            <div><strong>District:</strong></div>
+            {% for entry in representative_contact_details.district %}
+                <div><i>{{ entry.type }}</i></div>
+                <div>{{ entry.value }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <p>No representative found</p>
+    {% endif %}
+</div>
+
+    {% endif %}
+</div>
+
 {% endblock content %}

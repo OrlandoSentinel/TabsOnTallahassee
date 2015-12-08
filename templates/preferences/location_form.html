@@ -12,29 +12,4 @@
             <input type="submit"/>
         </div>
     </div>
-
-    <div class="row">
-        {% if error_message %}
-
-        <div class="col-md-6">
-            <p><strong>{{ error_message }}</strong></p>
-        </div>
-
-        {% else %}
-
-        <div class="col-md-6">
-            <p><strong>Your senator is:</strong></p>
-            <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name }}</a></p>
-            <a href="{% url 'legislator_detail' address_senator.id %}"><img src="{{ address_senator.image }}" class="legislator-image"></a>
-        </div>
-
-        <div class="col-md-6">
-            <p><strong>Your representative is:</strong></p>
-            <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name }}</a></p>
-            <a href="{% url 'legislator_detail' address_representative.id %}"><img src=" {{ address_representative.image }}" class="legislator-image"></a>
-        </div>
-
-        {% endif %}
-    </div>
-
 </form>
