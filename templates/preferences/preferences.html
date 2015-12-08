@@ -6,6 +6,19 @@
 <script src='{% static "js/gmaps.js" %}'></script>
 <script>
 $(document).ready(function() {
+    var map = new GMaps({
+            div: '#map',
+            lat: {{ lat }},
+            lng: {{ lng }},
+            zoom: 10
+        });
+
+    map.removeMarkers();
+    map.addMarker({
+       lat: {{ lat }},
+       lng: {{ lng }}
+    });
+
     $('#enter_location').submit(function(e){
         e.preventDefault();
         GMaps.geocode({
@@ -41,19 +54,23 @@ $(document).ready(function() {
     <div class="row">
     {% if error_message %}
 
-    <div class="col-md-6">
+    <div class="col-md-4">
         <p><strong>{{ error_message }}</strong></p>
     </div>
 
     {% else %}
 
-    <div class="col-md-6">
+    <div class="col-md-4">
+        <div id="map" style="margin-left:100px;"></div>
+    </div>
+
+    <div class="col-md-4">
         <p><strong>Your senator is:</strong></p>
         <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name }}</a></p>
     </div>
 
 
-    <div class="col-md-6">
+    <div class="col-md-4">
         <p><strong>Your representative is:</strong></p>
         <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name }}</a></p>
     </div>
