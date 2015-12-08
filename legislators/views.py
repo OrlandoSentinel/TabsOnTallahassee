@@ -74,7 +74,7 @@ def legislator_detail(request, legislator_id):
         'vote_event__bill__legislative_session'
     ).order_by(
         '-vote_event__start_date'
-    )[:20]  # TODO - how to handle vote history?
+    )  # TODO - how to handle vote history pagination?
 
     recent_votes = votes[:settings.NUMBER_OF_LATEST_ACTIONS]
     sponsored_bills = [
