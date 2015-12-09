@@ -56,7 +56,12 @@
     {% if documents %}
     <ul>
     {% for document in documents %}
-        <li>{{ document }}</li>
+        <li>{{ document.note }}</li>
+        <ul>
+            {% for link in document.links.all %}
+            <li><a href="{{ link.url }}">{{ link.url }}</a></li>
+            {% endfor %}
+        </ul>
     {% endfor %}
     </ul>
     {% else %}
