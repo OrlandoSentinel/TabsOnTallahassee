@@ -2,6 +2,7 @@
 
 {% block content %}
 
+{# It looks like this div is mismatched b/c of below if statement #}
 <div class="row">
     {% if alphalist %}
     <div class="col-xs-10">
@@ -69,7 +70,6 @@
         </ul>
     </div>
     {% endif %}
-
 </div>
 {% endblock %}
 
