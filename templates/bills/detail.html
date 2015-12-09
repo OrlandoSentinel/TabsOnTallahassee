@@ -124,7 +124,31 @@
 <div>
     <p><strong>Votes</strong></p>
     {% if votes %}
-    {{ votes }}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Motion Text</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vote_event in  votes %}
+                <tr>
+                    <td>
+                        {{ vote_event.start_date }}
+                    </td>
+                    <td>
+                        {{ vote_event.motion_text }}
+                    </td>
+                    <td>
+                        {{ vote_event.result }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
     {% else %}
     <p>No information available at this time.</p>
     {% endif %}
