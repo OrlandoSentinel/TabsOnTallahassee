@@ -18,6 +18,7 @@
 
 <div>
     <p><strong>Sponsorships</strong></p>
+    {% if sponsors %}
     {% for sponsor in sponsors %}
         {% if sponsor.primary %}
             <p>Primary sponsor:</p>
@@ -30,54 +31,74 @@
         </a>
         <p>{{ sponsor.party }}</p>
     {% endfor %}
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
 </div>
 
 <hr/>
 
 <div>
     <p><strong>History</strong></p>
+    {% if history %}
     {% for action in history %}
     <p>{{ action.date }} - {{ action.description }}</p>
     {% endfor %}
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
 </div>
 
 <hr/>
 
 <div>
     <p><strong>Documents</strong></p>
+    {% if documents %}
     <ul>
     {% for document in documents %}
         <li>{{ document }}</li>
     {% endfor %}
     </ul>
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
 </div>
 
 <hr/>
 
 <div>
     <p><strong>Subjects</strong></p>
+    {% if bill.subject %}
     <ul>
     {% for subject in bill.subject %}
         <li>{{ subject }}</li>
     {% endfor %}
     </ul>
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
 </div>
 
 <hr/>
 
 <div>
     <p><strong>Locations</strong></p>
+    {% if bill.extras.places %}
     <ul>
     {% for location in bill.extras.places %}
         <li>{{ location }}</li>
     {% endfor %}
     </ul>
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
 </div>
 
 <hr/>
 
 <div>
     <p><strong>Versions</strong></p>
+    {% if verions %}
     <ul>
     {% for version in versions %}
         <li>{{ version.note }} - {{ version.date }}</li>
@@ -93,23 +114,35 @@
             </ul>
     {% endfor %}
     </ul>
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
 </div>
 
 <hr/>
 
 <div>
+    <p><strong>Votes</strong></p>
+    {% if votes %}
     {{ votes }}
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
 </div>
 
 <hr/>
 
 <div>
     <p><strong>Sources</strong></p>
+    {% if bill.sources.all %}
     <ul>
     {% for source in bill.sources.all %}
     <li><a href="{{source.url}}">{{ source.url }}</a></li>
     {% endfor %}
     </ul>
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
 </div>
 
 {% endblock %}
