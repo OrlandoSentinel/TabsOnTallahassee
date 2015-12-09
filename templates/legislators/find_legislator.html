@@ -70,13 +70,11 @@ $(document).ready(function() {
 <div class="row">
     <div id="map" style="margin-left:100px;"></div>
 
-<form action="" method="post" id="locate">
-{% csrf_token %}
-    <div>
-        <p>Use your current location</p>
-        <input type="submit"/>
-    </div>
-</form>
+    <form action="" method="post">
+    {% csrf_token %}
+        Use your current location 
+        <input type="submit" class="btn btn-primary" value="go" id="locate"/>
+    </form>
 </div>
 
 {% include "preferences/location_form.html" %}
