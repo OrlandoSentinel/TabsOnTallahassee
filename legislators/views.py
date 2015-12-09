@@ -2,7 +2,7 @@ import json
 import requests
 from django.shortcuts import render, redirect
 
-from opencivicdata.models import Person
+from opencivicdata.models import Person, Bill
 
 from tot import settings
 from preferences.models import PersonFollow
@@ -17,18 +17,29 @@ def find_legislator(request):
 
     senator_contact_details = None
     representative_contact_details = None
+    senator_sponsorships = None
+    rep_sponsorships = None
 
     if senator and representative:
         senator = json.loads(senator)
         if senator['name'] != 'none found':
             senator_obj = Person.objects.get(id=senator['id'])
             senator_contact_details = get_contact_details(senator_obj)
+            senator_sponsorships = senator_obj.billsponsorship_set.all().prefetch_related(
+                'bill'
+            ).prefetch_related(
+                'bill__legislative_session'
+            )[:settings.NUMBER_OF_LATEST_ACTIONS]
 
         representative = json.loads(representative)
         if representative['name'] != 'none found':
             rep_obj = Person.objects.get(id=representative['id'])
             representative_contact_details = get_contact_details(rep_obj)
-
+            rep_sponsorships = rep_obj.billsponsorship_set.all().prefetch_related(
+                'bill'
+            ).prefetch_related(
+                'bill__legislative_session'
+            )[:settings.NUMBER_OF_LATEST_ACTIONS]
     return render(
         request,
         'legislators/find_legislator.html', {
@@ -38,7 +49,9 @@ def find_legislator(request):
             'lat': float(lat),
             'lng': float(lon),
             'senator_contact_details': senator_contact_details,
-            'representative_contact_details': representative_contact_details
+            'representative_contact_details': representative_contact_details,
+            'rep_sponsorships': rep_sponsorships,
+            'senator_sponsorships': senator_sponsorships
         }
     )
 
@@ -74,7 +87,7 @@ def legislator_detail(request, legislator_id):
         'vote_event__bill__legislative_session'
     ).order_by(
         '-vote_event__start_date'
-    )[:20]  # TODO - how to handle vote history?
+    )  # TODO - how to handle vote history pagination?
 
     recent_votes = votes[:settings.NUMBER_OF_LATEST_ACTIONS]
     sponsored_bills = [

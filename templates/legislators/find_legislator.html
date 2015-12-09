@@ -70,13 +70,11 @@ $(document).ready(function() {
 <div class="row">
     <div id="map" style="margin-left:100px;"></div>
 
-<form action="" method="post" id="locate">
-{% csrf_token %}
-    <div>
-        <p>Use your current location</p>
-        <input type="submit"/>
-    </div>
-</form>
+    <form action="" method="post">
+    {% csrf_token %}
+        Use your current location 
+        <input type="submit" class="btn btn-primary" value="go" id="locate"/>
+    </form>
 </div>
 
 {% include "preferences/location_form.html" %}
@@ -151,5 +149,31 @@ $(document).ready(function() {
 
     {% endif %}
 </div>
+{% if senator_contact_details %}
+
+<hr/>
+<div class="row">
+    <div class="col-md-12">
+        <p class="lead">Recently Sponsored Legislation</p>
+        <p><strong>{{ address_senator.name }}</strong></p>
+        <ul>
+            {% for sponsorship in senator_sponsorships %}
+            <li>
+                <a href="{% url 'bill_detail' sponsorship.bill.legislative_session.identifier sponsorship.bill.identifier %}" > {{ sponsorship.bill.identifier }} </a> - {{ sponsorship.bill.title }}
+            </li>
+            {% endfor %}
+        </ul>
+
+        <p><strong>{{ address_representative.name }}</strong></p>
+        <ul>
+            {% for sponsorship in rep_sponsorships %}
+            <li>
+                <a href="{% url 'bill_detail' sponsorship.bill.legislative_session.identifier sponsorship.bill.identifier %}" > {{ sponsorship.bill.identifier }} </a> - {{ sponsorship.bill.title }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
 
 {% endblock content %}

@@ -12,15 +12,7 @@
             <hr/>
             <div>{{ post }}</div>
             <div>{{ party }}</div>
-            <div><a href="#voting_history" class="btn btn-primary" role="button" data-toggle="collapse">Voting History</a></div>
-            <div id="voting_history" class="collapse">
-                <ul>
-                {% for vote in votes %}
-                <li>
-                    <a href="{% url 'bill_detail' vote.vote_event.bill.legislative_session.identifier vote.vote_event.bill.identifier %}">{{ vote.vote_event.bill.identifier }}</a> - {{ vote.vote_event.bill.title }}
-                <div>Vote: {{ vote.option }}</div>
-                {% endfor %}
-            </div>
+            <div><a href="#voting_history" class="btn btn-primary" role="button">Voting History</a></div>
             <div><a href="#contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact</a></div>
             <div id="contact_details" class="collapse">
                 <div><i>Email: <a href="mailto:{{ contact_details.email }}"> {{ contact_details.email }}</a></strong></div>
@@ -84,6 +76,39 @@
             <br/>
             <br/>
             {% endfor %}
+        </div>
+    </div>
+    <hr/>
+    <div class="row" id="voting_history">
+        <div class="col-md-12">
+            <p class="lead">Voting History</p>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Vote</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vote in  votes %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'bill_detail' vote.vote_event.bill.legislative_session.identifier vote.vote_event.bill.identifier %}">{{ vote.vote_event.bill.identifier }}</a> - {{ vote.vote_event.bill.title }}
+                            </td>
+                            <td>
+                                {{ vote.vote_event.start_date }}
+                            </td>
+                            <td>
+                                {{ vote.option }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+
         </div>
     </div>
 </div>
