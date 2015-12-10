@@ -17,6 +17,9 @@ lxml
 sphinx
 markdown
 
+# monitoring
+newrelic
+
 # needs my commits, should be in 2.0.0a3 or later
 -e git://github.com/django-json-api/django-rest-framework-json-api.git@f1a8c0ae575d0f3a579de7672ea61a5d4916adca#egg=rest_framework_json_api
 
