@@ -76,7 +76,7 @@
     {% if bill.subject %}
     <ul>
     {% for subject in bill.subject %}
-        <li>{{ subject }}</li>
+    <li><a href="{% url 'by_topic_selected' subject %}">{{ subject }}</a></li>
     {% endfor %}
     </ul>
     {% else %}
@@ -91,7 +91,7 @@
     {% if bill.extras.places %}
     <ul>
     {% for location in bill.extras.places %}
-        <li>{{ location }}</li>
+    <li><a href="{% url 'by_location_selected' location %}">{{ location }}</a></li>
     {% endfor %}
     </ul>
     {% else %}

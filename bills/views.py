@@ -15,22 +15,26 @@ from opencivicdata.models import Bill, LegislativeSession, Person
 ALL_LETTERS = string.ascii_lowercase
 
 
-def bill_list_by_topic(request):
+def bill_list_by_topic(request, topic_selected=None):
     alphalist = True
     subjects = get_all_subjects()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
+    filter_subjects = []
+    if topic_selected:
+        filter_subjects.append(topic_selected)
+
+    filters = {'legislative_session': current_session}
+
     if request.GET.getlist('bill_sorters'):
-        filter_subjects = request.GET.getlist('bill_sorters')
-        all_bills = Bill.objects.filter(
-            legislative_session=current_session,
-            subject__contains=filter_subjects
-        ).order_by("title").prefetch_related('legislative_session')
-    else:
-        filter_subjects = []
-        all_bills = Bill.objects.filter(
-            legislative_session=current_session
-        ).order_by("title").prefetch_related('legislative_session')
+        filter_subjects += request.GET.getlist('bill_sorters')
+
+    if filter_subjects:
+        filters['subject__contains'] = filter_subjects
+
+    all_bills = Bill.objects.filter(
+        **filters
+    ).order_by("title").prefetch_related('legislative_session')
 
     subjects = _mark_selected(subjects, filter_subjects)
 
@@ -52,24 +56,28 @@ def bill_list_by_topic(request):
     )
 
 
-def bill_list_by_location(request):
+def bill_list_by_location(request, location_selected=None):
     '''Sort bills based on Location
     '''
     alphalist = True
     locations = get_all_locations()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
+    filter_locations = []
+    if location_selected:
+        filter_locations.append(location_selected)
+
+    filters = {'legislative_session': current_session}
+
     if request.GET.getlist('bill_sorters'):
-        filter_locations = request.GET.getlist('bill_sorters')
-        all_bills = Bill.objects.filter(
-            legislative_session=current_session,
-            extras__places__contains=filter_locations
-        ).order_by("title").prefetch_related('legislative_session')
-    else:
-        filter_locations = []
-        all_bills = Bill.objects.filter(
-            legislative_session=current_session
-        ).order_by("title").prefetch_related('legislative_session')
+        filter_locations += request.GET.getlist('bill_sorters')
+
+    if filter_locations:
+        filters['extras__places__contains'] = filter_locations
+
+    all_bills = Bill.objects.filter(
+        **filters
+    ).order_by("title").prefetch_related('legislative_session')
 
     locations = _mark_selected(locations, filter_locations)
 
