@@ -75,7 +75,7 @@
 - name: ensure nginx is running and starts on boot
   service: name=nginx state=restarted enabled=yes
 - name: generate new relic config
-  command: /home/tot/virt/bin/newrelic-admin generate-config {{ newrelic_key }} /home/tot/tot/tot/newrelic.ini creates=/home/tot/tot/tot/newrelic.ini
+  command: /home/tot/virt/bin/newrelic-admin generate-config {{ newrelic_key }} /home/tot/src/tot/tot/newrelic.ini creates=/home/tot/src/tot/tot/newrelic.ini
 - name: start uwsgi
   service: name=uwsgi state=started args=tot
 - name: collectstatic
