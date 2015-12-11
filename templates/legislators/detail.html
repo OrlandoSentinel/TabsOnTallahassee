@@ -83,7 +83,7 @@
     <div class="row" id="voting_history">
         <div class="col-md-12">
             <p class="lead">Voting History</p>
-
+            {# TODO -- add pagination #}
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -109,7 +109,21 @@
                 </tbody>
                 
             </table>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if votes.has_previous %}
+                        <a href="?page={{ votes.previous_page_number }}#voting_history">previous</a>
+                    {% endif %}
 
+                    <span class="current">
+                        Page {{ votes.number }} of {{ votes.paginator.num_pages }}.
+                    </span>
+
+                    {% if votes.has_next %}
+                        <a href="?page={{ votes.next_page_number }}#voting_history">next</a>
+                    {% endif %}
+                </span>
+            </div>
         </div>
     </div>
 </div>
