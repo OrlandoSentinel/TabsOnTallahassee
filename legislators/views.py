@@ -1,6 +1,7 @@
 import json
 import requests
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from opencivicdata.models import Person, Bill
 
@@ -83,11 +84,25 @@ def legislator_detail(request, legislator_id):
 
     contact_details = get_contact_details(legislator)
 
-    votes = legislator.votes.all().prefetch_related(
+    member_since = 'To Be Entered'  # TODO - will come from manual spreadsheet
+
+    all_votes = legislator.votes.all().prefetch_related(
         'vote_event__bill__legislative_session'
     ).order_by(
         '-vote_event__start_date'
     )  # TODO - how to handle vote history pagination?
+
+    paginator = Paginator(all_votes, 10)
+    page = request.GET.get('page')
+
+    try:
+        votes = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        votes = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        votes = paginator.page(paginator.num_pages)
 
     recent_votes = votes[:settings.NUMBER_OF_LATEST_ACTIONS]
     sponsored_bills = [
@@ -118,7 +133,8 @@ def legislator_detail(request, legislator_id):
             'votes': votes,
             'recent_votes': recent_votes,
             'sponsored_bills': sponsored_bills,
-            'message': message
+            'message': message,
+            'member_since': member_since
         }
     )
 
