@@ -117,6 +117,18 @@ class ApiTests(TestCase):
         data = json.loads(resp.content.decode('utf8'))
         assert data['meta']['pagination']['count'] == 2
 
+    def test_person_include_memberships(self):
+        resp = self._api(
+            'people/?fields=memberships&include=memberships,memberships.organization'
+        )
+        data = json.loads(resp.content.decode('utf8'))
+        include_counts = {'Membership': 0, 'Organization': 0}
+        for inc in data['included']:
+            include_counts[inc['type']] += 1
+
+        self.assertEqual(include_counts['Membership'], 100)
+        self.assertEqual(include_counts['Organization'], 4)
+
     def test_bill_list(self):
         resp = self._api('bills/?')
         self.assertEqual(resp.status_code, 200)
