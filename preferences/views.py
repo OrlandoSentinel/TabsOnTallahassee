@@ -129,7 +129,7 @@ def set_user_latlon(request):
                 else:
                     preferences.rep_from_address = json.dumps(person_dict)
 
-                PersonFollow.objects.create(user=user, person_id=person['id'])
+                PersonFollow.objects.get_or_create(user=user, person_id=person['id'])
         else:
             preferences.sen_from_address = preferences.rep_from_address = json.dumps({'name': 'none found'})
 

@@ -2,6 +2,7 @@
 
 {% block content %}
 
+{# It looks like this div is mismatched b/c of below if statement #}
 <div class="row">
     {% if alphalist %}
     <div class="col-xs-10">
@@ -9,27 +10,27 @@
     <div class="col-xs-12">
     {% endif %}
 
-    {% if sorters %}
-    <div>
-        <h2>{{ current_session }}</h2>
+        {% if sorters %}
+        <div>
+            <h2>{{ current_session }}</h2>
 
-        <form action="" method="get">
-        {% csrf_token %}
-            <div> Filter by {{ sorter_type }} 
-                <select multiple name="bill_sorters" class="prefs-multiple">
-                    {% for sorter in sorters %}
-                        {% if sorter.selected %}
-                            <option value="{{ sorter.item }}" selected="True">{{ sorter.item }}</option>
-                        {% else %}
-                            <option value="{{ sorter.item }}">{{ sorter.item }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-                <input type="submit" class="btn btn-primary" value="GO"/>
-            </div>
-        </form>
-    </div>
-    {% endif %}
+            <form action="" method="get">
+            {% csrf_token %}
+                <div> Filter by {{ sorter_type }} 
+                    <select multiple name="bill_sorters" class="prefs-multiple">
+                        {% for sorter in sorters %}
+                            {% if sorter.selected %}
+                                <option value="{{ sorter.item }}" selected="True">{{ sorter.item }}</option>
+                            {% else %}
+                                <option value="{{ sorter.item }}">{{ sorter.item }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input type="submit" class="btn btn-primary" value="GO"/>
+                </div>
+            </form>
+        </div>
+        {% endif %}
 
         {% if bills %}
             {% regroup bills by sorter as sorted_bill_list %}
@@ -69,7 +70,6 @@
         </ul>
     </div>
     {% endif %}
-
 </div>
 {% endblock %}
 
