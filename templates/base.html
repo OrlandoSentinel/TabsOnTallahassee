@@ -5,6 +5,7 @@
     <head>
         <link href="{% static 'bootstrap-3.3.5/css/bootstrap.min.css' %}" rel="stylesheet" media="screen"/>
         <link href="{% static 'css/custom.css' %}" rel="stylesheet" media="screen"/>
+        <link href="{% static 'css/main.css' %}" rel="stylesheet" media="screen"/>
         <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
         <script type="text/javascript" src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'bootstrap-3.3.5/js/bootstrap.min.js' %}"></script>
@@ -17,61 +18,62 @@
     </head>
 
     <body>
-        <div class="container">
+      
+      <nav class="navbar navbar-default">
+          <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="{% url 'latest' %}"><img src="{% url 'latest' %}static/img/tot-logo.png" alt=""></a>
+            </div>
 
-            <nav class="navbar navbar-default">
-              <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                  </button>
-                  <a class="navbar-brand" href="{% url 'latest' %}">Tabs on Tallahassee</a>
-                </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="{% url 'latest' %}">Home/Latest News<span class="sr-only">(current)</span></a></li>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/find_legislator/">Find your legislator</a></li>
+                <li><a href="/glossary">Legislative glossary</a></li>
+                <li class="dropdown">
+                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bills<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="{% url 'by_topic' %}">Bills by topic</a></li>
+                  <li><a href="{% url 'by_location' %}">Bills by location</a></li>
+                  <li><a href="{% url 'by_legislator' %}">Bills by Legislator</a></li>
+                  <li><a href="{% url 'current_session' %}">Bills in Current Session</a></li>
+                  <li><a href="{% url 'latest' %}">Latest Bill Activity</a></li>
+                </ul>
+              </li>
+              </ul>
 
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                  <ul class="nav navbar-nav">
-                    <li class="active"><a href="{% url 'latest' %}">Home/Latest News<span class="sr-only">(current)</span></a></li>
-                    <li><a href="/about/">About</a></li>
-                    <li><a href="/find_legislator/">Find your legislator</a></li>
-                    <li><a href="/glossary">Legislative glossary</a></li>
-                    <li class="dropdown">
-                       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bills<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="{% url 'by_topic' %}">Bills by topic</a></li>
-                      <li><a href="{% url 'by_location' %}">Bills by location</a></li>
-                      <li><a href="{% url 'by_legislator' %}">Bills by Legislator</a></li>
-                      <li><a href="{% url 'current_session' %}">Bills in Current Session</a></li>
-                      <li><a href="{% url 'latest' %}">Latest Bill Activity</a></li>
-                    </ul>
+              <ul class="nav navbar-nav navbar-right">
+                  <!-- {{ user }} -->
+                  <li>
+                    {% if user.is_anonymous %}
+                    <a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
                   </li>
+                  {% else %}
+                  <li class="dropdown">
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello {{user}}<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{% url 'preferences' %}">Preferences</a></li>
+                    <li><a href="/api/">API</a></li>
+                    <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
                   </ul>
-
-                  <ul class="nav navbar-nav navbar-right">
-                      <!-- {{ user }} -->
-                      <li>
-                        {% if user.is_anonymous %}
-                        <a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
-                      </li>
-                      {% else %}
-                      <li class="dropdown">
-                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello {{user}}<span class="caret"></span></a>
-                      <ul class="dropdown-menu">
-                        <li><a href="{% url 'preferences' %}">Preferences</a></li>
-                        <li><a href="/api/">API</a></li>
-                        <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
-                      </ul>
-                    </li>
-                      {% endif %}
-                    </li>
-                  </ul>
-                </div><!-- /.navbar-collapse -->
-              </div><!-- /.container-fluid -->
-            </nav>
+                </li>
+                  {% endif %}
+                </li>
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+        
+        <div class="container">
 
             <div class="row">
                 <div class="col-md-12">

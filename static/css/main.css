@@ -1,0 +1,57 @@
+/* line 15, main.scss */
+.mb_hide {
+  display: block;
+}
+
+/* line 16, main.scss */
+.dsktp_hide .menu_items {
+  display: none;
+}
+
+/* line 17, main.scss */
+.mb30 {
+  margin-bottom: 30px;
+}
+
+/* line 21, main.scss */
+.btn {
+  background: #009FDA;
+  border: 1px solid #0090c6;
+}
+/* line 24, main.scss */
+.btn:hover {
+  background: #0098d0;
+}
+
+/* line 27, main.scss */
+body {
+  background: #fff;
+  color: #666;
+  font-size: 13px;
+  line-height: 1.6em;
+  font-family: 'Arial' sans-serif;
+}
+
+/* line 35, main.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Georgia, serif';
+}
+
+/* line 39, main.scss */
+.navbar {
+  background: #f2f2f2;
+  margin-bottom: 0;
+}
+
+/* line 44, main.scss */
+.navbar-brand {
+  padding-top: 10px;
+}
+
+/* line 48, main.scss */
+.hero {
+  background: url(../img/hero.jpg) no-repeat 0 0;
+  background-position: top center;
+  min-height: 620px;
+  height: auto;
+}
