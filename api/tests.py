@@ -27,7 +27,8 @@ class ApiTests(TestCase):
             method, self.apikey))
 
     def test_jurisdiction_list(self):
-        resp = self._api('jurisdictions/?')
+        with self.assertNumQueries(4):
+            resp = self._api('jurisdictions/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
         assert len(data['data']) == 1
@@ -40,7 +41,8 @@ class ApiTests(TestCase):
         assert '/api/ocd-jurisdiction/country:us/state:fl/government/' in url
 
     def test_jurisdiction_detail(self):
-        resp = self._api('ocd-jurisdiction/country:us/state:fl/government/?')
+        with self.assertNumQueries(4):
+            resp = self._api('ocd-jurisdiction/country:us/state:fl/government/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
 
@@ -48,7 +50,8 @@ class ApiTests(TestCase):
         assert 'legislative_sessions' in data['data']['attributes']
 
     def test_person_list(self):
-        resp = self._api('people/?')
+        with self.assertNumQueries(7):
+            resp = self._api('people/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
         assert len(data['data']) == 50
@@ -56,8 +59,10 @@ class ApiTests(TestCase):
             assert field not in data['data'][0]['attributes']
         assert 'relationships' not in data['data'][0]
 
+
     def test_person_detail(self):
-        resp = self._api('ocd-person/0446be69-7504-417d-97c1-136589908ee5/?')
+        with self.assertNumQueries(11):
+            resp = self._api('ocd-person/0446be69-7504-417d-97c1-136589908ee5/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
 
@@ -117,8 +122,21 @@ class ApiTests(TestCase):
         data = json.loads(resp.content.decode('utf8'))
         assert data['meta']['pagination']['count'] == 2
 
+    def test_person_include_memberships(self):
+        resp = self._api(
+            'people/?fields=memberships&include=memberships,memberships.organization'
+        )
+        data = json.loads(resp.content.decode('utf8'))
+        include_counts = {'Membership': 0, 'Organization': 0}
+        for inc in data['included']:
+            include_counts[inc['type']] += 1
+
+        self.assertEqual(include_counts['Membership'], 100)
+        self.assertEqual(include_counts['Organization'], 4)
+
     def test_bill_list(self):
-        resp = self._api('bills/?')
+        with self.assertNumQueries(4):
+            resp = self._api('bills/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 48)
@@ -127,7 +145,8 @@ class ApiTests(TestCase):
         self.assertEqual(['from_organization'], list(data['data'][0]['relationships'].keys()))
 
     def test_bill_detail(self):
-        resp = self._api('ocd-bill/3cc1d006-7059-465c-b72b-d0d4a845c55c/?')
+        with self.assertNumQueries(18):
+            resp = self._api('ocd-bill/3cc1d006-7059-465c-b72b-d0d4a845c55c/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
 
@@ -191,7 +210,8 @@ class ApiTests(TestCase):
         self.assertEqual(resp.data['meta']['pagination']['count'], 3)
 
     def test_vote_list(self):
-        resp = self._api('votes/?')
+        with self.assertNumQueries(4):
+            resp = self._api('votes/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 83)
@@ -200,7 +220,8 @@ class ApiTests(TestCase):
         self.assertEqual({'bill', 'organization'}, set(data['data'][0]['relationships'].keys()))
 
     def test_vote_detail(self):
-        resp = self._api('ocd-vote/06c4f6c2-b9a2-4ee6-95ad-a40b80cfbc27/?')
+        with self.assertNumQueries(10):
+            resp = self._api('ocd-vote/06c4f6c2-b9a2-4ee6-95ad-a40b80cfbc27/?')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.content.decode('utf8'))
 

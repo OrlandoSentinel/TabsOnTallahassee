@@ -8,6 +8,7 @@ from .serializers import (Jurisdiction, SimpleJurisdictionSerializer, FullJurisd
                           Bill, SimpleBillSerializer, FullBillSerializer,
                           VoteEvent, SimpleVoteSerializer, FullVoteSerializer,
                           Organization, SimpleOrganizationSerializer, FullOrganizationSerializer,
+                          Membership, SimpleMembershipSerializer, FullMembershipSerializer,
                           )
 from .utils import AllowFieldLimitingMixin
 
@@ -60,12 +61,20 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
     * **latitude, longitude** - must be specified together, filters for individuals
                                 currently representing a district including the
                                 location in question
+
+    Available Resources for inclusion:
+
+    * memberships
+    * memberships.organization
     """
     serializer_class = SimplePersonSerializer
     full_serializer_class = FullPersonSerializer
 
     def get_queryset(self):
-        queryset = Person.objects.all()
+        queryset = Person.objects.all().prefetch_related('memberships',
+                                                         'memberships__organization',
+                                                         'memberships__post',
+                                                         )
 
         name = self.request.query_params.get('name', None)
         member_of = self.request.query_params.get('member_of', None)
@@ -87,7 +96,7 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
                 .format(longitude, latitude)
             )
         elif latitude or longitude:
-            raise Exception()   # TODO: make meaningful exception
+            raise ValueError('must provide lat & lon together')
 
         return queryset.distinct()
 
@@ -104,6 +113,9 @@ class PersonDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
 
 
 class OrganizationList(AllowFieldLimitingMixin, generics.ListAPIView):
+    """
+    List of all Organizations.
+    """
     serializer_class = SimpleOrganizationSerializer
     full_serializer_class = FullOrganizationSerializer
 
@@ -123,6 +135,29 @@ class OrganizationDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
     queryset = Organization.objects.all()
     serializer_class = SimpleOrganizationSerializer
     full_serializer_class = FullOrganizationSerializer
+
+
+class MembershipList(AllowFieldLimitingMixin, generics.ListAPIView):
+    """
+    List of all Memberships.
+    """
+    serializer_class = SimpleMembershipSerializer
+    full_serializer_class = FullMembershipSerializer
+
+    def get_queryset(self):
+        queryset = Membership.objects.all()
+        return queryset
+
+
+class MembershipDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
+    """
+    Detailed resource for single Membership object.
+
+    Includes all fields by default, can be limited w/ ``fields`` parameter.
+    """
+    queryset = Membership.objects.all()
+    serializer_class = SimpleMembershipSerializer
+    full_serializer_class = FullMembershipSerializer
 
 
 class BillList(AllowFieldLimitingMixin, generics.ListAPIView):

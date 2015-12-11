@@ -12,6 +12,7 @@
             <hr/>
             <div>{{ post }}</div>
             <div>{{ party }}</div>
+            <div>Member since {{ member_since }}</div>
             <div><a href="#voting_history" class="btn btn-primary" role="button">Voting History</a></div>
             <div><a href="#contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact</a></div>
             <div id="contact_details" class="collapse">
@@ -82,7 +83,6 @@
     <div class="row" id="voting_history">
         <div class="col-md-12">
             <p class="lead">Voting History</p>
-
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -108,7 +108,21 @@
                 </tbody>
                 
             </table>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if votes.has_previous %}
+                        <a href="?page={{ votes.previous_page_number }}#voting_history">previous</a>
+                    {% endif %}
 
+                    <span class="current">
+                        Page {{ votes.number }} of {{ votes.paginator.num_pages }}.
+                    </span>
+
+                    {% if votes.has_next %}
+                        <a href="?page={{ votes.next_page_number }}#voting_history">next</a>
+                    {% endif %}
+                </span>
+            </div>
         </div>
     </div>
 </div>
