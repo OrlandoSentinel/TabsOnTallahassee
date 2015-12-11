@@ -226,8 +226,6 @@ def bill_list_latest(request):
         'current_session': current_session
     }
 
-    # TODO - add filters for non-logged in users
-
     filters = {
         'legislative_session__name': settings.CURRENT_SESSION
     }
@@ -258,7 +256,7 @@ def bill_list_latest(request):
     if people:
         for person in people:
             person_name = Person.objects.get(id=person).name
-            person_bills = all_bills.filter(sponsorships__id__contains=person)[:settings.NUMBER_OF_LATEST_ACTIONS]
+            person_bills = all_bills.filter(sponsorships__person_id=person)[:settings.NUMBER_OF_LATEST_ACTIONS]
             person_detail = {'heading': person_name, 'bills': person_bills}
             bills_by_selected_filter.append(person_detail)
     if topics:
