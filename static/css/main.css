@@ -16,14 +16,16 @@
 /* line 21, main.scss */
 .btn {
   background: #009FDA;
+  color: #fff;
   border: 1px solid #0090c6;
 }
-/* line 24, main.scss */
+/* line 25, main.scss */
 .btn:hover {
-  background: #0098d0;
+  background: #0094cb;
+  color: #fff;
 }
 
-/* line 27, main.scss */
+/* line 28, main.scss */
 body {
   background: #fff;
   color: #666;
@@ -32,26 +34,36 @@ body {
   font-family: 'Arial' sans-serif;
 }
 
-/* line 35, main.scss */
+/* line 36, main.scss */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Georgia, serif';
 }
 
-/* line 39, main.scss */
+/* line 40, main.scss */
 .navbar {
   background: #f2f2f2;
   margin-bottom: 0;
 }
 
-/* line 44, main.scss */
+/* line 45, main.scss */
 .navbar-brand {
   padding-top: 10px;
 }
 
-/* line 48, main.scss */
+/* line 49, main.scss */
 .hero {
   background: url(../img/hero.jpg) no-repeat 0 0;
   background-position: top center;
   min-height: 620px;
   height: auto;
+}
+
+/* line 56, main.scss */
+.centered_form {
+  margin-top: 50px;
+  background: #eee;
+  border: 1px solid #bbb;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
 }

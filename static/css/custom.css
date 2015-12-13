@@ -52,3 +52,7 @@ form {
 img.legislator-image {
   max-width: 150px;
 }
+
+ol.breadcrumb {
+    margin-bottom: 0px;
+}

@@ -38,9 +38,10 @@ if os.environ.get('DEBUG', 'true').lower() == 'false':
     EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
     EMAIL_PORT = '587'
     EMAIL_USE_TLS = True
-    REGISTRATION_DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
+    REGISTRATION_DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.environ[
+        'DEFAULT_FROM_EMAIL']
     # enable once SSL is ready
-    #SECURE_HSTS_SECONDS = 3600
+    # SECURE_HSTS_SECONDS = 3600
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -97,7 +98,6 @@ MIDDLEWARE_CLASSES = [
 ]
 
 ROOT_URLCONF = 'tot.urls'
-
 
 
 WSGI_APPLICATION = 'tot.wsgi.application'

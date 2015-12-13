@@ -16,5 +16,5 @@ class KeyAuthentication(authentication.BaseAuthentication):
         try:
             p = Preferences.objects.get(apikey=apikey)
             return (p.user, None)
-        except (Preferences.DoesNotExist, ValueError) as e:
+        except (Preferences.DoesNotExist, ValueError):
             raise exceptions.AuthenticationFailed('Invalid Key')

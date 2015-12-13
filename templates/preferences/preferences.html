@@ -6,6 +6,19 @@
 <script src='{% static "js/gmaps.js" %}'></script>
 <script>
 $(document).ready(function() {
+    var map = new GMaps({
+            div: '#map',
+            lat: {{ lat }},
+            lng: {{ lng }},
+            zoom: 10
+        });
+
+    map.removeMarkers();
+    map.addMarker({
+       lat: {{ lat }},
+       lng: {{ lng }}
+    });
+
     $('#enter_location').submit(function(e){
         e.preventDefault();
         GMaps.geocode({
@@ -38,9 +51,108 @@ $(document).ready(function() {
 
     {% include "preferences/location_form.html" %}
 
+    <div class="row">
+    {% if error_message %}
+
+    <div class="col-md-4">
+        <p><strong>{{ error_message }}</strong></p>
+    </div>
+
+    {% else %}
+
+    <div class="col-md-4">
+        <div id="map" style="margin-left:100px;"></div>
+    </div>
+
+    <div class="col-md-4">
+        <p><strong>Your senator is:</strong></p>
+        <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name }}</a></p>
+    </div>
+
+
+    <div class="col-md-4">
+        <p><strong>Your representative is:</strong></p>
+        <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name }}</a></p>
+    </div>
+
+        {% endif %}
+    </div>
+
     <hr/>
 
-    {% include "preferences/form.html" %}
+    <form action="" method="post" id="enter_prefs">
+    {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <p class="lead">Senators</p>
+                    <select multiple name="senators" class="prefs-multiple" style="max-width:90%;">
+                        {% for senator in senators %}
+                            {% if senator.selected %}
+                                <option value="{{senator.item.id}}" selected="True">{{ senator.item.name }}</option>
+                            {% else %}
+                                <option value="{{senator.item.id}}">{{ senator.item.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div>
+                    <p class="lead">Representatives</p>
+                    <select multiple name="representatives" class="prefs-multiple">
+                        {% for representative in representatives %}
+                            {% if representative.selected %}
+                                <option value="{{representative.item.id}}" selected="True">{{ representative.item.name }}</option>
+                            {% else %}
+                                <option value="{{representative.item.id}}">{{ representative.item.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <p class="lead">Locations</p>
+                    <select multiple name="locations" class="prefs-multiple">
+                        {% for location in locations %}
+                            {% if location.selected %}
+                                <option value="{{ location.item }}" selected="True">{{ location.item }}</option>
+                            {% else %}
+                                <option value="{{ location.item }}">{{ location.item }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div>
+                    <p class="lead">Subjects</p>
+                    <select multiple name="subjects" class="prefs-multiple">
+                        {% for subject in subjects %}
+                            {% if subject.selected %}
+                                <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+                            {% else %}
+                                <option value="{{ subject.item }}">{{ subject.item }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row">
+            <div class="col-md-12">
+                <input type="submit"/>
+            </div>
+        </div>
+    </form>
 
     <hr />
 

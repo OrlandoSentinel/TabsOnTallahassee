@@ -1,5 +1,4 @@
 import string
-import requests
 
 from django.db.models import Q
 from django.shortcuts import render
@@ -16,22 +15,26 @@ from opencivicdata.models import Bill, LegislativeSession, Person
 ALL_LETTERS = string.ascii_lowercase
 
 
-def bill_list_by_topic(request):
+def bill_list_by_topic(request, topic_selected=None):
     alphalist = True
     subjects = get_all_subjects()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
+    filter_subjects = []
+    if topic_selected:
+        filter_subjects.append(topic_selected)
+
+    filters = {'legislative_session': current_session}
+
     if request.GET.getlist('bill_sorters'):
-        filter_subjects = request.GET.getlist('bill_sorters')
-        all_bills = Bill.objects.filter(
-            legislative_session=current_session,
-            subject__contains=filter_subjects
-        ).order_by("title").prefetch_related('legislative_session')
-    else:
-        filter_subjects = []
-        all_bills = Bill.objects.filter(
-            legislative_session=current_session
-        ).order_by("title").prefetch_related('legislative_session')
+        filter_subjects += request.GET.getlist('bill_sorters')
+
+    if filter_subjects:
+        filters['subject__contains'] = filter_subjects
+
+    all_bills = Bill.objects.filter(
+        **filters
+    ).order_by("title").prefetch_related('legislative_session')
 
     subjects = _mark_selected(subjects, filter_subjects)
 
@@ -53,24 +56,28 @@ def bill_list_by_topic(request):
     )
 
 
-def bill_list_by_location(request):
+def bill_list_by_location(request, location_selected=None):
     '''Sort bills based on Location
     '''
     alphalist = True
     locations = get_all_locations()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
+    filter_locations = []
+    if location_selected:
+        filter_locations.append(location_selected)
+
+    filters = {'legislative_session': current_session}
+
     if request.GET.getlist('bill_sorters'):
-        filter_locations = request.GET.getlist('bill_sorters')
-        all_bills = Bill.objects.filter(
-            legislative_session=current_session,
-            extras__places__contains=filter_locations
-        ).order_by("title").prefetch_related('legislative_session')
-    else:
-        filter_locations = []
-        all_bills = Bill.objects.filter(
-            legislative_session=current_session
-        ).order_by("title").prefetch_related('legislative_session')
+        filter_locations += request.GET.getlist('bill_sorters')
+
+    if filter_locations:
+        filters['extras__places__contains'] = filter_locations
+
+    all_bills = Bill.objects.filter(
+        **filters
+    ).order_by("title").prefetch_related('legislative_session')
 
     locations = _mark_selected(locations, filter_locations)
 
@@ -195,14 +202,29 @@ def get_user_preferences(user):
     return person_follows, topic_follows, location_follows
 
 
+def get_anonymous_selections(request):
+    senators = request.GET.getlist('senators')
+    representatives = request.GET.getlist('senators')
+
+    person_follows = senators + representatives
+
+    topic_follows = request.GET.getlist('subjects')
+    location_follows = request.GET.getlist('locations')
+
+    return person_follows, topic_follows, location_follows
+
+
 def bill_list_latest(request):
     ''' List of bills with a latest action for the current session, based on preferences.
     Organized by topic, legislator, topic, and then by latest action.
     '''
     user = request.user
-
-    # TODO - add filters for non-logged in users
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
+
+    context = {
+        'user': user,
+        'current_session': current_session
+    }
 
     filters = {
         'legislative_session__name': settings.CURRENT_SESSION
@@ -216,26 +238,38 @@ def bill_list_latest(request):
     # There will be one entry for each of the topics, locations,legislators followed.
     bills_by_selected_filter = []
 
-    if not user.is_anonymous():
-        people, topics, locations = get_user_preferences(user)
+    if user.is_anonymous():
+        subjects = get_all_subjects()
+        locations = get_all_locations()
 
-        if people:
-            for person in people:
-                person_name = Person.objects.get(id=person).name
-                person_bills = all_bills.filter(sponsorships__id__contains=person)[:settings.NUMBER_OF_LATEST_ACTIONS]
-                person_detail = {'heading': person_name, 'bills': person_bills}
-                bills_by_selected_filter.append(person_detail)
-        if topics:
-            for topic in topics:
-                topic_bills = all_bills.filter(subject__contains=[topic])[:settings.NUMBER_OF_LATEST_ACTIONS]
-                topic_detail = {'heading': topic, 'bills': topic_bills}
-                bills_by_selected_filter.append(topic_detail)
+        people, topics, selected_locations = get_anonymous_selections(request)
 
-        # if locations:
-        #     for location in locations:
-        #         location_bills = all_bills.filter(extras__places__contains=location)
-        #         location_detail = {'heading': location, 'bills': location_bills}
-        #         bills_by_selected_filter.append(location_detail)
+        subjects = _mark_selected(subjects, topics)
+        locations = _mark_selected(locations, selected_locations)
+
+        context['subjects'] = subjects
+        context['locations'] = locations
+
+    else:
+        people, topics, selected_locations = get_user_preferences(user)
+
+    if people:
+        for person in people:
+            person_name = Person.objects.get(id=person).name
+            person_bills = all_bills.filter(sponsorships__person_id=person)[:settings.NUMBER_OF_LATEST_ACTIONS]
+            person_detail = {'heading': person_name, 'bills': person_bills}
+            bills_by_selected_filter.append(person_detail)
+    if topics:
+        for topic in topics:
+            topic_bills = all_bills.filter(subject__contains=[topic])[:settings.NUMBER_OF_LATEST_ACTIONS]
+            topic_detail = {'heading': topic, 'bills': topic_bills}
+            bills_by_selected_filter.append(topic_detail)
+
+    if selected_locations:
+        for place in selected_locations:
+            location_bills = all_bills.filter(extras__places__in=place)
+            location_detail = {'heading': place, 'bills': location_bills}
+            bills_by_selected_filter.append(location_detail)
 
     for item in bills_by_selected_filter:
         for bill in item['bills']:
@@ -243,11 +277,7 @@ def bill_list_latest(request):
         # via smarter use of Prefetch()
             bill.latest_action = list(bill.actions.all())[-1]
 
-    context = {
-        'user': user,
-        'bills_by_selected_filter': bills_by_selected_filter,
-        'current_session': current_session.name
-    }
+    context['bills_by_selected_filter'] = bills_by_selected_filter
 
     return render(
         request,
@@ -334,9 +364,10 @@ def bill_detail(request, bill_session, bill_identifier):
     sponsors = bill.sponsorships.all().select_related('person', 'organization')
 
     for sponsor in sponsors:
-        sponsor.party = sponsor.person.memberships.filter(
-            organization__classification='party'
-        )[0].organization.name
+        if sponsor.person:
+            sponsor.party = sponsor.person.memberships.filter(
+                organization__classification='party'
+            )[0].organization.name
 
     history = bill.actions.all()
 

@@ -55,6 +55,10 @@ def user_preferences(request):
     selected_locations = _mark_selected(locations, locations_followed)
 
     preferences, _ = Preferences.objects.get_or_create(user=user)
+
+    lat = preferences.lat or 30.407741
+    lng = preferences.lon or -84.2705644
+
     error_message = None
     address_senator = None
     address_representative = None
@@ -92,7 +96,9 @@ def user_preferences(request):
             'address': preferences.address,
             'address_senator': address_senator,
             'address_representative': address_representative,
-            'error_message': error_message
+            'error_message': error_message,
+            'lat': lat,
+            'lng': lng
         }
     )
 
@@ -123,7 +129,7 @@ def set_user_latlon(request):
                 else:
                     preferences.rep_from_address = json.dumps(person_dict)
 
-                PersonFollow.objects.create(user=user, person_id=person['id'])
+                PersonFollow.objects.get_or_create(user=user, person_id=person['id'])
         else:
             preferences.sen_from_address = preferences.rep_from_address = json.dumps({'name': 'none found'})
 

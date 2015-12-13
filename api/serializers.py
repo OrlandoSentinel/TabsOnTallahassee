@@ -27,12 +27,24 @@ class FullJurisdictionSerializer(serializers.HyperlinkedModelSerializer):
                                                     'bills', 'votes'])
 
 
+POST_FIELDS = ('role', 'label')
+
 class SimpleMembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
         exclude = ('id', 'person', 'created_at', 'updated_at',
                    'extras', 'locked_fields',
                    )
+    post = InlineDictField(include=POST_FIELDS)
+
+    included_serializers = {'organization': 'api.serializers.FullOrganizationSerializer'}
+
+
+class FullMembershipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Membership
+        exclude = ('locked_fields',)
+    post = InlineDictField(include=POST_FIELDS)
 
 
 class SimplePersonSerializer(serializers.HyperlinkedModelSerializer):
@@ -40,11 +52,15 @@ class SimplePersonSerializer(serializers.HyperlinkedModelSerializer):
         model = Person
         exclude = ('locked_fields',)
 
+    included_serializers = {'memberships': FullMembershipSerializer}
+
 
 class FullPersonSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Person
         exclude = ('locked_fields',)
+
+    included_serializers = {'memberships': FullMembershipSerializer}
 
     memberships = SimpleMembershipSerializer(many=True)
 
@@ -53,6 +69,8 @@ class FullPersonSerializer(serializers.HyperlinkedModelSerializer):
     contact_details = InlineListField(exclude=['id', 'person'])
     object_links = InlineListField(source='links', exclude=['id', 'person'])
     sources = InlineListField(exclude=['id', 'person'])
+
+    included_serializers = {'memberships': FullMembershipSerializer}
 
 
 BILL_LEG_SESSION_FIELDS = ['name', 'identifier', 'jurisdiction_id']

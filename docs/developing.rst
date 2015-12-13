@@ -63,6 +63,19 @@ A "clean" database has been created w/ the following steps::
 
     # TODO: 204, 2015C, 2016
 
+Using Docker
+------------
+
+It's also possible to use docker-machine to run a development server.
+
+To run a dev environment w/ Docker::
+
+    $ docker-machine create --driver virtualbox --virtualbox-memory "2048" tot
+    $ eval $(docker-machine env tot)
+    $ docker-compose up
+    $ open http://$(docker-machine ip tot):8000
+
+
 Directory Layout
 ----------------
 
@@ -100,20 +113,19 @@ Additional Notes
 
 This project was developed against:
 
-* opencivicdata-django 0.7.4
+* opencivicdata-django 0.8.2
 * opencivicdata-divisions-2015.4.21
-* pupa 0.5.0
+* pupa 0.5.2
 * represent-boundaries 0.7.4
-* Django 1.9b1
-* djangorestframework 3.2.4
+* Django 1.9
+* djangorestframework 3.3.0
 * django-cors-headers 1.1.0
 * whitenoise 2.0.4
 * lxml 3.4.4
 * Markdown 2.6.2
-* rest_framework_json_api @ d22cc0a
-* waterfall @ 974beb
-* django-registration @ f1dfbd
+* django-registration @ f1a8c0
+* rest_framework_json_api @ d217ba
 
 
-Many of these libraries were bleeding edge at the time of writing and significant changes may have occurred.
+Many of these libraries were under active development at the time of writing and significant changes may have occurred.
 Before upgrading any libraries be very careful to ensure that they don't introduce breaking changes.

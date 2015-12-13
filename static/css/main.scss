@@ -20,8 +20,9 @@ $mobile : false;
 
 .btn{
 	background: $blue;
+	color: #fff;
 	border: 1px solid darken($blue,4%);
-	&:hover{background: darken($blue,2%);}
+	&:hover{background: darken($blue,3%);color: #fff;}
 }
 
 body{
@@ -50,6 +51,13 @@ h1,h2,h3,h4,h5,h6{
     background-position: top center;
     min-height: 620px;
     height: auto;
+}
+
+.centered_form{
+	margin-top: 50px;
+	background: #eee;
+	border: 1px solid #bbb;
+	@include border-radius(3px);
 }
 
 
