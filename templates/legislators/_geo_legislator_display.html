@@ -1,0 +1,13 @@
+<div class="col-md-6">
+    <p><strong>Your senator is:</strong></p>
+    <p><a href="{{ address_senator.url }}">{{ address_senator.name }}</a></p>
+    <a href="{{ address_senator.url }}"><img src="{{ address_senator.image }}" class="legislator-image"></a>
+    <input type="hidden" name="senator" value="{{ address_senator.id }}">
+</div>
+
+<div class="col-md-6">
+    <p><strong>Your representative is:</strong></p>
+    <p><a href="{{ address_representative.url }}">{{ address_representative.name }}</a></p>
+    <a href="{{ address_representative.url }}"><img src=" {{ address_representative.image }}" class="legislator-image"></a>
+    <input type="hidden" name="representative" value="{{ address_representative.id }}">
+</div>
