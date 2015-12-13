@@ -203,11 +203,7 @@ def get_user_preferences(user):
 
 
 def get_anonymous_selections(request):
-    senators = request.GET.getlist('senators')
-    representatives = request.GET.getlist('senators')
-
-    person_follows = senators + representatives
-
+    person_follows = request.GET.getlist('senator') + request.GET.getlist('representative')
     topic_follows = request.GET.getlist('subjects')
     location_follows = request.GET.getlist('locations')
 

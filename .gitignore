@@ -67,3 +67,4 @@ target/
 .vagrant
 
 ansible/ec2
+collected_static/
