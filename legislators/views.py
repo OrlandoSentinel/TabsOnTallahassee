@@ -1,14 +1,12 @@
 import json
 import requests
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from opencivicdata.models import Person, Bill
+from opencivicdata.models import Person
 
 from tot import settings
 from preferences.models import PersonFollow
-from bills.views import bill_list_latest
 
 
 def find_legislator(request):
