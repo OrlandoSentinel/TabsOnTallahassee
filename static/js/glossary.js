@@ -1,6 +1,6 @@
 function replace() {
   var watch_words = {
-    'Bill': 'a thing',
+    'Senate Bill': 'a thing',
     'Activity': 'an action',
   };
   function span_wrap(text) {
