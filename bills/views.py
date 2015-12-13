@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from tot import settings
 from preferences.views import _mark_selected, _get_current_people
 from bills.utils import get_all_subjects, get_all_locations
-from preferences.models import PersonFollow, TopicFollow, LocationFollow
 
 from opencivicdata.models import Bill, LegislativeSession, Person
 
@@ -386,8 +385,3 @@ def bill_detail(request, bill_session, bill_identifier):
         'bills/detail.html',
         context
     )
-
-    # If there's no information then have a message that says no information for now
-    # Documents related to the bill (also from database)
-    # A way to see the text of the different versions of the bill. That information is also in the database. We like the way GovTrack does it in the history section when you click the “see changes” link and see the differences side by side.
-    # A way to view the votes taken on a bill in the House and Senate. We like the way GovTrack does it — essentially just a glorified list: https://www.govtrack.us/congress/votes/114-2015/s272
