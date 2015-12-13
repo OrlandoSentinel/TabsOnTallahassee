@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
@@ -12,7 +12,7 @@ BILL_FULL_FIELDS = ('abstracts', 'other_titles', 'other_identifiers',
                     'documents', 'versions', 'sources')
 
 
-class BillViewTests(TestCase):
+class BillViewTests(StaticLiveServerTestCase):
 
     fixtures = ['fl_testdata.json']
 
