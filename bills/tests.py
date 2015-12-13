@@ -1,10 +1,12 @@
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test import override_settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 from preferences.models import Preferences
 
 
+@override_settings(STATICFILES_STORAGE='django.contrib.staticfiles.storage.StaticFilesStorage')
 class BillViewTests(StaticLiveServerTestCase):
 
     fixtures = ['fl_testdata.json']
