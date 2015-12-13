@@ -15,7 +15,6 @@
             <h2>{{ current_session }}</h2>
 
             <form action="" method="get">
-            {% csrf_token %}
                 <div> Filter by {{ sorter_type }} 
                     <select multiple name="bill_sorters" class="prefs-multiple">
                         {% for sorter in sorters %}
