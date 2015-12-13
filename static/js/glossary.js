@@ -1,5 +1,8 @@
 function glossary_replace() {
   $.getJSON('/glossary/json/', function(data) {
+    if($.isEmptyObject(data)) {
+      return;
+    }
     var watch_words = data;
     function span_wrap(text) {
       return ' <span class="glossary" title="' + watch_words[text] + '">' + text + '</span> ';
