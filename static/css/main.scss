@@ -53,9 +53,20 @@ h1,h2,h3,h4,h5,h6{
     height: auto;
 }
 
+.errorlist{
+	color: tomato;
+	font-weight: 600;
+	padding-left: 10px;
+	margin-top: 20px;
+}
+
+.form-control{
+	margin-bottom: 20px;
+}
+
 .centered_form{
 	margin-top: 50px;
-	background: #eee;
+	background: #f5f5f5;
 	border: 1px solid #bbb;
 	@include border-radius(3px);
 }
