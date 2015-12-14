@@ -10,8 +10,9 @@
     {{ bill.title }}
 </div>
 
-<div>
-    <a href="{{ versions.0.links.all.0.url }}">View PDF</a>
+<div><a href="#bill_embed" role="button" data-toggle="collapse">View Latest</a></div>
+<div id="bill_embed" class="collapse">
+    <iframe class="iframeborder" src="{{ versions.0.links.all.0.url }}" width="90%" height="800px" longdesc="this is the text for the bill"></iframe>
 </div>
 
 <hr/>
@@ -109,10 +110,9 @@
         <li>{{ version.note }} - {{ version.date }}</li>
             <ul>
             {% for link in version.links.all %}
-                <li><a href="{{ link.url }}">View PDF</a></li>
                 <li><a href="#version_text" data-toggle="collapse">View Text</a></li>
                     <div id="version_text" class="collapse">
-                        {{ link.text }}
+                        <iframe class="iframeborder" src="{{ link.url }}" width="90%" height="800px" longdesc="this is the text for the bill"></iframe>
                     </div>
 
             {% endfor %}
