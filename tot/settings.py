@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'registration',
     'preferences',
     'legislators',
+    'bills',
     'api',
     'rest_framework',
     'corsheaders',

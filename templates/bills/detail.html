@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bills %}
 
 {% block content %}
 
@@ -12,7 +13,7 @@
 
 <div><a href="#bill_embed" role="button" data-toggle="collapse">View Latest</a></div>
 <div id="bill_embed" class="collapse">
-    <iframe class="iframeborder" src="{{ versions.0.links.all.0.url }}" width="90%" height="800px" longdesc="this is the text for the bill"></iframe>
+    <iframe class="iframeborder" src="{{ versions.0.links.all.0.url|force_https }}" width="90%" height="800px" longdesc="this is the text for the bill"></iframe>
 </div>
 
 <hr/>
