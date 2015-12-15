@@ -3,7 +3,7 @@ import requests
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from opencivicdata.models import Person, Bill
+from opencivicdata.models import Person
 
 from tot import settings
 from preferences.models import PersonFollow
@@ -74,11 +74,11 @@ def get_contact_details(legislator):
 
 def legislator_detail(request, legislator_id):
     legislator = Person.objects.get(id=legislator_id)
-    memberships = legislator.memberships.all().select_related(
+    memberships = list(legislator.memberships.all().select_related(
         'organization__classification'
-    ).select_related('post')
-    post = memberships.filter(post__isnull=False)[0]
-    party = memberships.filter(organization__classification='party')[0].organization.name
+    ).select_related('post'))
+    post = [m for m in memberships if m.post][0]
+    party = [m for m in memberships if m.organization.classification == 'party'][0].organization.name
     if party == 'Democratic':
         party = 'Democrat'
 
@@ -106,9 +106,10 @@ def legislator_detail(request, legislator_id):
 
     recent_votes = votes[:settings.NUMBER_OF_LATEST_ACTIONS]
     sponsored_bills = [
-        sponsorship.bill for sponsorship in legislator.billsponsorship_set.all().prefetch_related(
-            'bill__actions'
-        ).prefetch_related('bill__sponsorships')
+        sponsorship.bill for sponsorship in legislator.billsponsorship_set.all().select_related(
+            'bill__legislative_session').prefetch_related(
+            'bill__actions', 'bill__sponsorships', 'bill__sponsorships__person',
+        )
     ]
     for bill in sponsored_bills:
         bill.latest_action = list(bill.actions.all())[-1]
@@ -140,8 +141,33 @@ def legislator_detail(request, legislator_id):
 
 
 def latest_latlon(request):
-    # TODO - Fix so that it gets API info and does not refresh.
-    return redirect('/#legislators')
+    apikey = settings.ANON_API_KEY
+    lat = request.GET.get('lat', '')
+    lon = request.GET.get('lon', '')
+    api_resp = requests.get(
+        settings.DOMAIN + '/api/people/?latitude={}&longitude={}&apikey={}'.format(
+            lat, lon, apikey
+        )
+    ).json()
+
+    legislator_information = {}
+    if api_resp['meta']['pagination']['count'] == 2:
+        for person in api_resp['data']:
+            person_dict = {
+                'name': person['attributes']['name'],
+                'url': person['links']['self'],
+                'id': person['id'],
+                'image': person['attributes']['image']
+            }
+            if 'Senators' in person['attributes']['image']:
+                legislator_information['address_senator'] = person_dict
+            else:
+                legislator_information['address_representative'] = person_dict
+    return render(
+        request,
+        'legislators/_geo_legislator_display.html',
+        legislator_information
+    )
 
 
 def get_latlon(request):

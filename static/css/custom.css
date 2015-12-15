@@ -56,3 +56,7 @@ img.legislator-image {
 ol.breadcrumb {
     margin-bottom: 0px;
 }
+
+span.glossary {
+  border-bottom: 1px dashed black;
+}

@@ -12,17 +12,32 @@ $black: #000;
 $blue: #009FDA;
 $mobile : false;
 
+$democrat:#3877e0;
+$republican:#e03838;
+
 .mb_hide{display: block;}
 .dsktp_hide .menu_items{display: none;}
-.mb30{
-	margin-bottom: 30px;
-}
+
+.mt10{margin-top: 10px;}
+.mt20{margin-top: 20px;}
+.mt30{margin-top: 30px;}
+.mb20{margin-bottom: 20px;}
+.mb30{margin-bottom: 30px;}
 
 .btn{
 	background: $blue;
 	color: #fff;
 	border: 1px solid darken($blue,4%);
 	&:hover{background: darken($blue,3%);color: #fff;}
+
+	&.btn-lg{
+		width: 200px;
+	}
+
+	&.btn-cnt{
+		margin:0 auto;
+		display: block;
+	}
 }
 
 body{
@@ -34,16 +49,75 @@ body{
 }
 
 h1,h2,h3,h4,h5,h6{
+	color: #444;
 	font-family: 'Georgia, serif';
 }
 
+h1,h2,h3{
+	font-weight: 600;
+}
+
+.row .bill_details {
+	margin-top: 40px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #ddd;
+	@include box-shadow(0 3px 10px #c4c4c4);
+}
+
+a{
+	color: $blue;
+
+	&:hover{
+		color: darken($blue,7%);
+		text-decoration: none;
+	}
+}
+
+.detail_img{
+	border: 6px solid #ccc;
+	margin-bottom: 10px;
+}
+
+p.party{
+	padding: 3px 5px;
+	width: 197px;
+	&.republican{background: $republican;color: #fff;}
+	&.democrat{background: $democrat;color: #fff;}
+}
+
+
+.row.bb{
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 30px;
+	margin-bottom: 30px;
+}
+
 .navbar{
-	background: #f2f2f2;
-	margin-bottom: 0;
+	background-color: #e1e1e1;
+	background-image: -webkit-linear-gradient(top, #ffffff, #e1e1e1);
+	background-image: -moz-linear-gradient(top, #ffffff, #e1e1e1);
+	background-image: -o-linear-gradient(top, #ffffff, #e1e1e1);
+	background-image: -ms-linear-gradient(top, #ffffff, #e1e1e1);
+	background-image: linear-gradient(top, #ffffff, #e1e1e1);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#ffffff', EndColorStr='#e1e1e1');
+	border-bottom: 1px solid darken(#cecece,3%);
+	border-top: 1px solid #fff;
+	margin-bottom: 30px;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    color: #666;
+    background-color: #fefefe;
 }
 
 .navbar-brand{
 	padding-top: 10px;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #ccc;
+    background: #fff;
 }
 
 .hero{
@@ -67,8 +141,65 @@ h1,h2,h3,h4,h5,h6{
 .centered_form{
 	margin-top: 50px;
 	background: #f5f5f5;
-	border: 1px solid #bbb;
+	border: 1px solid #ccc;
 	@include border-radius(3px);
+	@include box-shadow(0 4px 8px #c4c4c4);
+
+	h2{
+		background: #333;
+		color: #eee;
+		padding: 3px 5px;
+		margin-bottom: 20px;
+	}
+}
+
+input.form-control{
+	height: 40px;
+}
+
+div.divider{
+	border-bottom: 2px solid #ddd;
+	padding-bottom:20px;
+	margin-bottom: 20px;
+}
+
+.bill_details{
+	h4{
+		background: #eee;
+		border: 1px solid #ddd;
+		@include border-radius(3px);
+		font-size: 18px;
+		padding: 5px 7px;
+		margin-top: 40px;
+		margin-bottom: 30px;
+		font-size: 24px;
+		font-weight: 600;
+	}
+}
+
+.heading{
+	background: #eee;
+	border: 1px solid #ddd;
+	@include border-radius(3px);
+	color: #000;
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+
+.vote_result{
+	text-align: center;
+	padding: 3px 5px;
+	width: 80px;
+
+	&.vote_pass{	
+		color: #fff;
+		background: #2bc77c;
+	}
+
+	&.vote_fail{
+		color: #fff;
+		background: #e64242;
+	}
 }
 
 
@@ -78,6 +209,9 @@ h1,h2,h3,h4,h5,h6{
 }
 
 @media handheld, only screen and (max-width: 497px) {
-
+	.row{
+		margin-left: 15px;
+		margin-right: 15px;
+	}
 }
 

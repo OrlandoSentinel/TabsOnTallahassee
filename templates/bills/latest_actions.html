@@ -1,9 +1,62 @@
 
 {% extends "base.html" %}
+<<<<<<< HEAD
 
+||||||| merged common ancestors
+{% load staticfiles %}
+
+{% block head %}
+<script src='https://maps.googleapis.com/maps/api/js'></script>
+<script src='{% static "js/gmaps.js" %}'></script>
+<script>
+$(document).ready(function() {
+
+    $("button").click(function(){
+        $.ajax({url: '{% url "latest_latlon" %}', success: function(result){
+            $("#leg_info").html('test.');
+        }});
+    });
+
+});
+</script>
+{% endblock %}
+=======
+{% load staticfiles %}
+
+{% block head %}
+<script src='https://maps.googleapis.com/maps/api/js'></script>
+<script src='{% static "js/gmaps.js" %}'></script>
+<script>
+$(document).ready(function() {
+    $('#location_submit').click(function(e){
+        e.preventDefault();
+        GMaps.geocode({
+            address: $('#address').val().trim(),
+            callback: function(results, status){
+                if ( status == 'OK' ){
+                    var latlng = results[0].geometry.location,
+                            lat = latlng.lat(),
+                            lon = latlng.lng();
+                    console.log(lat);
+                    console.log(lon);
+                    var url = '{% url "latest_latlon" %}?' + $.param({'lat': lat, 'lon':lon});
+                    $.ajax(url).done(function(data) {
+                        $('#leg_info').html(data);
+                    });
+                }
+            }
+        });
+    });
+
+});
+</script>
+
+{% endblock %}
+>>>>>>> 815b13c2781b78a3d9a20408a581c6e86ff93414
 
 {% block content %}
 
+<<<<<<< HEAD
 <!-- <div class="container-fluid hero">
     <div class="container">
         <div class="row">
@@ -16,6 +69,10 @@
 
 <h2>Latest Bill Activity</h2>
 
+||||||| merged common ancestors
+
+=======
+>>>>>>> 815b13c2781b78a3d9a20408a581c6e86ff93414
 {% if user.is_anonymous %}
 <div>
     <form action="" method="get">
@@ -53,7 +110,6 @@
 
 {% if bills_by_selected_filter %}
     {% for entry in bills_by_selected_filter %}
-
         <div>
             <p>Latest bill activity:</p>
             <span>

@@ -3,6 +3,7 @@ import requests
 from tot import settings
 
 from django.db import transaction
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from opencivicdata.models import Organization
@@ -37,6 +38,7 @@ class EmailRegistrationView(RegistrationView):
     form_class = RegistrationFormUniqueEmail
 
 
+@login_required(login_url='/accounts/login/')
 def user_preferences(request):
     user = request.user
 

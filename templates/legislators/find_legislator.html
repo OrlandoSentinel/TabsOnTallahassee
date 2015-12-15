@@ -74,7 +74,7 @@ $(document).ready(function() {
     <form action="" method="post">
     {% csrf_token %}
         Use your current location 
-        <input type="submit" class="btn btn-primary" value="Go" id="locate"/>
+        <input type="submit" class="btn" value="Go" id="locate"/>
     </form>
 </div>
 
@@ -98,7 +98,7 @@ $(document).ready(function() {
     
     <div><a href="#sen_contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact Legislator</a></div>
     <div id="sen_contact_details" class="collapse">
-        <div><i>Email: <a href="mailto:{{ senator_contact_details.email }}"> {{ senator_contact_details.email }}</a></strong></div>
+        <div><i>Email:</i><a href="mailto:{{ senator_contact_details.email }}"> {{ senator_contact_details.email }}</a></div>
         <div class="col-md-6">
             <div><strong>Capitol:</strong></div>
             {% for entry in senator_contact_details.capitol %}
@@ -127,7 +127,7 @@ $(document).ready(function() {
     <a href="{% url 'legislator_detail' address_representative.id %}"><img src=" {{ address_representative.image }}" class="legislator-image"></a>
     <div><a href="#rep_contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact Legislator</a></div>
     <div id="rep_contact_details" class="collapse">
-        <div><i>Email: <a href="mailto:{{ representative_contact_details.email }}"> {{ representative_contact_details.email }}</a></strong></div>
+    <div><i>Email:</i> <a href="mailto:{{ representative_contact_details.email }}"> {{ representative_contact_details.email }}</a></div>
         <div class="col-md-6">
             <div><strong>Capitol:</strong></div>
             {% for entry in representative_contact_details.capitol %}

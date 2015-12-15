@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% block colclass %} bill_details {% endblock %}
 {% block content %}
 
 <div>
@@ -10,14 +10,13 @@
     {{ bill.title }}
 </div>
 
-<div>
-    <a href="{{ versions.0.links.all.0.url }}">View PDF</a>
+<div><a href="#bill_embed" role="button" data-toggle="collapse">View Latest</a></div>
+<div id="bill_embed" class="collapse">
+    <iframe class="iframeborder" src="{{ versions.0.links.all.0.url }}" width="90%" height="800px" longdesc="this is the text for the bill"></iframe>
 </div>
 
-<hr/>
-
 <div>
-    <p><strong>Sponsorships</strong></p>
+    <h4>Sponsorships</h4>
     {% if sponsors %}
     {% for sponsor in sponsors %}
         {% if sponsor.primary %}
@@ -25,21 +24,19 @@
         {% else %}
             <p>Co-sponsor:</p>
         {% endif %}
+        <h2><a href="{% url 'legislator_detail' sponsor.person.id %}">{{ sponsor.entity_name }}</a></h2>
         <a href="{% url 'legislator_detail' sponsor.person.id %}">
-            <img src="{{ sponsor.person.image }}">
-            <p>{{ sponsor.entity_name }}</p>
+            <img class="detail_img" src="{{ sponsor.person.image }}" width="197" height="256">
         </a>
-        <p>{{ sponsor.party }}</p>
+        <p class="party">{{ sponsor.party }}</p>
     {% endfor %}
     {% else %}
     <p>No information available at this time.</p>
     {% endif %}
 </div>
 
-<hr/>
-
 <div>
-    <p><strong>History</strong></p>
+    <h4>History</h4>
     {% if history %}
     {% for action in history %}
     <p>{{ action.date }} - {{ action.description }}</p>
@@ -49,10 +46,8 @@
     {% endif %}
 </div>
 
-<hr/>
-
 <div>
-    <p><strong>Documents</strong></p>
+    <h4>Documents</h4>
     {% if documents %}
     <ul>
     {% for document in documents %}
@@ -69,10 +64,8 @@
     {% endif %}
 </div>
 
-<hr/>
-
 <div>
-    <p><strong>Subjects</strong></p>
+    <h4>Subjects</h4>
     {% if bill.subject %}
     <ul>
     {% for subject in bill.subject %}
@@ -84,10 +77,8 @@
     {% endif %}
 </div>
 
-<hr/>
-
 <div>
-    <p><strong>Locations</strong></p>
+    <h4>Locations</h4>
     {% if bill.extras.places %}
     <ul>
     {% for location in bill.extras.places %}
@@ -99,20 +90,17 @@
     {% endif %}
 </div>
 
-<hr/>
-
 <div>
-    <p><strong>Versions</strong></p>
+    <h4>Versions</h4>
     {% if verions %}
     <ul>
     {% for version in versions %}
         <li>{{ version.note }} - {{ version.date }}</li>
             <ul>
             {% for link in version.links.all %}
-                <li><a href="{{ link.url }}">View PDF</a></li>
                 <li><a href="#version_text" data-toggle="collapse">View Text</a></li>
                     <div id="version_text" class="collapse">
-                        {{ link.text }}
+                        <iframe class="iframeborder" src="{{ link.url }}" width="90%" height="800px" longdesc="this is the text for the bill"></iframe>
                     </div>
 
             {% endfor %}
@@ -124,10 +112,8 @@
     {% endif %}
 </div>
 
-<hr/>
-
 <div>
-    <p><strong>Votes</strong></p>
+    <h4>Votes</h4>
     {% if votes %}
     <table class="table table-striped">
         <thead>
@@ -146,9 +132,7 @@
                     <td>
                         {{ vote_event.motion_text }}
                     </td>
-                    <td>
-                        {{ vote_event.result }}
-                    </td>
+                    <td class="vote_result">{{ vote_event.result }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -159,10 +143,8 @@
     {% endif %}
 </div>
 
-<hr/>
-
 <div>
-    <p><strong>Sources</strong></p>
+    <h4>Sources</h4>
     {% if bill.sources.all %}
     <ul>
     {% for source in bill.sources.all %}
