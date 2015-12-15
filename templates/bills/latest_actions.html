@@ -84,9 +84,11 @@ $(document).ready(function() {
         {% endif %}
     {% endfor %}
 {% else %}
-    <div>
-        <p class="lead">No Preferences selected</p>
-    </div>
+    {% if not user.is_anonymous %}
+        <div>
+            <p class="lead">No Preferences selected</p>
+        </div>
+    {% endif %}
 {% endif %}
 
 {% endblock %}
