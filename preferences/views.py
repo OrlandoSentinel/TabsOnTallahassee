@@ -105,6 +105,14 @@ def user_preferences(request):
     )
 
 
+def get_api_resp(lat, lon, apikey):
+    return requests.get(
+        settings.DOMAIN + '/api/people/?latitude={}&longitude={}&apikey={}'.format(
+            lat, lon, apikey
+        )
+    ).json()
+
+
 @login_required
 def set_user_latlon(request):
     user = request.user
@@ -118,11 +126,7 @@ def set_user_latlon(request):
         preferences.lon = float(lon)
         preferences.address = address
 
-        api_resp = requests.get(
-            settings.DOMAIN + '/api/people/?latitude={}&longitude={}&apikey={}'.format(
-                preferences.lat, preferences.lon, apikey
-            )
-        ).json()
+        api_resp = get_api_resp(preferences.lat, preferences.lon, apikey)
         if api_resp['meta']['pagination']['count'] == 2:
             for person in api_resp['data']:
                 person_dict = {'name': person['attributes']['name'], 'url': person['links']['self'], 'id': person['id']}
