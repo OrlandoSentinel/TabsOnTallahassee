@@ -1,13 +1,13 @@
-<form action="" method="post" id="enter_location">
+<form action="" method="post" id="enter_location" role="form">
 {% csrf_token %}
 
     <div class="row">
         <div class="col-md-12">
             <p class="lead">Address</p>
             {% if not address %}
-                <input type="text" name="address" id="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/>
+                <input class="form-control" type="text" name="address" id="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/>
             {% else %}
-                <input type="text" name="address" id="address" value="{{address}}"/>
+                <input class="form-control" type="text" name="address" id="address" value="{{address}}"/>
             {% endif %}
             <input type="submit"/>
         </div>

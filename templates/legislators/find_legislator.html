@@ -65,15 +65,16 @@ $(document).ready(function() {
 
 {% block title %}Find Your Legislator{% endblock title %}
 {% block subtitle %}Enter an address to find your Senator and Representative{% endblock subtitle %}
-
+{% block colclass %} col-md-6  {% endblock %}
 {% block content %}
+
 <div class="row">
     <div id="map" style="margin-left:100px;"></div>
 
     <form action="" method="post">
     {% csrf_token %}
         Use your current location 
-        <input type="submit" class="btn btn-primary" value="go" id="locate"/>
+        <input type="submit" class="btn btn-primary" value="Go" id="locate"/>
     </form>
 </div>
 
