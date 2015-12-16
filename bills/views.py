@@ -370,6 +370,16 @@ def bill_detail(request, bill_session, bill_identifier):
     versions = bill.versions.all()
 
     votes = bill.votes.all()
+    vote_options = votes[0].votes.all().select_related('voter')
+
+    people_votes = [
+        {
+            'person': vote.voter,
+            'option': vote.option
+        } for vote in vote_options if vote.voter
+    ]
+
+    people_votes_sorted = sorted(people_votes, key=lambda k: k['option'])
 
     context = {
         'bill': bill,
@@ -377,7 +387,8 @@ def bill_detail(request, bill_session, bill_identifier):
         'history': history,
         'documents': documents,
         'versions': versions,
-        'votes': votes
+        'votes': votes,
+        'people_votes': people_votes_sorted
     }
 
     return render(
