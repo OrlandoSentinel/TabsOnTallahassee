@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans "Register for an account" %}{% endblock %}
-
+{% block colclass %} col-md-6 col-md-offset-3 centered_form {% endblock %}
 {% block content %}
 <form method="post" action="">
     {% csrf_token %}
