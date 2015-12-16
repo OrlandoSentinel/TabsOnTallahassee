@@ -84,13 +84,11 @@ def legislator_detail(request, legislator_id):
 
     contact_details = get_contact_details(legislator)
 
-    member_since = 'To Be Entered'  # TODO - will come from manual spreadsheet
-
     all_votes = legislator.votes.all().prefetch_related(
         'vote_event__bill__legislative_session'
     ).order_by(
         '-vote_event__start_date'
-    )  # TODO - how to handle vote history pagination?
+    )
 
     paginator = Paginator(all_votes, 10)
     page = request.GET.get('page')
@@ -107,8 +105,9 @@ def legislator_detail(request, legislator_id):
     recent_votes = votes[:settings.NUMBER_OF_LATEST_ACTIONS]
     sponsored_bills = [
         sponsorship.bill for sponsorship in legislator.billsponsorship_set.all().select_related(
-            'bill__legislative_session').prefetch_related(
-            'bill__actions', 'bill__sponsorships', 'bill__sponsorships__person',
+            'bill__legislative_session'
+        ).prefetch_related(
+            'bill__actions', 'bill__sponsorships', 'bill__sponsorships__person'
         )
     ]
     for bill in sponsored_bills:
@@ -135,7 +134,6 @@ def legislator_detail(request, legislator_id):
             'recent_votes': recent_votes,
             'sponsored_bills': sponsored_bills,
             'message': message,
-            'member_since': member_since
         }
     )
 
