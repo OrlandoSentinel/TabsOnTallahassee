@@ -68,6 +68,8 @@
   copy: src=ec2/tot.key dest=/etc/nginx/certs/tot.key mode=0644
 - name: remove nginx default config
   file: path=/etc/nginx/conf.d/default.conf state=absent
+- name: generate dh params
+  command: openssl dhparam -out /etc/nginx/certs/dhparams.pem 2048 creates=/etc/nginx/certs/dhparams.pem
 - name: write nginx template
   template: src=nginx.j2 dest=/etc/nginx/conf.d/tot.conf
   notify:

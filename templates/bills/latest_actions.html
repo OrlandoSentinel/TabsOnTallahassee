@@ -1,26 +1,7 @@
 
 {% extends "base.html" %}
-<<<<<<< HEAD
 
-||||||| merged common ancestors
-{% load staticfiles %}
 
-{% block head %}
-<script src='https://maps.googleapis.com/maps/api/js'></script>
-<script src='{% static "js/gmaps.js" %}'></script>
-<script>
-$(document).ready(function() {
-
-    $("button").click(function(){
-        $.ajax({url: '{% url "latest_latlon" %}', success: function(result){
-            $("#leg_info").html('test.');
-        }});
-    });
-
-});
-</script>
-{% endblock %}
-=======
 {% load staticfiles %}
 
 {% block head %}
@@ -52,61 +33,20 @@ $(document).ready(function() {
 </script>
 
 {% endblock %}
->>>>>>> 815b13c2781b78a3d9a20408a581c6e86ff93414
 
 {% block content %}
 
-<<<<<<< HEAD
-<!-- <div class="container-fluid hero">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-5">
-                <h2>Tracking the Florida Legislature in real time</h2>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-<h2>Latest Bill Activity</h2>
-
-||||||| merged common ancestors
-
-=======
->>>>>>> 815b13c2781b78a3d9a20408a581c6e86ff93414
 {% if user.is_anonymous %}
 <div>
-    <form action="" method="get">
-    {% csrf_token %}
-        <div class="row">
-            <div class="col-sm-12">
-                <div>Filter by Subject
-                    <select multiple name="subjects" class="prefs-multiple">
-                        {% for subject in subjects %}
-                            {% if subject.selected %}
-                                <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
-                            {% else %}
-                                <option value="{{ subject.item }}">{{ subject.item }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="col-sm-12">Filter by bill text
-                <input type="text" name="search_text" value="{{ search_text }}">
-            </div>
-            <div class="col-sm-12">
-                <input type="submit" class="btn btn-primary btn-lg" value="GO"/>
-            </div>
-        </div>
-    </form>
+    <h2>Welcome to Tabs on Tallahassee</h2>
+    {% include "bills/bill_selection_form.html" %}
 </div>
 {% else %}
+    <h2>Latest Bill Activity</h2>
     <p>Based on your <a href="{% url 'preferences' %}">user preferences</a></p>
 {% endif %}
 
-
 <hr/>
-
 
 {% if bills_by_selected_filter %}
     {% for entry in bills_by_selected_filter %}
@@ -144,9 +84,11 @@ $(document).ready(function() {
         {% endif %}
     {% endfor %}
 {% else %}
-    <div>
-        <p class="lead">No Preferences selected</p>
-    </div>
+    {% if not user.is_anonymous %}
+        <div>
+            <p class="lead">No Preferences selected</p>
+        </div>
+    {% endif %}
 {% endif %}
 
 {% endblock %}

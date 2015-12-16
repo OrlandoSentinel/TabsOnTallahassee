@@ -41,12 +41,21 @@ $republican:#e03838;
 }
 
 body{
-    background:#fff;
+    background:#eae9e9;
     color:#666;
     font-size:13px;
     line-height: 1.6em;
     font-family: 'Arial' sans-serif;
+    background-color: #eae9e9;
+	background-image: -webkit-linear-gradient(top, #ffffff, #eae9e9);
+	background-image: -moz-linear-gradient(top, #ffffff, #eae9e9);
+	background-image: -o-linear-gradient(top, #ffffff, #eae9e9);
+	background-image: -ms-linear-gradient(top, #ffffff, #eae9e9);
+	background-image: linear-gradient(top, #ffffff, #eae9e9);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#ffffff', EndColorStr='#eae9e9');
+	min-height: 1000px;
 }
+
 
 h1,h2,h3,h4,h5,h6{
 	color: #444;

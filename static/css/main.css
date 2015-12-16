@@ -56,25 +56,33 @@
 
 /* line 43, main.scss */
 body {
-  background: #fff;
+  background: #eae9e9;
   color: #666;
   font-size: 13px;
   line-height: 1.6em;
   font-family: 'Arial' sans-serif;
+  background-color: #eae9e9;
+  background-image: -webkit-linear-gradient(top, #ffffff, #eae9e9);
+  background-image: -moz-linear-gradient(top, #ffffff, #eae9e9);
+  background-image: -o-linear-gradient(top, #ffffff, #eae9e9);
+  background-image: -ms-linear-gradient(top, #ffffff, #eae9e9);
+  background-image: linear-gradient(to bottom, #ffffff, #eae9e9);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#ffffff', EndColorStr='#eae9e9');
+  min-height: 1000px;
 }
 
-/* line 51, main.scss */
+/* line 60, main.scss */
 h1, h2, h3, h4, h5, h6 {
   color: #444;
   font-family: 'Georgia, serif';
 }
 
-/* line 56, main.scss */
+/* line 65, main.scss */
 h1, h2, h3 {
   font-weight: 600;
 }
 
-/* line 60, main.scss */
+/* line 69, main.scss */
 .row .bill_details {
   margin-top: 40px;
   padding: 20px;
@@ -85,46 +93,46 @@ h1, h2, h3 {
   box-shadow: 0 3px 10px #c4c4c4;
 }
 
-/* line 68, main.scss */
+/* line 77, main.scss */
 a {
   color: #009FDA;
 }
-/* line 71, main.scss */
+/* line 80, main.scss */
 a:hover {
   color: #0085b6;
   text-decoration: none;
 }
 
-/* line 77, main.scss */
+/* line 86, main.scss */
 .detail_img {
   border: 6px solid #ccc;
   margin-bottom: 10px;
 }
 
-/* line 82, main.scss */
+/* line 91, main.scss */
 p.party {
   padding: 3px 5px;
   width: 197px;
 }
-/* line 85, main.scss */
+/* line 94, main.scss */
 p.party.republican {
   background: #e03838;
   color: #fff;
 }
-/* line 86, main.scss */
+/* line 95, main.scss */
 p.party.democrat {
   background: #3877e0;
   color: #fff;
 }
 
-/* line 90, main.scss */
+/* line 99, main.scss */
 .row.bb {
   border-bottom: 1px solid #ccc;
   padding-bottom: 30px;
   margin-bottom: 30px;
 }
 
-/* line 96, main.scss */
+/* line 105, main.scss */
 .navbar {
   background-color: #e1e1e1;
   background-image: -webkit-linear-gradient(top, #ffffff, #e1e1e1);
@@ -138,24 +146,24 @@ p.party.democrat {
   margin-bottom: 30px;
 }
 
-/* line 109, main.scss */
+/* line 118, main.scss */
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
   color: #666;
   background-color: #fefefe;
 }
 
-/* line 114, main.scss */
+/* line 123, main.scss */
 .navbar-brand {
   padding-top: 10px;
 }
 
-/* line 118, main.scss */
+/* line 127, main.scss */
 .navbar-default .navbar-toggle {
   border-color: #ccc;
   background: #fff;
 }
 
-/* line 123, main.scss */
+/* line 132, main.scss */
 .hero {
   background: url(../img/hero.jpg) no-repeat 0 0;
   background-position: top center;
@@ -163,7 +171,7 @@ p.party.democrat {
   height: auto;
 }
 
-/* line 130, main.scss */
+/* line 139, main.scss */
 .errorlist {
   color: tomato;
   font-weight: 600;
@@ -171,12 +179,12 @@ p.party.democrat {
   margin-top: 20px;
 }
 
-/* line 137, main.scss */
+/* line 146, main.scss */
 .form-control {
   margin-bottom: 20px;
 }
 
-/* line 141, main.scss */
+/* line 150, main.scss */
 .centered_form {
   margin-top: 50px;
   padding-bottom: 25px;
@@ -189,7 +197,7 @@ p.party.democrat {
   -webkit-box-shadow: 0 4px 8px #c4c4c4;
   box-shadow: 0 4px 8px #c4c4c4;
 }
-/* line 149, main.scss */
+/* line 158, main.scss */
 .centered_form h2 {
   background: #333;
   color: #eee;
@@ -197,19 +205,19 @@ p.party.democrat {
   margin-bottom: 20px;
 }
 
-/* line 157, main.scss */
+/* line 166, main.scss */
 input.form-control {
   height: 40px;
 }
 
-/* line 161, main.scss */
+/* line 170, main.scss */
 div.divider {
   border-bottom: 2px solid #ddd;
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
-/* line 168, main.scss */
+/* line 177, main.scss */
 .bill_details h4 {
   background: #eee;
   border: 1px solid #ddd;
@@ -224,7 +232,7 @@ div.divider {
   font-weight: 600;
 }
 
-/* line 181, main.scss */
+/* line 190, main.scss */
 .heading {
   background: #eee;
   border: 1px solid #ddd;
@@ -236,25 +244,25 @@ div.divider {
   margin-bottom: 20px;
 }
 
-/* line 190, main.scss */
+/* line 199, main.scss */
 .vote_result {
   text-align: center;
   padding: 3px 5px;
   width: 80px;
 }
-/* line 195, main.scss */
+/* line 204, main.scss */
 .vote_result.vote_pass {
   color: #fff;
   background: #2bc77c;
 }
-/* line 200, main.scss */
+/* line 209, main.scss */
 .vote_result.vote_fail {
   color: #fff;
   background: #e64242;
 }
 
 @media handheld, only screen and (max-width: 497px) {
-  /* line 213, main.scss */
+  /* line 222, main.scss */
   .row {
     margin-left: 15px;
     margin-right: 15px;
