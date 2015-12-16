@@ -27,11 +27,20 @@
         {% else %}
             <p>Co-sponsor:</p>
         {% endif %}
+        {% if sponsor.person.id %}
         <h2><a href="{% url 'legislator_detail' sponsor.person.id %}">{{ sponsor.entity_name }}</a></h2>
+        {% else %}
+        <h2>{{ sponsor.entity_name }}</h2>
+        {% endif %}
+        {% if sponsor.person.image %}
         <a href="{% url 'legislator_detail' sponsor.person.id %}">
             <img class="detail_img" src="{{ sponsor.person.image }}" width="197" height="256">
         </a>
+        {% endif %}
+
+        {% if sponsor.party %}
         <p class="party">{{ sponsor.party }}</p>
+        {% endif %}
     {% endfor %}
     {% else %}
     <p>No information available at this time.</p>
