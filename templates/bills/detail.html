@@ -156,6 +156,36 @@
 </div>
 
 <div>
+    <h4>Roll Call</h4>
+    {% if votes %}
+    <p>{{ votes.0.motion_text }}</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Vote</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vote in votes.0.votes.all %}
+                <tr>
+                    <td>
+                    <a href="{% url 'legislator_detail' vote.voter.id %}">{{ vote.voter.name }}</a>
+                    </td>
+                    <td>
+                        {{ vote.option }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
+
+</div>
+
+<div>
     <h4>Sources</h4>
     {% if bill.sources.all %}
     <ul>
