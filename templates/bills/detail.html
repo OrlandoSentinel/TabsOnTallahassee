@@ -176,13 +176,13 @@
                 {% for item in option.list %}
                 <tr>
                     <td>
-                    <a href="{% url 'legislator_detail' item.person.id %}">{{ item.person.name }}</a>
+                    <a href="{% url 'legislator_detail' item.id %}">{{ item.name }}</a>
                     </td>
                     <td>
-                        {{ item.person.party }}
+                        {{ item.post }}
                     </td>
                     <td>
-                        {{ item.person.district }}
+                        {{ item.party }}
                     </td>
                 </tr>
                 {% endfor %}

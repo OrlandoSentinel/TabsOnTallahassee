@@ -370,16 +370,22 @@ def bill_detail(request, bill_session, bill_identifier):
     versions = bill.versions.all()
 
     votes = bill.votes.all()
-    vote_options = votes[0].votes.all().select_related('voter')
+    vote_options = votes[0].votes.all().select_related('voter').order_by('option')
 
-    people_votes = [
-        {
-            'person': vote.voter,
-            'option': vote.option
-        } for vote in vote_options if vote.voter
-    ]
+    people_votes = []
 
-    people_votes_sorted = sorted(people_votes, key=lambda k: k['option'])
+    for vote in vote_options:
+        if vote.voter:
+            member_dict = {}
+            memberships = list(vote.voter.memberships.all().select_related(
+                'organization__classification'
+            ).select_related('post'))
+            member_dict['party'] = [m for m in memberships if m.organization.classification == 'party'][0].organization.name
+            member_dict['post'] = [m for m in memberships if m.post][0].post
+            member_dict['name'] = vote.voter.name
+            member_dict['id'] = vote.voter.id
+            member_dict['option'] = vote.option
+            people_votes.append(member_dict)
 
     context = {
         'bill': bill,
@@ -388,7 +394,7 @@ def bill_detail(request, bill_session, bill_identifier):
         'documents': documents,
         'versions': versions,
         'votes': votes,
-        'people_votes': people_votes_sorted
+        'people_votes': people_votes
     }
 
     return render(
