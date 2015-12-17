@@ -380,8 +380,8 @@ def bill_detail(request, bill_session, bill_identifier):
         if vote.voter:
             member_dict = {}
             memberships = list(vote.voter.memberships.all().select_related(
-                'organization__classification'
-            ).select_related('post'))
+                'organization', 'post'
+            ))
             member_dict['party'] = [m for m in memberships if m.organization.classification == 'party'][0].organization.name
             member_dict['post'] = [m for m in memberships if m.post][0].post
             member_dict['name'] = vote.voter.name
