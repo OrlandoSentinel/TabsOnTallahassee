@@ -369,8 +369,10 @@ def bill_detail(request, bill_session, bill_identifier):
     documents = bill.documents.all()
     versions = bill.versions.all()
 
+    vote_options = []
     votes = bill.votes.all()
-    vote_options = votes[0].votes.all().select_related('voter').order_by('option')
+    if votes:
+        vote_options = votes[0].votes.all().select_related('voter').order_by('option')
 
     people_votes = []
 
