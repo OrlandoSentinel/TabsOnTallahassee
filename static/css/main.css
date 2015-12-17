@@ -83,6 +83,79 @@ h1, h2, h3 {
 }
 
 /* line 69, main.scss */
+.container-fluid.billboard {
+  padding: 0;
+}
+
+/* line 73, main.scss */
+.billboard {
+  background: url(../img/hero.jpg) no-repeat 0 0;
+  min-height: 680px;
+  background-position: top center;
+}
+/* line 78, main.scss */
+.billboard h2 {
+  color: #000;
+  font-size: 68px;
+  padding: 5px 8px;
+  margin-top: 13%;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.3em;
+  font-weight: 600;
+  text-shadow: 0 3px 5px #fff;
+  text-shadow: 0 3px 5px 10px #fff;
+}
+/* line 89, main.scss */
+.billboard h2 span {
+  font-size: 75px;
+  clear: both;
+  display: inline-block;
+}
+/* line 97, main.scss */
+.billboard .btn {
+  width: 230px;
+  height: 65px;
+  font-weight: 800;
+  font-size: 16px;
+  padding-top: 20px;
+  margin: 0 auto;
+  display: block;
+  margin-top: 40px;
+  -moz-box-shadow: 0 2px 3px #666;
+  -webkit-box-shadow: 0 2px 3px #666;
+  box-shadow: 0 2px 3px #666;
+}
+/* line 109, main.scss */
+.billboard form {
+  background: #fff;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 30px;
+  margin-top: 40px;
+  -moz-box-shadow: 0 3px 8px #555;
+  -webkit-box-shadow: 0 3px 8px #555;
+  box-shadow: 0 3px 8px #555;
+}
+/* line 117, main.scss */
+.billboard form h3 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+}
+/* line 119, main.scss */
+.billboard form input.form-control {
+  background: #f8f8f8;
+}
+/* line 123, main.scss */
+.billboard form .btn {
+  margin: 0 auto;
+  display: block;
+  margin-top: 30px;
+}
+
+/* line 131, main.scss */
 .row .bill_details {
   margin-top: 40px;
   padding: 20px;
@@ -93,46 +166,46 @@ h1, h2, h3 {
   box-shadow: 0 3px 10px #c4c4c4;
 }
 
-/* line 77, main.scss */
+/* line 139, main.scss */
 a {
   color: #009FDA;
 }
-/* line 80, main.scss */
+/* line 142, main.scss */
 a:hover {
   color: #0085b6;
   text-decoration: none;
 }
 
-/* line 86, main.scss */
+/* line 148, main.scss */
 .detail_img {
   border: 6px solid #ccc;
   margin-bottom: 10px;
 }
 
-/* line 91, main.scss */
+/* line 153, main.scss */
 p.party {
   padding: 3px 5px;
   width: 197px;
 }
-/* line 94, main.scss */
+/* line 156, main.scss */
 p.party.republican {
   background: #e03838;
   color: #fff;
 }
-/* line 95, main.scss */
+/* line 157, main.scss */
 p.party.democrat {
   background: #3877e0;
   color: #fff;
 }
 
-/* line 99, main.scss */
+/* line 161, main.scss */
 .row.bb {
   border-bottom: 1px solid #ccc;
   padding-bottom: 30px;
   margin-bottom: 30px;
 }
 
-/* line 105, main.scss */
+/* line 167, main.scss */
 .navbar {
   background-color: #e1e1e1;
   background-image: -webkit-linear-gradient(top, #ffffff, #e1e1e1);
@@ -146,32 +219,29 @@ p.party.democrat {
   margin-bottom: 30px;
 }
 
-/* line 118, main.scss */
+/* line 180, main.scss */
+.home .navbar {
+  margin-bottom: 0;
+}
+
+/* line 184, main.scss */
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
   color: #666;
   background-color: #fefefe;
 }
 
-/* line 123, main.scss */
+/* line 189, main.scss */
 .navbar-brand {
   padding-top: 10px;
 }
 
-/* line 127, main.scss */
+/* line 193, main.scss */
 .navbar-default .navbar-toggle {
   border-color: #ccc;
   background: #fff;
 }
 
-/* line 132, main.scss */
-.hero {
-  background: url(../img/hero.jpg) no-repeat 0 0;
-  background-position: top center;
-  min-height: 620px;
-  height: auto;
-}
-
-/* line 139, main.scss */
+/* line 198, main.scss */
 .errorlist {
   color: tomato;
   font-weight: 600;
@@ -179,12 +249,19 @@ p.party.democrat {
   margin-top: 20px;
 }
 
-/* line 146, main.scss */
+/* line 205, main.scss */
+.errors {
+  color: tomato;
+  font-weight: 600;
+  padding-left: 10px;
+}
+
+/* line 211, main.scss */
 .form-control {
   margin-bottom: 20px;
 }
 
-/* line 150, main.scss */
+/* line 215, main.scss */
 .centered_form {
   margin-top: 50px;
   padding-bottom: 25px;
@@ -197,7 +274,7 @@ p.party.democrat {
   -webkit-box-shadow: 0 4px 8px #c4c4c4;
   box-shadow: 0 4px 8px #c4c4c4;
 }
-/* line 158, main.scss */
+/* line 223, main.scss */
 .centered_form h2 {
   background: #333;
   color: #eee;
@@ -205,19 +282,19 @@ p.party.democrat {
   margin-bottom: 20px;
 }
 
-/* line 166, main.scss */
+/* line 231, main.scss */
 input.form-control {
   height: 40px;
 }
 
-/* line 170, main.scss */
+/* line 235, main.scss */
 div.divider {
   border-bottom: 2px solid #ddd;
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
-/* line 177, main.scss */
+/* line 242, main.scss */
 .bill_details h4 {
   background: #eee;
   border: 1px solid #ddd;
@@ -232,7 +309,7 @@ div.divider {
   font-weight: 600;
 }
 
-/* line 190, main.scss */
+/* line 255, main.scss */
 .heading {
   background: #eee;
   border: 1px solid #ddd;
@@ -244,27 +321,60 @@ div.divider {
   margin-bottom: 20px;
 }
 
-/* line 199, main.scss */
+/* line 264, main.scss */
 .vote_result {
   text-align: center;
   padding: 3px 5px;
   width: 80px;
 }
-/* line 204, main.scss */
+/* line 269, main.scss */
 .vote_result.vote_pass {
   color: #fff;
   background: #2bc77c;
 }
-/* line 209, main.scss */
+/* line 274, main.scss */
 .vote_result.vote_fail {
   color: #fff;
   background: #e64242;
 }
 
+@media handheld, only screen and (max-width: 767px) {
+  /* line 283, main.scss */
+  .billboard form {
+    padding: 20px;
+  }
+
+  /* line 286, main.scss */
+  .billboard h2 {
+    font-size: 40px;
+    text-align: center;
+  }
+
+  /* line 291, main.scss */
+  .billboard .container {
+    padding: 20px;
+  }
+}
 @media handheld, only screen and (max-width: 497px) {
-  /* line 222, main.scss */
+  /* line 297, main.scss */
   .row {
     margin-left: 15px;
     margin-right: 15px;
+  }
+
+  /* line 302, main.scss */
+  .billboard h2 {
+    font-size: 30px;
+    text-align: center;
+  }
+
+  /* line 307, main.scss */
+  .reg_form {
+    padding: 0;
+  }
+
+  /* line 311, main.scss */
+  .billboard .container {
+    padding: 10px;
   }
 }
