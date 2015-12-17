@@ -149,18 +149,19 @@ def latest_latlon(request):
     ).json()
 
     legislator_information = {}
-    if api_resp['meta']['pagination']['count'] == 2:
-        for person in api_resp['data']:
-            person_dict = {
-                'name': person['attributes']['name'],
-                'url': person['links']['self'],
-                'id': person['id'],
-                'image': person['attributes']['image']
-            }
-            if 'Senators' in person['attributes']['image']:
-                legislator_information['address_senator'] = person_dict
-            else:
-                legislator_information['address_representative'] = person_dict
+    if api_resp.get('meta'):
+        if api_resp['meta']['pagination']['count'] == 2:
+            for person in api_resp['data']:
+                person_dict = {
+                    'name': person['attributes']['name'],
+                    'url': person['links']['self'],
+                    'id': person['id'],
+                    'image': person['attributes']['image']
+                }
+                if 'Senators' in person['attributes']['image']:
+                    legislator_information['address_senator'] = person_dict
+                else:
+                    legislator_information['address_representative'] = person_dict
     return render(
         request,
         'legislators/_geo_legislator_display.html',
