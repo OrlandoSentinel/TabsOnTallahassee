@@ -181,21 +181,21 @@ def get_latlon(request):
                 lat, lon, apikey
             )
         ).json()
-
-        if api_resp['meta']['pagination']['count'] == 2:
-            for person in api_resp['data']:
-                person_dict = {
-                    'name': person['attributes']['name'],
-                    'url': person['links']['self'],
-                    'id': person['id'],
-                    'image': person['attributes']['image']
-                }
-                if 'Senators' in person['attributes']['image']:
-                    request.session['sen_from_address'] = json.dumps(person_dict)
-                else:
-                    request.session['rep_from_address'] = json.dumps(person_dict)
-        else:
-            request.session['sen_from_address'] = request.session['rep_from_address'] = json.dumps({'name': 'none found'})
+        if api_resp.get('meta'):
+            if api_resp['meta']['pagination']['count'] == 2:
+                for person in api_resp['data']:
+                    person_dict = {
+                        'name': person['attributes']['name'],
+                        'url': person['links']['self'],
+                        'id': person['id'],
+                        'image': person['attributes']['image']
+                    }
+                    if 'Senators' in person['attributes']['image']:
+                        request.session['sen_from_address'] = json.dumps(person_dict)
+                    else:
+                        request.session['rep_from_address'] = json.dumps(person_dict)
+            else:
+                request.session['sen_from_address'] = request.session['rep_from_address'] = json.dumps({'name': 'none found'})
 
     request.session['lat'] = lat
     request.session['lon'] = lon
