@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-<<<<<<< HEAD
 {% block colclass %} bill_details {% endblock %}
-||||||| merged common ancestors
 
-=======
 {% load bills %}
 
->>>>>>> 7d323f98ccdc9ec11ee985d38c1b8f9ece28ca2c
 {% block content %}
 
 <div>
@@ -31,11 +27,20 @@
         {% else %}
             <p>Co-sponsor:</p>
         {% endif %}
+        {% if sponsor.person.id %}
         <h2><a href="{% url 'legislator_detail' sponsor.person.id %}">{{ sponsor.entity_name }}</a></h2>
+        {% else %}
+        <h2>{{ sponsor.entity_name }}</h2>
+        {% endif %}
+        {% if sponsor.person.image %}
         <a href="{% url 'legislator_detail' sponsor.person.id %}">
             <img class="detail_img" src="{{ sponsor.person.image }}" width="197" height="256">
         </a>
+        {% endif %}
+
+        {% if sponsor.party %}
         <p class="party">{{ sponsor.party }}</p>
+        {% endif %}
     {% endfor %}
     {% else %}
     <p>No information available at this time.</p>
@@ -151,6 +156,47 @@
 </div>
 
 <div>
+    <h4>Roll Call</h4>
+    {% if votes %}
+    <p>{{ votes.0.motion_text }}</p>
+
+    {% regroup people_votes by option as option_list %}
+
+    {% for option in option_list %}
+    <p class="lead">Vote type: {{ option.grouper }}</p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>District</th>
+                    <th>Party</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in option.list %}
+                <tr>
+                    <td>
+                    <a href="{% url 'legislator_detail' item.id %}">{{ item.name }}</a>
+                    </td>
+                    <td>
+                        {{ item.post }}
+                    </td>
+                    <td>
+                        {{ item.party }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <hr/>
+    {% endfor %}
+    {% else %}
+    <p>No information available at this time.</p>
+    {% endif %}
+
+</div>
+
+<div>
     <h4>Sources</h4>
     {% if bill.sources.all %}
     <ul>
@@ -170,5 +216,7 @@
 function toggle(div_id) {
     $("#" + div_id).toggle();
 }
+
+glossary_replace();
 
 {% endblock %}

@@ -29,7 +29,7 @@ TEMPLATES = [
 if os.environ.get('DEBUG', 'true').lower() == 'false':
     DEBUG = False
     ALLOWED_HOSTS = ['*']
-    DOMAIN = 'http://localhost:8000'
+    DOMAIN = 'https://tabsontallahassee.com'
     SECRET_KEY = os.environ['SECRET_KEY']
     # ADMINS list should be 'Name Email, Name Email, Name Email...'
     ADMINS = [a.rsplit(' ', 1) for a in os.environ.get('ADMINS', '').split(',')]

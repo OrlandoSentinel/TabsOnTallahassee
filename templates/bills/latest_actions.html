@@ -27,8 +27,6 @@ $(document).ready(function() {
                     var latlng = results[0].geometry.location,
                             lat = latlng.lat(),
                             lon = latlng.lng();
-                    console.log(lat);
-                    console.log(lon);
                     var url = '{% url "latest_latlon" %}?' + $.param({'lat': lat, 'lon':lon});
                     $.ajax(url).done(function(data) {
                         $('#leg_info').html(data);
