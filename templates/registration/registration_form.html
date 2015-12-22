@@ -16,10 +16,10 @@
     <label for="email">Email:</label> <input class="form-control" id="email" maxlength="254" name="email" type="text">
     
     <p class="errors">{{ form.password1.errors }}</p>
-    <label for="password1">Password:</label> <input class="form-control" id="password1" maxlength="254" name="password1" type="text">
+    <label for="password1">Password:</label> <input class="form-control" id="password1" maxlength="254" name="password1" type="password">
     
     <p class="errors">{{ form.password2.errors }}</p>
-    <label for="password2">Confirm Password:</label> <input class="form-control" id="password2" maxlength="254" name="password2" type="text">
+    <label for="password2">Confirm Password:</label> <input class="form-control" id="password2" maxlength="254" name="password2" type="password">
 
     <input class="btn btn-lg mt10" type="submit" value="{% trans 'Submit' %}" />
 </form>
