@@ -16,5 +16,5 @@ def get_all_subjects(billset=None):
 def get_all_locations():
     with open(os.path.join(os.path.dirname(__file__), '..', 'fl', 'places.csv')) as places:
         place_csv = csv.DictReader(places)
-        places = sorted(row['name'] for row in place_csv)
+        places = sorted(set(row['name'] for row in place_csv))
     return places
