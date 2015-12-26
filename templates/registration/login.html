@@ -8,8 +8,18 @@
 
 <form method="post" action="" role="form">
     {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <ul class='form-errors'>
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     
+    <p class="errors">{{ form.id_username.errors }}</p>
     <label for="id_username">Username:</label> <input class="form-control" id="id_username" maxlength="254" name="username" type="text">
+    <p class="errors">{{ form.id_password.errors }}</p>
     <label for="id_password">Password:</label> <input class="form-control" id="id_password" name="password" type="password">
     <input class="btn btn-lg mt10 mb20" type="submit" value="{% trans 'Log in' %}" />
     <input type="hidden" name="next" value="{{ next }}" />
