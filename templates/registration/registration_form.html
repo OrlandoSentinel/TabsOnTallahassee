@@ -8,31 +8,20 @@
     {% csrf_token %}
 
     {{ form.non_field_errors }}
-    <p>
-    {{ form.username.label_tag }}
-    {{ form.username }}
-    {{ form.username.errors }}
-    </p>
+    
+    <p class="errors">{{ form.username.errors }}</p>
+    <label for="username">Username:</label> <input class="form-control" id="username" maxlength="254" name="username" type="text">
+    
+    <p class="errors">{{ form.email.errors }}</p>
+    <label for="email">Email:</label> <input class="form-control" id="email" maxlength="254" name="email" type="text">
+    
+    <p class="errors">{{ form.password1.errors }}</p>
+    <label for="password1">Password:</label> <input class="form-control" id="password1" maxlength="254" name="password1" type="text">
+    
+    <p class="errors">{{ form.password2.errors }}</p>
+    <label for="password2">Confirm Password:</label> <input class="form-control" id="password2" maxlength="254" name="password2" type="text">
 
-    <p>
-    {{ form.email.label_tag }}
-    {{ form.email }}
-    {{ form.email.errors }}
-    </p>
-
-    <p>
-    {{ form.password1.label_tag }}
-    {{ form.password1 }}
-    {{ form.id_password1.errors }}
-    </p>
-
-    <p>
-    {{ form.password2.label_tag }}
-    {{ form.password2 }}
-    {{ form.password2.errors }}
-    </p>
-
-    <input type="submit" value="{% trans 'Submit' %}" />
+    <input class="btn btn-lg mt10" type="submit" value="{% trans 'Submit' %}" />
 </form>
 {% endblock %}
 
