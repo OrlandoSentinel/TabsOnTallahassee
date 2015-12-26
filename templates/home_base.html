@@ -73,7 +73,8 @@
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->
         </nav>
-        
+        {% if user.is_anonymous %}
+        <!--  TODO - Move this into a template in base.html with a conditional statement #} -->
         <div class="container-fluid billboard">
           <div class="container">
             <div class="row">
@@ -86,6 +87,7 @@
             </div>
           </div>
         </div>
+        {% endif %}
         <div class="container main">
 
             <div class="row">
