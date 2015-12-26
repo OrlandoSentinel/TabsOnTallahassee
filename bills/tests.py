@@ -20,10 +20,6 @@ class BillViewTests(StaticLiveServerTestCase):
         response = self.client.get(reverse('by_topic'))
         self.assertEqual(response.status_code, 200)
 
-    def test_by_topic_view_selected(self):
-        response = self.client.get(reverse('by_topic_selected', args=['dudleys']))
-        self.assertEqual(response.status_code, 200)
-
     def test_latest_actions_page(self):
         response = self.client.get(reverse('latest'))
         self.assertEqual(response.status_code, 200)
