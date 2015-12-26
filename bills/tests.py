@@ -31,7 +31,3 @@ class BillViewTests(StaticLiveServerTestCase):
     def test_by_location_view(self):
         response = self.client.get(reverse('by_location'))
         self.assertEqual(response.status_code, 200)
-
-    def test_by_location_view_selected(self):
-        response = self.client.get(reverse('by_location_selected', args=['dudleyville']))
-        self.assertEqual(response.status_code, 200)
