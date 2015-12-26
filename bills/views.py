@@ -14,14 +14,12 @@ from opencivicdata.models import Bill, LegislativeSession, Person
 ALL_LETTERS = string.ascii_lowercase
 
 
-def bill_list_by_topic(request, topic_selected=None):
+def bill_list_by_topic(request):
     alphalist = True
     subjects = get_all_subjects()
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
     filter_subjects = []
-    if topic_selected:
-        filter_subjects.append(topic_selected)
 
     filters = {'legislative_session': current_session}
 
@@ -55,7 +53,7 @@ def bill_list_by_topic(request, topic_selected=None):
     )
 
 
-def bill_list_by_location(request, location_selected=None):
+def bill_list_by_location(request):
     '''Sort bills based on Location
     '''
     alphalist = True
@@ -63,8 +61,6 @@ def bill_list_by_location(request, location_selected=None):
     current_session = LegislativeSession.objects.get(name=settings.CURRENT_SESSION)
 
     filter_locations = []
-    if location_selected:
-        filter_locations.append(location_selected)
 
     filters = {'legislative_session': current_session}
 
