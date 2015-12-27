@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% block colclass %} bill_details {% endblock %}
 {% block content %}
 
 <div>
@@ -10,13 +10,14 @@
         </div>
         <div class="col-md-8">
             <hr/>
-            <div>{{ post }}</div>
-            <div>{{ party }}</div>
-            <div>Member since {{ legislator.extras.member_since }}</div>
-            <div><a href="#voting_history" class="btn btn-primary" role="button">Voting History</a></div>
-            <div><a href="#contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact</a></div>
+            <p>{{ post }}</p>
+            <p>{{ party }}</p>
+            <p>Member since {{ legislator.extras.member_since }}</p>
+            <a href="#voting_history" class="btn btn-primary" role="button">Voting History</a>
+            <a href="#contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact</a>
             <div id="contact_details" class="collapse">
-            <div><i>Email:</i> <a href="mailto:{{ contact_details.email }}"> {{ contact_details.email }}</a></div>
+                <br />
+                <p><i>Email:</i> <a href="mailto:{{ contact_details.email }}"> {{ contact_details.email }}</a></p>
                 <div class="col-md-6">
                     <div><strong>Capitol:</strong></div>
                     {% for entry in contact_details.capitol %}
@@ -45,44 +46,44 @@
     </div>
     <hr/>
     <div class="row">
-        <div class="col-md-12">
-            <p class="lead">Recent Votes</p>
+        <div class="col-md-12 spn_leg_bill_type">
+            <h4>Recent Votes</h4>
             <hr/>
             {% for vote in recent_votes %}
-            <div><strong>{{ vote.vote_event.bill.identifier }}</strong></div>
-            <div><i>{{ vote.vote_event.bill.title }}</i></div>
-            <div>Vote: {{ vote.option }}</div>
+            
+            <h5>{{ vote.vote_event.bill.title }}</h5>
+            <p><strong>{{ vote.vote_event.bill.identifier }}</strong></p>
+            <p>Vote: {{ vote.option }}</p>
             <a href="{% url 'bill_detail' vote.vote_event.bill.legislative_session.identifier vote.vote_event.bill.identifier %}" class="btn btn-primary">More on this bill</a>
-            <br/>
-            <br/>
+            <div class="divider"></div>
             {% endfor %}
         </div>
     </div>
     <hr/>
     <div class="row">
-        <div class="col-md-12">
-            <p class="lead">Sponsored Legislation</p>
+        <div class="col-md-12 spn_leg_bill_type">
+            <h4>Sponsored Legislation</h4>
             {% for bill in sponsored_bills %}
-            <div><strong>{{ bill.identifier }}</strong></div>
-            <div>{{ bill.title }}</div>
-            <div><strong>Sponsor(s):</strong>
+            <h5>{{ bill.title }}</h5>
+            <p><strong>{{ bill.identifier }}</strong></p>
+            <p><strong>Sponsor(s):</strong></p>
                 <ul>
                 {% for sponsor in bill.sponsorships.all %}
                 <li>{{ sponsor.entity_name }}</li>
                 {% endfor %}
-                <ul>
-            </div>
-            <div><strong>Latest action:</strong> {{ bill.latest_action.date }} - {{ bill.latest_action.description }}</div>
+                </ul>
+            
+            <p><b>Latest action:</b></p>
+            <p>{{ bill.latest_action.date }} - {{ bill.latest_action.description }}</p>
             <a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" class="btn btn-primary">More on this bill</a>
-            <br/>
-            <br/>
+            <div class="divider"></div>
             {% endfor %}
         </div>
     </div>
     <hr/>
     <div class="row" id="voting_history">
         <div class="col-md-12">
-            <p class="lead">Voting History</p>
+            <h4>Voting History</h4>
             <table class="table table-striped">
                 <thead>
                     <tr>

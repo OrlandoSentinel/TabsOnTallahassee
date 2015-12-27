@@ -278,7 +278,7 @@ p.party.democrat {
 .centered_form h2 {
   background: #333;
   color: #eee;
-  padding: 3px 5px;
+  padding: 3px 5px 3px 10px;
   margin-bottom: 20px;
 }
 
@@ -295,7 +295,7 @@ div.divider {
 }
 
 /* line 242, main.scss */
-.bill_details h4 {
+.bill_details h4, .cur_session_bill h4 {
   background: #eee;
   border: 1px solid #ddd;
   -moz-border-radius: 3px;
@@ -309,7 +309,24 @@ div.divider {
   font-weight: 600;
 }
 
-/* line 255, main.scss */
+/* line 256, main.scss */
+.spn_leg_bill_type h5 {
+  font-size: 18px;
+  font-weight: 600;
+}
+/* line 261, main.scss */
+.spn_leg_bill_type .btn {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+/* line 267, main.scss */
+.bill_detail_title {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+/* line 272, main.scss */
 .heading {
   background: #eee;
   border: 1px solid #ddd;
@@ -321,60 +338,70 @@ div.divider {
   margin-bottom: 20px;
 }
 
-/* line 264, main.scss */
+/* line 281, main.scss */
 .vote_result {
   text-align: center;
   padding: 3px 5px;
   width: 80px;
 }
-/* line 269, main.scss */
+/* line 286, main.scss */
 .vote_result.vote_pass {
   color: #fff;
   background: #2bc77c;
 }
-/* line 274, main.scss */
+/* line 291, main.scss */
 .vote_result.vote_fail {
   color: #fff;
   background: #e64242;
 }
 
 @media handheld, only screen and (max-width: 767px) {
-  /* line 283, main.scss */
+  /* line 300, main.scss */
   .billboard form {
     padding: 20px;
   }
 
-  /* line 286, main.scss */
+  /* line 303, main.scss */
   .billboard h2 {
     font-size: 40px;
     text-align: center;
   }
 
-  /* line 291, main.scss */
+  /* line 308, main.scss */
   .billboard .container {
     padding: 20px;
   }
 }
 @media handheld, only screen and (max-width: 497px) {
-  /* line 297, main.scss */
+  /* line 314, main.scss */
   .row {
     margin-left: 15px;
     margin-right: 15px;
   }
 
-  /* line 302, main.scss */
+  /* line 319, main.scss */
   .billboard h2 {
     font-size: 30px;
     text-align: center;
   }
 
-  /* line 307, main.scss */
+  /* line 324, main.scss */
   .reg_form {
     padding: 0;
   }
 
-  /* line 311, main.scss */
+  /* line 328, main.scss */
   .billboard .container {
     padding: 10px;
+  }
+
+  /* line 333, main.scss */
+  .cur_session_bill h4 {
+    font-size: 18px;
+  }
+
+  /* line 336, main.scss */
+  .bill_detail_title {
+    font-size: 20px;
   }
 }

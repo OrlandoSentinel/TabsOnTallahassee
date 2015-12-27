@@ -223,7 +223,7 @@ p.party{
 	h2{
 		background: #333;
 		color: #eee;
-		padding: 3px 5px;
+		padding: 3px 5px 3px 10px;
 		margin-bottom: 20px;
 	}
 }
@@ -238,7 +238,7 @@ div.divider{
 	margin-bottom: 20px;
 }
 
-.bill_details{
+.bill_details,.cur_session_bill{
 	h4{
 		background: #eee;
 		border: 1px solid #ddd;
@@ -250,6 +250,23 @@ div.divider{
 		font-size: 24px;
 		font-weight: 600;
 	}
+}
+
+.spn_leg_bill_type{
+	h5{
+		font-size: 18px;
+		font-weight: 600;
+	}
+
+	.btn{
+		margin-top: 10px;
+		margin-bottom: 20px;
+	}
+}
+
+.bill_detail_title{
+	font-size: 25px;
+	font-weight: 600;
 }
 
 .heading{
@@ -310,6 +327,14 @@ div.divider{
 	
 	.billboard .container{
 		padding: 10px;
+	}
+
+	.cur_session_bill{
+		h4{font-size: 18px;}
+	}
+
+	.bill_detail_title{
+		font-size: 20px;
 	}
 	
 }
