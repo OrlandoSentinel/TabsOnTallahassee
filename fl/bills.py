@@ -408,6 +408,7 @@ class HousePage(Page):
         # Keep the digits and all following characters in the bill's ID
         bill_number = re.search(r'^\w+\s(\d+\w*)$', self.kwargs['bill'].identifier).group(1)
         session_number = {'2016': '80',
+                          '2015C': '82',
                           '2015B': '81',
                           '2015A': '79',
                           '2015': '76',
