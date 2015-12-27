@@ -268,3 +268,16 @@ class ApiTests(TestCase):
         resp = self._api('votes/?organization=Florida Senate')
         data = json.loads(resp.content.decode('utf8'))
         self.assertEqual(data['meta']['pagination']['count'], 32)
+
+    def test_membership_list(self):
+        with self.assertNumQueries(4):
+            resp = self._api('memberships/?')
+        self.assertEqual(resp.status_code, 200)
+        data = json.loads(resp.content.decode('utf8'))
+        self.assertEqual(data['meta']['pagination']['count'], 320)
+
+    def test_membership_detail(self):
+        with self.assertNumQueries(5):
+            resp = self._api('ocd-organization/857ae9af-8682-42ea-a9d2-66b12b54f854/?')
+        self.assertEqual(resp.status_code, 200)
+        data = json.loads(resp.content.decode('utf8'))

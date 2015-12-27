@@ -145,7 +145,7 @@ class MembershipList(AllowFieldLimitingMixin, generics.ListAPIView):
     full_serializer_class = FullMembershipSerializer
 
     def get_queryset(self):
-        queryset = Membership.objects.all()
+        queryset = Membership.objects.all().select_related('organization', 'post')
         return queryset
 
 
@@ -155,7 +155,7 @@ class MembershipDetail(generics.RetrieveAPIView, AllowFieldLimitingMixin):
 
     Includes all fields by default, can be limited w/ ``fields`` parameter.
     """
-    queryset = Membership.objects.all()
+    queryset = Membership.objects.all().select_related('organization', 'post')
     serializer_class = SimpleMembershipSerializer
     full_serializer_class = FullMembershipSerializer
 
