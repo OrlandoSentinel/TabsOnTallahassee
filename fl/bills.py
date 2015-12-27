@@ -233,6 +233,10 @@ class FloorVote(PDF):
         TOTALS_INDEX = 6
         VOTE_START_INDEX = 9
 
+        if len(self.lines) < 2:
+            self.scraper.warning("Bad PDF! " + self.url)
+            return
+
         motion = self.lines[MOTION_INDEX].strip()
         # Sometimes there is no motion name, only "Passage" in the line above
         if (not motion and not self.lines[MOTION_INDEX - 1].startswith("Calendar Page:")):
