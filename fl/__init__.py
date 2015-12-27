@@ -23,9 +23,11 @@ class Florida(Jurisdiction):
         {'name': '2013 Regular Session', 'identifier': '2013', 'classification': 'primary'},
         {'name': '2014 Regular Session', 'identifier': '2014', 'classification': 'primary'},
         {'name': '2014 Special Session A', 'identifier': '2014A', 'classification': 'special'},
+        # data for the below
         {'name': '2015 Regular Session', 'identifier': '2015', 'classification': 'primary'},
         {'name': '2015 Special Session A', 'identifier': '2015A', 'classification': 'special'},
         {'name': '2015 Special Session B', 'identifier': '2015B', 'classification': 'special'},
+        {'name': '2015 Special Session C', 'identifier': '2015C', 'classification': 'special'},
         {'name': '2016 Regular Session', 'identifier': '2016', 'classification': 'primary'},
     ]
 
