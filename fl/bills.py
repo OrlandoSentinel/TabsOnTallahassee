@@ -233,6 +233,10 @@ class FloorVote(PDF):
         TOTALS_INDEX = 6
         VOTE_START_INDEX = 9
 
+        if len(self.lines) < 2:
+            self.scraper.warning("Bad PDF! " + self.url)
+            return
+
         motion = self.lines[MOTION_INDEX].strip()
         # Sometimes there is no motion name, only "Passage" in the line above
         if (not motion and not self.lines[MOTION_INDEX - 1].startswith("Calendar Page:")):
@@ -408,6 +412,7 @@ class HousePage(Page):
         # Keep the digits and all following characters in the bill's ID
         bill_number = re.search(r'^\w+\s(\d+\w*)$', self.kwargs['bill'].identifier).group(1)
         session_number = {'2016': '80',
+                          '2015C': '82',
                           '2015B': '81',
                           '2015A': '79',
                           '2015': '76',
