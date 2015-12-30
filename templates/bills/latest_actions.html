@@ -31,9 +31,8 @@ $(document).ready(function() {
 
 {% block content %}
 
-{% if user.is_anonymous %}
-
 <h2 class="text-center intro">Welcome to Tabs on Tallahassee</h2>
+{% if user.is_anonymous %}
 <div class="col-sm-8">
     {% include "bills/bill_selection_form.html" %}
 </div>
@@ -50,6 +49,7 @@ $(document).ready(function() {
 <hr/>
 
 {% if bills_by_selected_filter %}
+<div class="col-sm-12">
     {% for entry in bills_by_selected_filter %}
         <div>
             <p>Latest bill activity:</p>
@@ -90,6 +90,7 @@ $(document).ready(function() {
             <p class="lead">No Preferences selected</p>
         </div>
     {% endif %}
+</div>
 {% endif %}
 
 {% endblock %}
