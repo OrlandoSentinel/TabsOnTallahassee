@@ -1,84 +1,47 @@
 <form action="" method="get" id="filter_bills">
 
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-  <div class="panel panel-default">
-  <div class="panel-heading">
     <ol class="breadcrumb">
-      <li><a data-toggle="collapse" data-parent="#accordion" href="#legislators">Legislators</a></li>
-      <li><a data-toggle="collapse" data-parent="#accordion" href="#locations">Locations</a></li>
-      <li><a data-toggle="collapse" data-parent="#accordion" href="#subjects">Topics</a></li>
+        <li><a href="#legislators">Legislators</a></li>
+        <li><a href="#locations">Locations</a></li>
+        <li><a href="#subjects">Topics</a></li>
     </ol>
-  </div>
-    <div id="welcome" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="welcomeHeading">
-      <div class="panel-body">
-        <div class="well">
-            <a role="button" class="btn btn-primary" data-toggle="collapse" data-parent="#accordion" href="#legislators" aria-expanded="true" aria-controls="legislators">Customize Your Results</a>
-            <a class="btn btn-primary" role="button" href="{% url 'current_session' %}">Jump to the latest news</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="panel panel-default">
 
-    <div id="legislators" class="panel-collapse collapse" role="tabpanel" aria-labelledby="legislatorsHeading">
-    <div class="panel-body">
-      <div class="well">
-        <p class="lead">Enter your address to find your legislators</p>
-        <p>We won't store it. We only need it to find your area's legislators.</p>
+    <a role="button" class="btn btn-primary" data-toggle="collapse" data-parent="#accordion" href="#legislators" aria-expanded="true" aria-controls="legislators">Customize Your Results</a>
 
-        <input type="text" name="address" id="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/><button id="location_submit">Go!</button>
+    <p class="lead">Enter your address to find your legislators</p>
+    <p>We won't store it. We only need it to find your area's legislators.</p>
 
-            <div id="leg_info">
-            </div>
-            {# <div id="map" style="margin-left:100px;"></div> #}
+    <input type="text" name="address" id="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/><button id="location_submit">Go!</button>
 
-        <a role="button" class="btn btn-primary" data-toggle="collapse" data-parent="#accordion" href="#locations" aria-expanded="false" aria-controls="locations">Next</a>
-      </div>
-    </div>
-    </div>
+    <div id="leg_info"></div>
+    {# <div id="map" style="margin-left:100px;"></div> #}
 
-  </div>
-  <div class="panel panel-default">
-    <div id="locations" class="panel-collapse collapse" role="tabpanel" aria-labelledby="locationsHeading">
-        <div class="panel-body">
-          <div class="well">
-            <p class="lead">What locations do you want to track?</p>
-            <select multiple name="locations" class="prefs-multiple">
-                {% for location in locations %}
-                    {% if location.selected %}
-                        <option value="{{ location.item }}" selected="True">{{ location.item }}</option>
-                    {% else %}
-                        <option value="{{ location.item }}">{{ location.item }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-              <a role="button" class="btn btn-primary" data-toggle="collapse" data-parent="#accordion" href="#subjects" aria-expanded="false" aria-controls="locations">Next</a>
-          </div>
-        </div>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div id="subjects" class="panel-collapse collapse" role="tabpanel" aria-labelledby="subjectsHeading">
-    <div class="panel-body">
-      <div class="well">
-          <p class="lead">What topics do you want to track?</p>
-          <select multiple name="subjects" class="prefs-multiple">
-              {% for subject in subjects %}
-                  {% if subject.selected %}
-                      <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
-                  {% else %}
-                      <option value="{{ subject.item }}">{{ subject.item }}</option>
-                  {% endif %}
-              {% endfor %}
-          </select>
-      </div>
-  <div class="row">
-      <div class="col-md-12">
-          <input class="btn btn-primary" type="submit" value="Go!"/>
-      </div>
-  </div>
-    </div>
-    </div>
-  </div>
+    <p class="lead">What locations do you want to track?</p>
+
+    <select multiple name="locations" class="prefs-multiple">
+        {% for location in locations %}
+        {% if location.selected %}
+        <option value="{{ location.item }}" selected="True">{{ location.item }}</option>
+        {% else %}
+        <option value="{{ location.item }}">{{ location.item }}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+    <a role="button" class="btn btn-primary" data-toggle="collapse" data-parent="#accordion" href="#subjects" aria-expanded="false" aria-controls="locations">Next</a>
+
+    <p class="lead">What topics do you want to track?</p>
+
+    <select multiple name="subjects" class="prefs-multiple">
+        {% for subject in subjects %}
+        {% if subject.selected %}
+        <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+        {% else %}
+        <option value="{{ subject.item }}">{{ subject.item }}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+
+    <input class="btn btn-primary" type="submit" value="Go!"/>
+
 </form>
-</div>
+

@@ -54,6 +54,7 @@ body{
 	background-image: linear-gradient(top, #ffffff, #eae9e9);
 	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#ffffff', EndColorStr='#eae9e9');
 	min-height: 1000px;
+	padding-bottom: 100px;
 }
 
 
@@ -74,6 +75,7 @@ h1,h2,h3{
 	background: url(../img/hero.jpg) no-repeat 0 0;
 	min-height: 680px;
 	background-position: top center;
+	margin-bottom: 50px;
 
 	h2{
 		color: $black;
@@ -126,6 +128,10 @@ h1,h2,h3{
 			margin-top: 30px;
 		}
 	}
+}
+
+h2.intro{
+	font-size: 40px;
 }
 
 .row .bill_details {
@@ -223,7 +229,7 @@ p.party{
 	h2{
 		background: #333;
 		color: #eee;
-		padding: 3px 5px;
+		padding: 3px 5px 3px 10px;
 		margin-bottom: 20px;
 	}
 }
@@ -238,7 +244,7 @@ div.divider{
 	margin-bottom: 20px;
 }
 
-.bill_details{
+.bill_details,.cur_session_bill{
 	h4{
 		background: #eee;
 		border: 1px solid #ddd;
@@ -250,6 +256,23 @@ div.divider{
 		font-size: 24px;
 		font-weight: 600;
 	}
+}
+
+.spn_leg_bill_type{
+	h5{
+		font-size: 18px;
+		font-weight: 600;
+	}
+
+	.btn{
+		margin-top: 10px;
+		margin-bottom: 20px;
+	}
+}
+
+.bill_detail_title{
+	font-size: 25px;
+	font-weight: 600;
 }
 
 .heading{
@@ -278,14 +301,41 @@ div.divider{
 }
 
 
+.about{
+	margin-top: 40px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    @include box-shadow(0 3px 10px #c4c4c4);
+
+	h1{
+		margin-bottom: 40px;
+		border-bottom: 1px solid #ddd;
+	}
+
+	p{
+		line-height: 1.8em;
+		margin-bottom: 20px;
+	}
+}
+
 @media handheld, only screen and (max-width: 767px) {
 	
+	.billboard{
+		min-height: 500px;
+	}
+
 	.billboard form{
 		padding: 20px;
 	}
+
 	.billboard h2{
 		font-size: 40px;
 		text-align: center;
+		line-height: 1.8em;
+		span{
+			font-size: 65px;
+		}
 	}
 
 	.billboard .container{
@@ -294,6 +344,29 @@ div.divider{
 }
 
 @media handheld, only screen and (max-width: 497px) {
+
+	.billboard{min-height: 430px;}
+
+	.billboard h2{
+		line-height: 1.7em;
+
+		span{
+			font-size: 50px;
+		}
+	}
+
+	h2.intro{
+		font-size: 25px;
+	}
+
+	.navbar-brand{
+		padding: 10px 5px 5px;
+		img{
+			max-width: 240px;
+			height: auto;
+		}
+	}
+
 	.row{
 		margin-left: 15px;
 		margin-right: 15px;
@@ -310,6 +383,14 @@ div.divider{
 	
 	.billboard .container{
 		padding: 10px;
+	}
+
+	.cur_session_bill{
+		h4{font-size: 18px;}
+	}
+
+	.bill_detail_title{
+		font-size: 20px;
 	}
 	
 }

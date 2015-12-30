@@ -5,12 +5,13 @@
 
 {% block content %}
 
+
 <div>
-    <p class="lead">{{ bill.identifier }}</p>
+    <h5 class="bill_detail_title">{{ bill.title }}</h5>
 </div>
 
 <div>
-    {{ bill.title }}
+    <p class="lead">{{ bill.identifier }}</p>
 </div>
 
 <div><a href="#bill_embed" role="button" data-toggle="collapse">View Latest</a></div>

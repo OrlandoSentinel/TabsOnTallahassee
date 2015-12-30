@@ -69,31 +69,33 @@ body {
   background-image: linear-gradient(to bottom, #ffffff, #eae9e9);
   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#ffffff', EndColorStr='#eae9e9');
   min-height: 1000px;
+  padding-bottom: 100px;
 }
 
-/* line 60, main.scss */
+/* line 61, main.scss */
 h1, h2, h3, h4, h5, h6 {
   color: #444;
   font-family: 'Georgia, serif';
 }
 
-/* line 65, main.scss */
+/* line 66, main.scss */
 h1, h2, h3 {
   font-weight: 600;
 }
 
-/* line 69, main.scss */
+/* line 70, main.scss */
 .container-fluid.billboard {
   padding: 0;
 }
 
-/* line 73, main.scss */
+/* line 74, main.scss */
 .billboard {
   background: url(../img/hero.jpg) no-repeat 0 0;
   min-height: 680px;
   background-position: top center;
+  margin-bottom: 50px;
 }
-/* line 78, main.scss */
+/* line 80, main.scss */
 .billboard h2 {
   color: #000;
   font-size: 68px;
@@ -106,13 +108,13 @@ h1, h2, h3 {
   text-shadow: 0 3px 5px #fff;
   text-shadow: 0 3px 5px 10px #fff;
 }
-/* line 89, main.scss */
+/* line 91, main.scss */
 .billboard h2 span {
   font-size: 75px;
   clear: both;
   display: inline-block;
 }
-/* line 97, main.scss */
+/* line 99, main.scss */
 .billboard .btn {
   width: 230px;
   height: 65px;
@@ -126,7 +128,7 @@ h1, h2, h3 {
   -webkit-box-shadow: 0 2px 3px #666;
   box-shadow: 0 2px 3px #666;
 }
-/* line 109, main.scss */
+/* line 111, main.scss */
 .billboard form {
   background: #fff;
   -moz-border-radius: 5px;
@@ -138,24 +140,29 @@ h1, h2, h3 {
   -webkit-box-shadow: 0 3px 8px #555;
   box-shadow: 0 3px 8px #555;
 }
-/* line 117, main.scss */
+/* line 119, main.scss */
 .billboard form h3 {
   margin-top: 0;
   margin-bottom: 25px;
   text-align: center;
 }
-/* line 119, main.scss */
+/* line 121, main.scss */
 .billboard form input.form-control {
   background: #f8f8f8;
 }
-/* line 123, main.scss */
+/* line 125, main.scss */
 .billboard form .btn {
   margin: 0 auto;
   display: block;
   margin-top: 30px;
 }
 
-/* line 131, main.scss */
+/* line 133, main.scss */
+h2.intro {
+  font-size: 40px;
+}
+
+/* line 137, main.scss */
 .row .bill_details {
   margin-top: 40px;
   padding: 20px;
@@ -166,46 +173,46 @@ h1, h2, h3 {
   box-shadow: 0 3px 10px #c4c4c4;
 }
 
-/* line 139, main.scss */
+/* line 145, main.scss */
 a {
   color: #009FDA;
 }
-/* line 142, main.scss */
+/* line 148, main.scss */
 a:hover {
   color: #0085b6;
   text-decoration: none;
 }
 
-/* line 148, main.scss */
+/* line 154, main.scss */
 .detail_img {
   border: 6px solid #ccc;
   margin-bottom: 10px;
 }
 
-/* line 153, main.scss */
+/* line 159, main.scss */
 p.party {
   padding: 3px 5px;
   width: 197px;
 }
-/* line 156, main.scss */
+/* line 162, main.scss */
 p.party.republican {
   background: #e03838;
   color: #fff;
 }
-/* line 157, main.scss */
+/* line 163, main.scss */
 p.party.democrat {
   background: #3877e0;
   color: #fff;
 }
 
-/* line 161, main.scss */
+/* line 167, main.scss */
 .row.bb {
   border-bottom: 1px solid #ccc;
   padding-bottom: 30px;
   margin-bottom: 30px;
 }
 
-/* line 167, main.scss */
+/* line 173, main.scss */
 .navbar {
   background-color: #e1e1e1;
   background-image: -webkit-linear-gradient(top, #ffffff, #e1e1e1);
@@ -219,29 +226,29 @@ p.party.democrat {
   margin-bottom: 30px;
 }
 
-/* line 180, main.scss */
+/* line 186, main.scss */
 .home .navbar {
   margin-bottom: 0;
 }
 
-/* line 184, main.scss */
+/* line 190, main.scss */
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
   color: #666;
   background-color: #fefefe;
 }
 
-/* line 189, main.scss */
+/* line 195, main.scss */
 .navbar-brand {
   padding-top: 10px;
 }
 
-/* line 193, main.scss */
+/* line 199, main.scss */
 .navbar-default .navbar-toggle {
   border-color: #ccc;
   background: #fff;
 }
 
-/* line 198, main.scss */
+/* line 204, main.scss */
 .errorlist {
   color: tomato;
   font-weight: 600;
@@ -249,19 +256,19 @@ p.party.democrat {
   margin-top: 20px;
 }
 
-/* line 205, main.scss */
+/* line 211, main.scss */
 .errors {
   color: tomato;
   font-weight: 600;
   padding-left: 10px;
 }
 
-/* line 211, main.scss */
+/* line 217, main.scss */
 .form-control {
   margin-bottom: 20px;
 }
 
-/* line 215, main.scss */
+/* line 221, main.scss */
 .centered_form {
   margin-top: 50px;
   padding-bottom: 25px;
@@ -274,28 +281,28 @@ p.party.democrat {
   -webkit-box-shadow: 0 4px 8px #c4c4c4;
   box-shadow: 0 4px 8px #c4c4c4;
 }
-/* line 223, main.scss */
+/* line 229, main.scss */
 .centered_form h2 {
   background: #333;
   color: #eee;
-  padding: 3px 5px;
+  padding: 3px 5px 3px 10px;
   margin-bottom: 20px;
 }
 
-/* line 231, main.scss */
+/* line 237, main.scss */
 input.form-control {
   height: 40px;
 }
 
-/* line 235, main.scss */
+/* line 241, main.scss */
 div.divider {
   border-bottom: 2px solid #ddd;
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
-/* line 242, main.scss */
-.bill_details h4 {
+/* line 248, main.scss */
+.bill_details h4, .cur_session_bill h4 {
   background: #eee;
   border: 1px solid #ddd;
   -moz-border-radius: 3px;
@@ -309,7 +316,24 @@ div.divider {
   font-weight: 600;
 }
 
-/* line 255, main.scss */
+/* line 262, main.scss */
+.spn_leg_bill_type h5 {
+  font-size: 18px;
+  font-weight: 600;
+}
+/* line 267, main.scss */
+.spn_leg_bill_type .btn {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+/* line 273, main.scss */
+.bill_detail_title {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+/* line 278, main.scss */
 .heading {
   background: #eee;
   border: 1px solid #ddd;
@@ -321,60 +345,130 @@ div.divider {
   margin-bottom: 20px;
 }
 
-/* line 264, main.scss */
+/* line 287, main.scss */
 .vote_result {
   text-align: center;
   padding: 3px 5px;
   width: 80px;
 }
-/* line 269, main.scss */
+/* line 292, main.scss */
 .vote_result.vote_pass {
   color: #fff;
   background: #2bc77c;
 }
-/* line 274, main.scss */
+/* line 297, main.scss */
 .vote_result.vote_fail {
   color: #fff;
   background: #e64242;
 }
 
+/* line 304, main.scss */
+.about {
+  margin-top: 40px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  -moz-box-shadow: 0 3px 10px #c4c4c4;
+  -webkit-box-shadow: 0 3px 10px #c4c4c4;
+  box-shadow: 0 3px 10px #c4c4c4;
+}
+/* line 311, main.scss */
+.about h1 {
+  margin-bottom: 40px;
+  border-bottom: 1px solid #ddd;
+}
+/* line 316, main.scss */
+.about p {
+  line-height: 1.8em;
+  margin-bottom: 20px;
+}
+
 @media handheld, only screen and (max-width: 767px) {
-  /* line 283, main.scss */
+  /* line 324, main.scss */
+  .billboard {
+    min-height: 500px;
+  }
+
+  /* line 328, main.scss */
   .billboard form {
     padding: 20px;
   }
 
-  /* line 286, main.scss */
+  /* line 332, main.scss */
   .billboard h2 {
     font-size: 40px;
     text-align: center;
+    line-height: 1.8em;
+  }
+  /* line 336, main.scss */
+  .billboard h2 span {
+    font-size: 65px;
   }
 
-  /* line 291, main.scss */
+  /* line 341, main.scss */
   .billboard .container {
     padding: 20px;
   }
 }
 @media handheld, only screen and (max-width: 497px) {
-  /* line 297, main.scss */
+  /* line 348, main.scss */
+  .billboard {
+    min-height: 430px;
+  }
+
+  /* line 350, main.scss */
+  .billboard h2 {
+    line-height: 1.7em;
+  }
+  /* line 353, main.scss */
+  .billboard h2 span {
+    font-size: 50px;
+  }
+
+  /* line 358, main.scss */
+  h2.intro {
+    font-size: 25px;
+  }
+
+  /* line 362, main.scss */
+  .navbar-brand {
+    padding: 10px 5px 5px;
+  }
+  /* line 364, main.scss */
+  .navbar-brand img {
+    max-width: 240px;
+    height: auto;
+  }
+
+  /* line 370, main.scss */
   .row {
     margin-left: 15px;
     margin-right: 15px;
   }
 
-  /* line 302, main.scss */
+  /* line 375, main.scss */
   .billboard h2 {
     font-size: 30px;
     text-align: center;
   }
 
-  /* line 307, main.scss */
+  /* line 380, main.scss */
   .reg_form {
     padding: 0;
   }
 
-  /* line 311, main.scss */
+  /* line 384, main.scss */
   .billboard .container {
     padding: 10px;
+  }
+
+  /* line 389, main.scss */
+  .cur_session_bill h4 {
+    font-size: 18px;
+  }
+
+  /* line 392, main.scss */
+  .bill_detail_title {
+    font-size: 20px;
   }
 }

@@ -14,18 +14,20 @@
         <div>
             <h2>{{ current_session }}</h2>
 
-            <form action="" method="get">
+            <form action="" method="get" role="form">
                 <div> Filter by {{ sorter_type }} 
-                    <select multiple name="bill_sorters" class="prefs-multiple">
-                        {% for sorter in sorters %}
-                            {% if sorter.selected %}
-                                <option value="{{ sorter.item }}" selected="True">{{ sorter.item }}</option>
-                            {% else %}
-                                <option value="{{ sorter.item }}">{{ sorter.item }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                    <input type="submit" class="btn btn-primary" value="GO"/>
+                  
+                        <select multiple name="bill_sorters" class="form-control prefs-multiple">
+                            {% for sorter in sorters %}
+                                {% if sorter.selected %}
+                                    <option value="{{ sorter.item }}" selected="True">{{ sorter.item }}</option>
+                                {% else %}
+                                    <option value="{{ sorter.item }}">{{ sorter.item }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                  
+                    <input type="submit" class="mt20 btn btn-primary" value="GO"/>
                 </div>
             </form>
         </div>

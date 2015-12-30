@@ -1,43 +1,44 @@
 {% extends "base.html" %}
 
+{% block colclass %} col-sm-12 {% endblock %}
 {% block content %}
 
 <h2>{{ current_session }}</h2>
-<div>
-    <form action="" method="get">
-        <div class="row">
-            <div class="col-sm-12">
-                <div>Filter by Subject
-                    <select multiple name="subjects" class="prefs-multiple">
-                        {% for subject in subjects %}
-                            {% if subject.selected %}
-                                <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
-                            {% else %}
-                                <option value="{{ subject.item }}">{{ subject.item }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <form action="" method="get" role="form">
+            <div class="form-group">
+                <label>Filter by Subject</label>
+                <select multiple name="subjects" class="prefs-multiple form-control">
+                    {% for subject in subjects %}
+                        {% if subject.selected %}
+                            <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+                        {% else %}
+                            <option value="{{ subject.item }}">{{ subject.item }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
             </div>
-            <div class="col-sm-12">Filter by bill text
-                <input type="text" name="search_text" value="{{ search_text }}">
+
+            <div class="form-group">
+                <label>Filter by bill text</label>
+                <input class="form-control" type="text" name="search_text" value="{{ search_text }}">
             </div>
-            <div class="col-sm-12">
-                <input type="submit" class="btn btn-primary btn-lg" value="GO"/>
-            </div>
-        </div>
-    </form>
+
+            <input type="submit" class="btn btn-primary btn-lg" value="GO"/>
+         </form>
+    </div>
 </div>
-
+       
 <hr/>
-
 
 {% if latest_bills %}
     {% for bill in latest_bills %}
-        <div>
-
+        <div class="cur_session_bill">
+            
+            <h4>{{ bill.title }}</h4>
             <p><strong>{{ bill.identifier }}</strong></p>
-            <p>{{ bill.title }}</p>
             <p>
                 <span>Sponsor(s): </span>
                 {% for sponsor in bill.sponsorships.all %}
