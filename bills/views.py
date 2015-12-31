@@ -39,6 +39,9 @@ def bill_list_by_topic(request):
 
     sorted_bills = sort_bills_by_keyword(bills)
 
+    if filter_subjects:
+        sorted_bills = [bill for bill in sorted_bills if bill['name'] in filter_subjects]
+
     return render(
         request,
         'bills/all.html',
@@ -79,6 +82,9 @@ def bill_list_by_location(request):
     bills = group_bills_by_sorter(all_bills=all_bills, sorter='location')
 
     sorted_bills = sort_bills_by_keyword(bills)
+
+    if filter_locations:
+        sorted_bills = [bill for bill in sorted_bills if bill['name'] in filter_locations]
 
     return render(
         request,
