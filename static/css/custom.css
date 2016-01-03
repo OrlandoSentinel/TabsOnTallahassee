@@ -41,8 +41,9 @@ form {
   padding-left: 10px;
   padding-bottom: 10px;
   display: block;
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  min-height: 250px;
+  height: auto;
   margin: 0 auto;
   -moz-box-shadow: 0px 5px 20px #ccc;
   -webkit-box-shadow: 0px 5px 20px #CCC;
@@ -51,6 +52,7 @@ form {
 
 img.legislator-image {
   max-width: 150px;
+  margin-bottom: 20px;
 }
 
 ol.breadcrumb {
@@ -58,5 +60,5 @@ ol.breadcrumb {
 }
 
 span.glossary {
-  border-bottom: 1px dashed black;
+  font-weight: 600;
 }
