@@ -33,11 +33,19 @@ $(document).ready(function() {
 
 <h2 class="text-center intro">Welcome to Tabs on Tallahassee</h2>
 {% if user.is_anonymous %}
-<div class="col-sm-8">
+<div class="col-sm-7">
     {% include "bills/bill_selection_form.html" %}
 </div>
-<div class="col-sm-4">
+<div class="col-sm-4 col-sm-offset-1 news">
+    <h4>News</h4>
     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis qui quidem, officiis optio assumenda in blanditiis voluptates laudantium eos iure eaque quasi nihil consectetur architecto quam totam porro, nemo dolorem.</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis qui quidem, officiis optio assumenda in blanditiis voluptates laudantium eos iure eaque quasi nihil consectetur architecto quam totam porro, nemo dolorem.</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis qui quidem, officiis optio assumenda in blanditiis voluptates laudantium eos iure eaque quasi nihil consectetur architecto quam totam porro, nemo dolorem.</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis qui quidem, officiis optio assumenda in blanditiis voluptates laudantium eos iure eaque quasi nihil consectetur architecto quam totam porro, nemo dolorem.</p>
+
     <a class="btn btn-primary" role="button" href="{% url 'current_session' %}">Jump to the latest news</a>
 </div>
 

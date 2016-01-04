@@ -132,6 +132,9 @@ h1,h2,h3{
 
 h2.intro{
 	font-size: 40px;
+	border-bottom: 1px dashed darken(#cecece,15%);
+	margin-bottom: 40px;
+	padding-bottom: 10px;
 }
 
 .row .bill_details {
@@ -300,6 +303,54 @@ div.divider{
 	}
 }
 
+.glossary{
+	margin-top: 40px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #ddd;
+	@include box-shadow(0 3px 10px #c4c4c4);
+}
+
+#filter_bills{
+	input{
+		// float: left;
+		// max-width: 280px;
+	}
+
+	.btn.clear{
+		clear: both;
+		float: none;
+	}
+}
+
+.select2-container{display: block !important;}
+
+#leg_info{
+	clear: both;
+}
+
+.home_find_legislator{
+	overflow: auto;
+	background-color: #e1e1e1;
+	background-image: -webkit-linear-gradient(top, #ffffff, #e1e1e1);
+	background-image: -moz-linear-gradient(top, #ffffff, #e1e1e1);
+	background-image: -o-linear-gradient(top, #ffffff, #e1e1e1);
+	background-image: -ms-linear-gradient(top, #ffffff, #e1e1e1);
+	background-image: linear-gradient(top, #ffffff, #e1e1e1);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#ffffff', EndColorStr='#e1e1e1');
+	border: 1px solid darken(#cecece,3%);
+    @include border-radius(3px);
+    padding: 15px;
+    margin-bottom: 40px;
+
+    .select2.select2-container{
+    	margin-bottom: 20px;
+    }
+
+    p.lead{
+    	margin-bottom: 10px;
+    }
+}
 
 .about{
 	margin-top: 40px;
@@ -318,6 +369,26 @@ div.divider{
 		margin-bottom: 20px;
 	}
 }
+
+
+.news{
+	h4{
+		font-size: 24px;
+		border-bottom: 1px solid #bbb;
+		margin-bottom: 20px;
+	}
+
+	p{
+		border-bottom: 1px dashed #bbb;
+		padding-bottom: 12px;
+		margin-bottom: 15px;
+	}
+
+	.btn{
+		margin-top: 20px;
+	}
+}
+
 
 @media handheld, only screen and (max-width: 767px) {
 	

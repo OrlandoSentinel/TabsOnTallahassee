@@ -1,46 +1,52 @@
 <form action="" method="get" id="filter_bills">
 
-    <ol class="breadcrumb">
+   <!--  <ol class="breadcrumb">
         <li><a href="#legislators">Legislators</a></li>
         <li><a href="#locations">Locations</a></li>
         <li><a href="#subjects">Topics</a></li>
-    </ol>
+    </ol> -->
 
-    <a role="button" class="btn btn-primary" data-toggle="collapse" data-parent="#accordion" href="#legislators" aria-expanded="true" aria-controls="legislators">Customize Your Results</a>
+    <!-- <a role="button" class="btn btn-primary" data-toggle="collapse" data-parent="#accordion" href="#legislators" aria-expanded="true" aria-controls="legislators">Customize Your Results</a> -->
 
-    <p class="lead">Enter your address to find your legislators</p>
-    <p>We won't store it. We only need it to find your area's legislators.</p>
+    <div class="home_find_legislator">
+        <p class="lead">Enter your address to find your legislators</p>
+        <p>We won't store it. We only need it to find your area's legislators.</p>
 
-    <input type="text" name="address" id="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/><button id="location_submit">Go!</button>
+        <input class="form-control" type="text" name="address" id="address" placeholder="example: 400 S Monroe St, Tallahassee, FL 32399"/>
+        <button class="btn go" id="location_submit">Find Your Legislators</button>
 
-    <div id="leg_info"></div>
+        <div id="leg_info"></div>
+    </div>
+
     {# <div id="map" style="margin-left:100px;"></div> #}
 
-    <p class="lead">What locations do you want to track?</p>
+    <div class="home_find_legislator">
+        <p class="lead">What locations do you want to track?</p>
 
-    <select multiple name="locations" class="prefs-multiple">
-        {% for location in locations %}
-        {% if location.selected %}
-        <option value="{{ location.item }}" selected="True">{{ location.item }}</option>
-        {% else %}
-        <option value="{{ location.item }}">{{ location.item }}</option>
-        {% endif %}
-        {% endfor %}
-    </select>
+        <select multiple name="locations" class="prefs-multiple">
+            {% for location in locations %}
+            {% if location.selected %}
+            <option value="{{ location.item }}" selected="True">{{ location.item }}</option>
+            {% else %}
+            <option value="{{ location.item }}">{{ location.item }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
 
-    <p class="lead">What topics do you want to track?</p>
+        <p class="lead">What topics do you want to track?</p>
 
-    <select multiple name="subjects" class="prefs-multiple">
-        {% for subject in subjects %}
-        {% if subject.selected %}
-        <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
-        {% else %}
-        <option value="{{ subject.item }}">{{ subject.item }}</option>
-        {% endif %}
-        {% endfor %}
-    </select>
+        <select multiple name="subjects" class="prefs-multiple">
+            {% for subject in subjects %}
+            {% if subject.selected %}
+            <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
+            {% else %}
+            <option value="{{ subject.item }}">{{ subject.item }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
 
-    <input class="btn btn-primary" type="submit" value="Go!"/>
+        <input class="btn btn-primary clear" type="submit" value="Submit Selection"/>
+    </div>
 
 </form>
 
