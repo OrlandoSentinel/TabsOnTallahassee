@@ -114,6 +114,7 @@ class BillDetail(Page):
 
                 self.obj.add_version_link(name, version_url, media_type=mimetype, text=text)
         except IndexError:
+            self.obj.extras['places'] = []   # set places to something no matter what
             self.scraper.warning("No version table for {}".format(self.obj.identifier))
 
     def process_analysis(self):
