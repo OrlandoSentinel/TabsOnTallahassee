@@ -204,6 +204,14 @@ class ApiTests(TestCase):
         # if it took longer than 1 second there wasn't an index
         self.assertLess(took, 1)
 
+    def test_bills_by_query_with_spaces(self):
+        start = time.time()
+        resp = self._api('bills/?q=division of elections')
+        took = time.time() - start
+        self.assertEqual(resp.data['meta']['pagination']['count'], 10)
+        # if it took longer than 1 second there wasn't an index
+        self.assertLess(took, 1)
+
     def test_bills_by_query_with_session(self):
         # ensure that the fulltext search can be combined
         resp = self._api('bills/?q=election&legislative_session=2015B')

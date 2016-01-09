@@ -28,7 +28,7 @@ class Fulltext(Lookup):
         lhs, lhs_params = self.process_lhs(compiler, connection)
         rhs, rhs_params = self.process_rhs(compiler, connection)
         params = lhs_params + rhs_params
-        return "tsv @@ to_tsquery('english', %s)" % (rhs), params
+        return "tsv @@ plainto_tsquery('english', %s)" % (rhs), params
 
 
 class JurisdictionList(AllowFieldLimitingMixin, generics.ListAPIView):
