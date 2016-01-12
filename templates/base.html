@@ -9,6 +9,7 @@
         <link href="{% static 'css/custom.css' %}" rel="stylesheet" media="screen"/>
         <link href="{% static 'css/main.css' %}" rel="stylesheet" media="screen"/>
         <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+        <link rel="icon" type="image/png" href="{% url 'latest' %}static/img/favicon.png" />
         <script type="text/javascript" src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'bootstrap-3.3.5/js/bootstrap.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/glossary.js' %}"></script>
@@ -71,7 +72,6 @@
                   </ul>
                 </li>
                   {% endif %}
-                </li>
               </ul>
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->
