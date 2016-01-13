@@ -75,7 +75,7 @@ body {
 /* line 61, main.scss */
 h1, h2, h3, h4, h5, h6 {
   color: #444;
-  font-family: 'Georgia, serif';
+  font-family: 'Georgia', serif;
 }
 
 /* line 66, main.scss */
@@ -290,21 +290,22 @@ p.party.democrat {
   color: #eee;
   padding: 3px 5px 3px 10px;
   margin-bottom: 20px;
+  font-size: 28px;
 }
 
-/* line 240, main.scss */
+/* line 241, main.scss */
 input.form-control {
   height: 40px;
 }
 
-/* line 244, main.scss */
+/* line 245, main.scss */
 div.divider {
   border-bottom: 2px solid #ddd;
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
-/* line 251, main.scss */
+/* line 252, main.scss */
 .bill_details h4, .cur_session_bill h4 {
   background: #eee;
   border: 1px solid #ddd;
@@ -319,24 +320,24 @@ div.divider {
   font-weight: 600;
 }
 
-/* line 265, main.scss */
+/* line 266, main.scss */
 .spn_leg_bill_type h5 {
   font-size: 18px;
   font-weight: 600;
 }
-/* line 270, main.scss */
+/* line 271, main.scss */
 .spn_leg_bill_type .btn {
   margin-top: 10px;
   margin-bottom: 20px;
 }
 
-/* line 276, main.scss */
+/* line 277, main.scss */
 .bill_detail_title {
   font-size: 25px;
   font-weight: 600;
 }
 
-/* line 281, main.scss */
+/* line 282, main.scss */
 .heading {
   background: #eee;
   border: 1px solid #ddd;
@@ -348,27 +349,26 @@ div.divider {
   margin-bottom: 20px;
 }
 
-/* line 290, main.scss */
+/* line 291, main.scss */
 .vote_result {
   text-align: center;
   padding: 3px 5px;
   width: 80px;
 }
-/* line 295, main.scss */
+/* line 296, main.scss */
 .vote_result.vote_pass {
   color: #fff;
   background: #2bc77c;
 }
-/* line 300, main.scss */
+/* line 301, main.scss */
 .vote_result.vote_fail {
   color: #fff;
   background: #e64242;
 }
 
-/* line 306, main.scss */
-.glossary {
+/* line 307, main.scss */
+div.glossary {
   margin-top: 40px;
-  /*padding: 20px;*/
   background: #fff;
   border: 1px solid #ddd;
   -moz-box-shadow: 0 3px 10px #c4c4c4;
@@ -456,92 +456,112 @@ div.divider {
   margin-top: 20px;
 }
 
+/* line 393, main.scss */
+.selectFix select {
+  max-width: 100%;
+}
+
 @media handheld, only screen and (max-width: 767px) {
-  /* line 395, main.scss */
+  /* line 400, main.scss */
   .billboard {
     min-height: 500px;
   }
 
-  /* line 399, main.scss */
+  /* line 404, main.scss */
   .billboard form {
     padding: 20px;
   }
 
-  /* line 403, main.scss */
+  /* line 408, main.scss */
   .billboard h2 {
     font-size: 40px;
     text-align: center;
     line-height: 1.8em;
   }
-  /* line 407, main.scss */
+  /* line 412, main.scss */
   .billboard h2 span {
     font-size: 65px;
   }
 
-  /* line 412, main.scss */
+  /* line 417, main.scss */
   .billboard .container {
     padding: 20px;
   }
 }
 @media handheld, only screen and (max-width: 497px) {
-  /* line 419, main.scss */
+  /* line 426, main.scss */
+  .container {
+    padding: 0;
+  }
+
+  /* line 429, main.scss */
+  .navbar .container {
+    padding: 0 15px;
+  }
+
+  /* line 433, main.scss */
   .billboard {
     min-height: 430px;
   }
 
-  /* line 421, main.scss */
+  /* line 435, main.scss */
   .billboard h2 {
     line-height: 1.7em;
   }
-  /* line 424, main.scss */
+  /* line 438, main.scss */
   .billboard h2 span {
     font-size: 50px;
   }
 
-  /* line 429, main.scss */
+  /* line 443, main.scss */
   h2.intro {
     font-size: 25px;
   }
 
-  /* line 433, main.scss */
+  /* line 447, main.scss */
   .navbar-brand {
     padding: 10px 5px 5px;
   }
-  /* line 435, main.scss */
+  /* line 449, main.scss */
   .navbar-brand img {
     max-width: 240px;
     height: auto;
   }
 
-  /* line 441, main.scss */
+  /* line 455, main.scss */
   .row {
     margin-left: 15px;
     margin-right: 15px;
   }
 
-  /* line 446, main.scss */
+  /* line 460, main.scss */
   .billboard h2 {
     font-size: 30px;
     text-align: center;
   }
 
-  /* line 451, main.scss */
+  /* line 465, main.scss */
   .reg_form {
     padding: 0;
   }
 
-  /* line 455, main.scss */
+  /* line 469, main.scss */
   .billboard .container {
     padding: 10px;
   }
 
-  /* line 460, main.scss */
+  /* line 474, main.scss */
   .cur_session_bill h4 {
     font-size: 18px;
   }
 
-  /* line 463, main.scss */
+  /* line 477, main.scss */
   .bill_detail_title {
+    font-size: 20px;
+  }
+
+  /* line 481, main.scss */
+  .centered_form h2 {
     font-size: 20px;
   }
 }

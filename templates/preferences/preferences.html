@@ -45,6 +45,7 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block title %}User Preferences{% endblock title %}
+{% block colclass %} col-md-6 {% endblock %}
 {% block subtitle %}Enter your address to track your Senator and Representative, and select which other Senators, Representatives, locations, and subjects you'd like to follow.{% endblock subtitle %}
 
 {% block content %}
@@ -61,7 +62,7 @@ $(document).ready(function() {
     {% else %}
 
     <div class="col-md-4">
-        <div id="map" style="margin-left:100px;"></div>
+        <div id="map" style="margin-left:0px;"></div>
     </div>
 
     <div class="col-md-4">
@@ -149,7 +150,7 @@ $(document).ready(function() {
 
         <div class="row">
             <div class="col-md-12">
-                <input type="submit"/>
+                <input class="btn" type="submit"/>
             </div>
         </div>
     </form>
