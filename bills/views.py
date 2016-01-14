@@ -2,7 +2,7 @@ import time
 import string
 
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from django.contrib.auth.models import User
 
@@ -363,8 +363,7 @@ def filter_organize_bills(topics_followed, locations_followed):
 
 
 def bill_detail(request, bill_session, bill_identifier):
-    bill = Bill.objects.get(legislative_session__identifier=bill_session, identifier=bill_identifier)
-
+    bill = get_object_or_404(Bill, legislative_session__identifier=bill_session, identifier=bill_identifier)
     sponsors = bill.sponsorships.all().select_related('person', 'organization')
 
     for sponsor in sponsors:
