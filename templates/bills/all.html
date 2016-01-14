@@ -17,7 +17,7 @@
             <form action="" method="get" role="form">
                 <div class="form-group selectFix"> Filter by {{ sorter_type }} 
                   
-                        <select multiple name="bill_sorters" class="form-control prefs-multiple">
+                        <select multiple name="bill_sorters" class="form-control prefs-multiple"  style="width: 100%">
                             {% for sorter in sorters %}
                                 {% if sorter.selected %}
                                     <option value="{{ sorter.item }}" selected="True">{{ sorter.item }}</option>

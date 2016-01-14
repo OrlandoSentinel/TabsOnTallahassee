@@ -10,7 +10,7 @@
         <form action="" method="get" role="form">
             <div class="form-group">
                 <label>Filter by Subject</label>
-                <select multiple name="subjects" class="prefs-multiple form-control">
+                <select multiple name="subjects" class="prefs-multiple form-control" style="width: 100%">
                     {% for subject in subjects %}
                         {% if subject.selected %}
                             <option value="{{ subject.item }}" selected="True">{{ subject.item }}</option>
