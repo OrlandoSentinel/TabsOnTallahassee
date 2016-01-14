@@ -51,7 +51,11 @@
                   <li><a href="{% url 'by_location' %}">Bills by location</a></li>
                   <li><a href="{% url 'by_legislator' %}">Bills by Legislator</a></li>
                   <li><a href="{% url 'current_session' %}">Bills in Current Session</a></li>
+                  {% if user.is_anonymous %}
+                  <li><a href="{% url 'current_session' %}">Latest Bill Activity</a></li>
+                  {% else %}
                   <li><a href="{% url 'latest' %}">Latest Bill Activity</a></li>
+                  {% endif %}
                 </ul>
               </li>
               </ul>
