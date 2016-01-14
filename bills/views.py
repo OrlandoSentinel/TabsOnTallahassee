@@ -1,3 +1,4 @@
+import time
 import string
 
 from django.db.models import Q
@@ -175,7 +176,13 @@ def bill_list_current_session(request):
     for bill in bills:
         # use all() so the prefetched actions can be used, could possibly impove
         # via smarter use of Prefetch()
-        bill.latest_action = list(bill.actions.all())[-1]
+        all_actions = list(bill.actions.all())
+        latest_action = all_actions[-1]
+        for action in all_actions:
+            date = time.strptime(action.date, '%Y-%m-%d')
+            if date > time.strptime(latest_action.date, '%Y-%m-%d'):
+                bill.latest_action = action
+        bill.latest_action = latest_action
 
     subjects = _mark_selected(subjects, filter_subjects)
 
