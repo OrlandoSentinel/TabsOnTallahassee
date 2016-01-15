@@ -200,11 +200,10 @@
 <div>
     <h4>Sources</h4>
     {% if bill.sources.all %}
-    <ul>
+   
     {% for source in bill.sources.all %}
-    <li><a href="{{source.url}}">{{ source.url }}</a></li>
+   <a href="{{source.url}}">{{ source.url }}</a>
     {% endfor %}
-    </ul>
     {% else %}
     <p>No information available at this time.</p>
     {% endif %}
