@@ -70,10 +70,10 @@ Runs are either marked as successes or failures.  If a run is a success it will 
 Glossary
 --------
 
-TBD
+Edit terms that are highlighed on the site & listed on the glossary page.
 
 Preferences
 -----------
 
-TBD
+View & modify user preferences such as tracked information & location.
 
