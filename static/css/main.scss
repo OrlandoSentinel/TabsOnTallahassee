@@ -145,6 +145,10 @@ h2.intro{
 	@include box-shadow(0 3px 10px #c4c4c4);
 }
 
+div a{
+	overflow-wrap: break-word;
+}
+
 a{
 	color: $blue;
 

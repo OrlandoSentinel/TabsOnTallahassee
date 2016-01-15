@@ -177,45 +177,50 @@ h2.intro {
 }
 
 /* line 148, main.scss */
+div a {
+  overflow-wrap: break-word;
+}
+
+/* line 152, main.scss */
 a {
   color: #009FDA;
 }
-/* line 151, main.scss */
+/* line 155, main.scss */
 a:hover {
   color: #0085b6;
   text-decoration: none;
 }
 
-/* line 157, main.scss */
+/* line 161, main.scss */
 .detail_img {
   border: 6px solid #ccc;
   margin-bottom: 10px;
 }
 
-/* line 162, main.scss */
+/* line 166, main.scss */
 p.party {
   padding: 3px 5px;
   width: 197px;
 }
-/* line 165, main.scss */
+/* line 169, main.scss */
 p.party.republican {
   background: #e03838;
   color: #fff;
 }
-/* line 166, main.scss */
+/* line 170, main.scss */
 p.party.democrat {
   background: #3877e0;
   color: #fff;
 }
 
-/* line 170, main.scss */
+/* line 174, main.scss */
 .row.bb {
   border-bottom: 1px solid #ccc;
   padding-bottom: 30px;
   margin-bottom: 30px;
 }
 
-/* line 176, main.scss */
+/* line 180, main.scss */
 .navbar {
   background-color: #e1e1e1;
   background-image: -webkit-linear-gradient(top, #ffffff, #e1e1e1);
@@ -229,29 +234,29 @@ p.party.democrat {
   margin-bottom: 30px;
 }
 
-/* line 189, main.scss */
+/* line 193, main.scss */
 .home .navbar {
   margin-bottom: 0;
 }
 
-/* line 193, main.scss */
+/* line 197, main.scss */
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
   color: #666;
   background-color: #fefefe;
 }
 
-/* line 198, main.scss */
+/* line 202, main.scss */
 .navbar-brand {
   padding-top: 10px;
 }
 
-/* line 202, main.scss */
+/* line 206, main.scss */
 .navbar-default .navbar-toggle {
   border-color: #ccc;
   background: #fff;
 }
 
-/* line 207, main.scss */
+/* line 211, main.scss */
 .errorlist {
   color: tomato;
   font-weight: 600;
@@ -259,19 +264,19 @@ p.party.democrat {
   margin-top: 20px;
 }
 
-/* line 214, main.scss */
+/* line 218, main.scss */
 .errors {
   color: tomato;
   font-weight: 600;
   padding-left: 10px;
 }
 
-/* line 220, main.scss */
+/* line 224, main.scss */
 .form-control {
   margin-bottom: 20px;
 }
 
-/* line 224, main.scss */
+/* line 228, main.scss */
 .centered_form {
   margin-top: 50px;
   padding-bottom: 25px;
@@ -284,7 +289,7 @@ p.party.democrat {
   -webkit-box-shadow: 0 4px 8px #c4c4c4;
   box-shadow: 0 4px 8px #c4c4c4;
 }
-/* line 232, main.scss */
+/* line 236, main.scss */
 .centered_form h2 {
   background: #333;
   color: #eee;
@@ -293,19 +298,19 @@ p.party.democrat {
   font-size: 28px;
 }
 
-/* line 241, main.scss */
+/* line 245, main.scss */
 input.form-control {
   height: 40px;
 }
 
-/* line 245, main.scss */
+/* line 249, main.scss */
 div.divider {
   border-bottom: 2px solid #ddd;
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
-/* line 252, main.scss */
+/* line 256, main.scss */
 .bill_details h4, .cur_session_bill h4 {
   background: #eee;
   border: 1px solid #ddd;
@@ -320,24 +325,24 @@ div.divider {
   font-weight: 600;
 }
 
-/* line 266, main.scss */
+/* line 270, main.scss */
 .spn_leg_bill_type h5 {
   font-size: 18px;
   font-weight: 600;
 }
-/* line 271, main.scss */
+/* line 275, main.scss */
 .spn_leg_bill_type .btn {
   margin-top: 10px;
   margin-bottom: 20px;
 }
 
-/* line 277, main.scss */
+/* line 281, main.scss */
 .bill_detail_title {
   font-size: 25px;
   font-weight: 600;
 }
 
-/* line 282, main.scss */
+/* line 286, main.scss */
 .heading {
   background: #eee;
   border: 1px solid #ddd;
@@ -349,24 +354,24 @@ div.divider {
   margin-bottom: 20px;
 }
 
-/* line 291, main.scss */
+/* line 295, main.scss */
 .vote_result {
   text-align: center;
   padding: 3px 5px;
   width: 80px;
 }
-/* line 296, main.scss */
+/* line 300, main.scss */
 .vote_result.vote_pass {
   color: #fff;
   background: #2bc77c;
 }
-/* line 301, main.scss */
+/* line 305, main.scss */
 .vote_result.vote_fail {
   color: #fff;
   background: #e64242;
 }
 
-/* line 307, main.scss */
+/* line 311, main.scss */
 div.glossary {
   margin-top: 40px;
   background: #fff;
@@ -376,23 +381,23 @@ div.glossary {
   box-shadow: 0 3px 10px #c4c4c4;
 }
 
-/* line 320, main.scss */
+/* line 324, main.scss */
 #filter_bills .btn.clear {
   clear: both;
   float: none;
 }
 
-/* line 326, main.scss */
+/* line 330, main.scss */
 .select2-container {
   display: block !important;
 }
 
-/* line 328, main.scss */
+/* line 332, main.scss */
 #leg_info {
   clear: both;
 }
 
-/* line 332, main.scss */
+/* line 336, main.scss */
 .home_find_legislator {
   overflow: auto;
   background-color: #e1e1e1;
@@ -409,16 +414,16 @@ div.glossary {
   padding: 15px;
   margin-bottom: 40px;
 }
-/* line 346, main.scss */
+/* line 350, main.scss */
 .home_find_legislator .select2.select2-container {
   margin-bottom: 20px;
 }
-/* line 350, main.scss */
+/* line 354, main.scss */
 .home_find_legislator p.lead {
   margin-bottom: 10px;
 }
 
-/* line 355, main.scss */
+/* line 359, main.scss */
 .about {
   margin-top: 40px;
   padding: 20px;
@@ -428,139 +433,139 @@ div.glossary {
   -webkit-box-shadow: 0 3px 10px #c4c4c4;
   box-shadow: 0 3px 10px #c4c4c4;
 }
-/* line 362, main.scss */
+/* line 366, main.scss */
 .about h1 {
   margin-bottom: 40px;
   border-bottom: 1px solid #ddd;
 }
-/* line 367, main.scss */
+/* line 371, main.scss */
 .about p {
   line-height: 1.8em;
   margin-bottom: 20px;
 }
 
-/* line 375, main.scss */
+/* line 379, main.scss */
 .news h4 {
   font-size: 24px;
   border-bottom: 1px solid #bbb;
   margin-bottom: 20px;
 }
-/* line 381, main.scss */
+/* line 385, main.scss */
 .news p {
   border-bottom: 1px dashed #bbb;
   padding-bottom: 12px;
   margin-bottom: 15px;
 }
-/* line 387, main.scss */
+/* line 391, main.scss */
 .news .btn {
   margin-top: 20px;
 }
 
-/* line 393, main.scss */
+/* line 397, main.scss */
 .selectFix select {
   max-width: 100%;
 }
 
 @media handheld, only screen and (max-width: 767px) {
-  /* line 400, main.scss */
+  /* line 404, main.scss */
   .billboard {
     min-height: 500px;
   }
 
-  /* line 404, main.scss */
+  /* line 408, main.scss */
   .billboard form {
     padding: 20px;
   }
 
-  /* line 408, main.scss */
+  /* line 412, main.scss */
   .billboard h2 {
     font-size: 40px;
     text-align: center;
     line-height: 1.8em;
   }
-  /* line 412, main.scss */
+  /* line 416, main.scss */
   .billboard h2 span {
     font-size: 65px;
   }
 
-  /* line 417, main.scss */
+  /* line 421, main.scss */
   .billboard .container {
     padding: 20px;
   }
 }
 @media handheld, only screen and (max-width: 497px) {
-  /* line 426, main.scss */
+  /* line 430, main.scss */
   .container {
     padding: 0;
   }
 
-  /* line 429, main.scss */
+  /* line 433, main.scss */
   .navbar .container {
     padding: 0 15px;
   }
 
-  /* line 433, main.scss */
+  /* line 437, main.scss */
   .billboard {
     min-height: 430px;
   }
 
-  /* line 435, main.scss */
+  /* line 439, main.scss */
   .billboard h2 {
     line-height: 1.7em;
   }
-  /* line 438, main.scss */
+  /* line 442, main.scss */
   .billboard h2 span {
     font-size: 50px;
   }
 
-  /* line 443, main.scss */
+  /* line 447, main.scss */
   h2.intro {
     font-size: 25px;
   }
 
-  /* line 447, main.scss */
+  /* line 451, main.scss */
   .navbar-brand {
     padding: 10px 5px 5px;
   }
-  /* line 449, main.scss */
+  /* line 453, main.scss */
   .navbar-brand img {
     max-width: 240px;
     height: auto;
   }
 
-  /* line 455, main.scss */
+  /* line 459, main.scss */
   .row {
     margin-left: 15px;
     margin-right: 15px;
   }
 
-  /* line 460, main.scss */
+  /* line 464, main.scss */
   .billboard h2 {
     font-size: 30px;
     text-align: center;
   }
 
-  /* line 465, main.scss */
+  /* line 469, main.scss */
   .reg_form {
     padding: 0;
   }
 
-  /* line 469, main.scss */
+  /* line 473, main.scss */
   .billboard .container {
     padding: 10px;
   }
 
-  /* line 474, main.scss */
+  /* line 478, main.scss */
   .cur_session_bill h4 {
     font-size: 18px;
   }
 
-  /* line 477, main.scss */
+  /* line 481, main.scss */
   .bill_detail_title {
     font-size: 20px;
   }
 
-  /* line 481, main.scss */
+  /* line 485, main.scss */
   .centered_form h2 {
     font-size: 20px;
   }
