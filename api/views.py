@@ -166,6 +166,7 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
 
     * **q** - full text search across all bill versions
     * **legislative_session** - bills within the session identified by this session identifier
+    * **identifier** - bills w/ the given identifier (e.g. 'HB 404')
     * **subject** - bills with given subject
     * **extras** - bills containing a superset of passed JSON
     * **from_organization** - bills originating in given Organization
@@ -185,6 +186,7 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
         extras = self.request.query_params.get('extras', None)
         from_org = self.request.query_params.get('from_organization', None)
         sponsor = self.request.query_params.get('sponsor', None)
+        bill_id = self.request.query_params.get('identifier', None)
         q = self.request.query_params.get('q', None)
 
         if session:
@@ -211,6 +213,8 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
                 queryset = queryset.filter(Q(sponsorships__name=sponsor) |
                                            Q(sponsorships__person__name=sponsor) |
                                            Q(sponsorships__organization__name=sponsor))
+        if bill_id:
+            queryset = queryset.filter(identifier=bill_id)
         if q:
             queryset = queryset.filter(versions__links__text__ftsearch=q).distinct()
 
@@ -244,6 +248,7 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
     * **bill** - votes related go a given Bill (by ``ocd-bill`` id)
     * **organization** - votes within a given Organization
                          (by exact name or ``ocd-organization`` id)
+    * **legislative_session** - votes within the session identified by this session identifier
     """
     serializer_class = SimpleVoteSerializer
     full_serializer_class = FullVoteSerializer
@@ -258,6 +263,7 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
         option = self.request.query_params.get('option', None)
         bill = self.request.query_params.get('bill', None)
         organization = self.request.query_params.get('organization', None)
+        session = self.request.query_params.get('legislative_session', None)
 
         if voter:
             if voter.startswith('ocd-person/'):
@@ -278,6 +284,8 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
                 queryset = queryset.filter(organization_id=organization)
             else:
                 queryset = queryset.filter(organization__name=organization)
+        if session:
+            queryset = queryset.filter(legislative_session__identifier=session)
 
         return queryset
 
