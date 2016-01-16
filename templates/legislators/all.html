@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load names %}
+{% block colclass %} bill_details {% endblock %}
+{% block content %}
+
+    <p class="lead"><strong>Senators</strong></p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>District</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for senator in senators %}
+                <tr>
+                    <td>
+                        <a href="{% url 'legislator_detail' senator.id %}">{{ senator.name|name_swap }}</a>
+                    </td>
+                    <td>
+                        {{ senator.district.post.label }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr/>
+
+    <p class="lead"><strong>Representatives</strong></p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>District</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for representative in representatives %}
+                <tr>
+                    <td>
+                        <a href="{% url 'legislator_detail' representative.id %}">{{ representative.name|name_swap }}</a>
+                    </td>
+                    <td>
+                        {{ representative.district.post.label }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
