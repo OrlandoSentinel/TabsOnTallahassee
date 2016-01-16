@@ -1,14 +1,15 @@
+{% load names %}
 {% if address_senator %}
 <div class="col-md-6">
     <p><strong>Your senator is:</strong></p>
-    <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name }}</p>
+    <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name|name_swap }}</p>
     <img src="{{ address_senator.image }}" class="legislator-image"></a>
     <input type="hidden" name="senator" value="{{ address_senator.id }}">
 </div>
 
 <div class="col-md-6">
     <p><strong>Your representative is:</strong></p>
-    <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name }}</p>
+    <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name|name_swap }}</p>
     <img src=" {{ address_representative.image }}" class="legislator-image"></a>
     <input type="hidden" name="representative" value="{{ address_representative.id }}">
 </div>

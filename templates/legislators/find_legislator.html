@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load names %}
 {% load staticfiles %}
 
 {% block head %}
@@ -92,7 +93,7 @@ $(document).ready(function() {
 {% if senator_contact_details %}
 
     <p><strong>Your senator is:</strong></p>
-    <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name }}</a></p>
+    <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name|name_swap }}</a></p>
     <a href="{% url 'legislator_detail' address_senator.id %}"><img src="{{ address_senator.image }}" class="legislator-image"></a>
     
     <div><a href="#sen_contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact Legislator</a></div>
@@ -122,7 +123,7 @@ $(document).ready(function() {
 <div class="col-md-6">
 {% if representative_contact_details %}
     <p><strong>Your representative is:</strong></p>
-    <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name }}</a></p>
+    <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name|name_swap }}</a></p>
     <a href="{% url 'legislator_detail' address_representative.id %}"><img src=" {{ address_representative.image }}" class="legislator-image"></a>
     <div><a href="#rep_contact_details" class="btn btn-primary" role="button" data-toggle="collapse">Contact Legislator</a></div>
     <div id="rep_contact_details" class="collapse">
@@ -155,7 +156,7 @@ $(document).ready(function() {
 <div class="row">
     <div class="col-md-12">
         <p class="lead">Recently Sponsored Legislation</p>
-        <p><strong>{{ address_senator.name }}</strong></p>
+        <p><strong>{{ address_senator.name|name_swap }}</strong></p>
         <ul>
             {% for sponsorship in senator_sponsorships %}
             <li>
@@ -164,7 +165,7 @@ $(document).ready(function() {
             {% endfor %}
         </ul>
 
-        <p><strong>{{ address_representative.name }}</strong></p>
+        <p><strong>{{ address_representative.name|name_swap }}</strong></p>
         <ul>
             {% for sponsorship in rep_sponsorships %}
             <li>

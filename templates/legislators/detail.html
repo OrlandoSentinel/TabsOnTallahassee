@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load names %}
 {% block colclass %} bill_details {% endblock %}
 {% block content %}
 
 <div>
-    <h1>{{ legislator.name }}</h1>
+    <h1>{{ legislator.name|name_swap }}</h1>
     <div class="row">
         <div class="col-md-4">
             <img src="{{ legislator.image }}" class="legislator-image">
