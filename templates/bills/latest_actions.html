@@ -1,4 +1,5 @@
 {% extends "home_base.html" %}
+{% load names %}
 {% load staticfiles %}
 {% block head %}
 
@@ -62,7 +63,7 @@ $(document).ready(function() {
         <div>
             <p>Latest bill activity:</p>
             <span>
-                <strong>{{ entry.heading|title }}</strong>
+                <strong>{{ entry.heading|title|name_swap }}</strong>
                 <br/>__________________
             </span>
         <div>
@@ -75,7 +76,7 @@ $(document).ready(function() {
                 <p>
                     <span>Sponsor(s): </span>
                     {% for sponsor in bill.sponsorships.all %}
-                        {{ sponsor.name }}
+                        {{ sponsor.name|name_swap }}
                     {% endfor %}
                 </p>
 
