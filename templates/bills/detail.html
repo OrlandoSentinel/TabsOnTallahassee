@@ -178,7 +178,7 @@
                 {% for item in option.list %}
                 <tr>
                     <td>
-                    <a href="{% url 'legislator_detail' item.id %}">{{ item.name }}</a>
+                    <a href="{% url 'legislator_detail' item.id %}">{{ item.name|name_swap }}</a>
                     </td>
                     <td>
                         {{ item.post }}
