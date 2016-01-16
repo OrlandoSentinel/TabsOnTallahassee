@@ -42,7 +42,13 @@
               <ul class="nav navbar-nav">
                 <li class="active"><a href="{% url 'latest' %}">Home/Latest News<span class="sr-only">(current)</span></a></li>
                 <li><a href="/about/">About</a></li>
-                <li><a href="/find_legislator/">Find your legislator</a></li>
+                <li class="dropdown">
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Legislators<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="/all_legislators/">List</a></li>
+                    <li><a href="/find_legislator/">Find your Legislator</a></li>
+                  </ul>
+                </li>
                 <li><a href="/glossary">Legislative glossary</a></li>
                 <li class="dropdown">
                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bills<span class="caret"></span></a>
