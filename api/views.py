@@ -248,6 +248,7 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
     * **bill** - votes related go a given Bill (by ``ocd-bill`` id)
     * **organization** - votes within a given Organization
                          (by exact name or ``ocd-organization`` id)
+    * **legislative_session** - votes within the session identified by this session identifier
     """
     serializer_class = SimpleVoteSerializer
     full_serializer_class = FullVoteSerializer
@@ -262,6 +263,7 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
         option = self.request.query_params.get('option', None)
         bill = self.request.query_params.get('bill', None)
         organization = self.request.query_params.get('organization', None)
+        session = self.request.query_params.get('legislative_session', None)
 
         if voter:
             if voter.startswith('ocd-person/'):
@@ -282,6 +284,8 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
                 queryset = queryset.filter(organization_id=organization)
             else:
                 queryset = queryset.filter(organization__name=organization)
+        if session:
+            queryset = queryset.filter(legislative_session__identifier=session)
 
         return queryset
 
