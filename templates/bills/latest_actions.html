@@ -1,4 +1,4 @@
-{% extends "home_base.html" %}
+{% extends "base.html" %}
 {% load staticfiles %}
 {% block head %}
 
@@ -101,6 +101,24 @@ $(document).ready(function() {
 </div>
 {% endif %}
 
+{% endblock %}
+
+{% block bodyclass %} class="home" {% endblock %}
+
+{% block postnav %}
+    {% if user.is_anonymous %}
+    <div class="container-fluid billboard">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10 col-md-offset-1">
+            <h2>Tracking the Florida Legislature in <span>  Real Time</span></h2>
+            <a href="{% url 'registration_register' %}" class="btn">Register Now</a>
+          </div>
+         
+        </div>
+      </div>
+    </div>
+    {% endif %}
 {% endblock %}
 
 {% block bottomscript %}
