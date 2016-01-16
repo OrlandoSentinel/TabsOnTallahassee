@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load names %}
 {% load staticfiles%}
 
 {% block head %}
@@ -67,13 +68,13 @@ $(document).ready(function() {
 
     <div class="col-md-4">
         <p><strong>Your senator is:</strong></p>
-        <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name }}</a></p>
+        <p><a href="{% url 'legislator_detail' address_senator.id %}">{{ address_senator.name|name_swap }}</a></p>
     </div>
 
 
     <div class="col-md-4">
         <p><strong>Your representative is:</strong></p>
-        <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name }}</a></p>
+        <p><a href="{% url 'legislator_detail' address_representative.id %}">{{ address_representative.name|name_swap }}</a></p>
     </div>
 
         {% endif %}
@@ -90,9 +91,9 @@ $(document).ready(function() {
                     <select multiple name="senators" class="prefs-multiple" style="max-width:90%;">
                         {% for senator in senators %}
                             {% if senator.selected %}
-                                <option value="{{senator.item.id}}" selected="True">{{ senator.item.name }}</option>
+                                <option value="{{senator.item.id}}" selected="True">{{ senator.item.name|name_swap }}</option>
                             {% else %}
-                                <option value="{{senator.item.id}}">{{ senator.item.name }}</option>
+                                <option value="{{senator.item.id}}">{{ senator.item.name|name_swap }}</option>
                             {% endif %}
                         {% endfor %}
                     </select>
@@ -104,9 +105,9 @@ $(document).ready(function() {
                     <select multiple name="representatives" class="prefs-multiple">
                         {% for representative in representatives %}
                             {% if representative.selected %}
-                                <option value="{{representative.item.id}}" selected="True">{{ representative.item.name }}</option>
+                                <option value="{{representative.item.id}}" selected="True">{{ representative.item.name|name_swap }}</option>
                             {% else %}
-                                <option value="{{representative.item.id}}">{{ representative.item.name }}</option>
+                                <option value="{{representative.item.id}}">{{ representative.item.name|name_swap }}</option>
                             {% endif %}
                         {% endfor %}
                     </select>
