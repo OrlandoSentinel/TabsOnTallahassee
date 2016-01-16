@@ -88,5 +88,5 @@
 - name: write run-scrapers.sh
   template: src=run-scrapers.sh dest=/home/tot/ mode="a+x"
 - name: add cron
-  cron: name="run scrapers" minute="0" hour="3,12,19" job="/home/tot/run-scrapers.sh"
+  cron: name="run scrapers" minute="0" hour="1,6,11,16" job="/home/tot/run-scrapers.sh"
   sudo_user: "tot"
