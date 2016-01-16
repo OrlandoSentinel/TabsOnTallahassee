@@ -58,6 +58,7 @@ def user_preferences(request):
 
     preferences, _ = Preferences.objects.get_or_create(user=user)
 
+    # Defaults to the lat an lon of the Tallahassee Statehouse!
     lat = preferences.lat or 30.407741
     lng = preferences.lon or -84.2705644
 
