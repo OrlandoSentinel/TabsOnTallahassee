@@ -7,6 +7,7 @@ from opencivicdata.models import Person
 
 from tot import settings
 from preferences.models import PersonFollow
+from preferences.views import _get_current_people
 
 
 def find_legislator(request):
@@ -134,6 +135,28 @@ def legislator_detail(request, legislator_id):
             'recent_votes': recent_votes,
             'sponsored_bills': sponsored_bills,
             'message': message,
+        }
+    )
+
+
+def all_legislators(request):
+    senators = _get_current_people(position='senator').prefetch_related('memberships__post')
+    representatives = _get_current_people(position='representative').prefetch_related('memberships__post')
+
+    for senator in senators:
+        memberships = senator.memberships.all()
+        senator.district = [m for m in memberships if m.post][0]
+
+    for representative in representatives:
+        memberships = representative.memberships.all()
+        representative.district = [m for m in memberships if m.post][0]
+
+    return render(
+        request,
+        'legislators/all.html',
+        {
+            'senators': senators,
+            'representatives': representatives
         }
     )
 
