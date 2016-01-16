@@ -57,7 +57,7 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
 
     * **name** - by name (partial matches included)
     * **member_of** - people that are current members of Organization
-    * **ever_member_of** - people that have had known membership in Oganization
+    * **ever_member_of** - people that have had known membership in Organization
     * **latitude, longitude** - must be specified together, filters for individuals
                                 currently representing a district including the
                                 location in question
