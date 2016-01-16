@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load names %}
 {% block colclass %} bill_details {% endblock %}
 
 {% load bills %}
@@ -29,9 +30,9 @@
             <p>Co-sponsor:</p>
         {% endif %}
         {% if sponsor.person.id %}
-        <h2><a href="{% url 'legislator_detail' sponsor.person.id %}">{{ sponsor.entity_name }}</a></h2>
+        <h2><a href="{% url 'legislator_detail' sponsor.person.id %}">{{ sponsor.entity_name|name_swap }}</a></h2>
         {% else %}
-        <h2>{{ sponsor.entity_name }}</h2>
+        <h2>{{ sponsor.entity_name|name_swap }}</h2>
         {% endif %}
         {% if sponsor.person.image %}
         <a href="{% url 'legislator_detail' sponsor.person.id %}">
