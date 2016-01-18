@@ -1,6 +1,6 @@
 import json
 import requests
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from opencivicdata.models import Person
@@ -74,7 +74,7 @@ def get_contact_details(legislator):
 
 
 def legislator_detail(request, legislator_id):
-    legislator = Person.objects.get(id=legislator_id)
+    legislator = get_object_or_404(Person, id=legislator_id)
     memberships = list(legislator.memberships.all().select_related(
         'organization__classification'
     ).select_related('post'))
