@@ -186,7 +186,7 @@ REST_FRAMEWORK = {
         'api.throttling.SustainedRateThrottle',
     ),
     'DEFAULT_THROTTLE_RATES': {
-        'burst': '60/min',
+        'burst': '120/min',
         'sustained': '10000/day',
     },
 }
