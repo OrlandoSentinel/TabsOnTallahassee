@@ -375,7 +375,7 @@ def bill_detail(request, bill_session, bill_identifier):
                 organization__classification='party'
             )[0].organization.name
 
-    history = bill.actions.all()
+    history = bill.actions.order_by('-date')
 
     documents = bill.documents.all()
     versions = bill.versions.all()
