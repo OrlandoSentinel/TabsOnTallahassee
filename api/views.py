@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.db.models import Lookup
 from django.db.models.fields import TextField
 from rest_framework import generics
+from rest_framework.exceptions import ParseError
 from .serializers import (Jurisdiction, SimpleJurisdictionSerializer, FullJurisdictionSerializer,
                           Person, SimplePersonSerializer, FullPersonSerializer,
                           Bill, SimpleBillSerializer, FullBillSerializer,
@@ -91,12 +92,15 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
         if ever_member_of:
             queryset = queryset.member_of(ever_member_of, current_only=False)
         if latitude and longitude:
-            queryset = queryset.filter(
-                memberships__post__division__geometries__boundary__shape__contains='POINT({} {})'
-                .format(longitude, latitude)
-            )
+            try:
+                queryset = queryset.filter(
+                    memberships__post__division__geometries__boundary__shape__contains='POINT({} {})'
+                    .format(longitude, latitude)
+                )
+            except ValueError:
+                raise ParseError('invalid lat or lon')
         elif latitude or longitude:
-            raise ValueError('must provide lat & lon together')
+            raise ParseError('must provide lat & lon together')
 
         return queryset.distinct()
 
