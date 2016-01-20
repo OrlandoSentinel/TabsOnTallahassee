@@ -172,6 +172,7 @@ def bill_list_current_session(request):
     # force DB query now and append latest_action to each bill
     # set is called first to remove duplicates - distinct does not work above because
     # of the 'order-by' paramater - that adds a field and causes distinct to not work as expected
+    bills = set(bills)
     for bill in bills:
         # use all() so the prefetched actions can be used, could possibly impove
         # via smarter use of Prefetch()
@@ -182,6 +183,9 @@ def bill_list_current_session(request):
             if date > time.strptime(latest_action.date, '%Y-%m-%d'):
                 bill.latest_action = action
         bill.latest_action = latest_action
+
+    # resort bills
+    bills = sorted(bills, key=lambda b: b.latest_action.date, reverse=True)
 
     subjects = _mark_selected(subjects, filter_subjects)
 
