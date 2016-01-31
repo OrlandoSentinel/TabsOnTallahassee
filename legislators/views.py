@@ -1,5 +1,6 @@
 import json
 import requests
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -220,8 +221,10 @@ def get_latlon(request):
             else:
                 request.session['sen_from_address'] = request.session['rep_from_address'] = json.dumps({'name': 'none found'})
 
-    request.session['lat'] = lat
-    request.session['lon'] = lon
-    request.session['address'] = address
-    request.session.modified = True
-    return redirect(find_legislator)
+        request.session['lat'] = lat
+        request.session['lon'] = lon
+        request.session['address'] = address
+        request.session.modified = True
+        return redirect(find_legislator)
+    else:
+        return HttpResponseBadRequest('<h1>Bad Request</h1>')
