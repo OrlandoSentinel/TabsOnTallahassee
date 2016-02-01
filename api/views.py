@@ -2,7 +2,7 @@ import json
 from django.db.models import Q
 from django.db.models import Lookup
 from django.db.models.fields import TextField
-from rest_framework import generics
+from rest_framework import filters, generics
 from rest_framework.exceptions import ParseError
 from .serializers import (Jurisdiction, SimpleJurisdictionSerializer, FullJurisdictionSerializer,
                           Person, SimplePersonSerializer, FullPersonSerializer,
@@ -35,6 +35,7 @@ class Fulltext(Lookup):
 class JurisdictionList(AllowFieldLimitingMixin, generics.ListAPIView):
     serializer_class = SimpleJurisdictionSerializer
     full_serializer_class = FullJurisdictionSerializer
+    filter_backends = (filters.OrderingFilter,)
 
     def get_queryset(self):
         queryset = Jurisdiction.objects.all()
@@ -70,6 +71,7 @@ class PersonList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     serializer_class = SimplePersonSerializer
     full_serializer_class = FullPersonSerializer
+    filter_backends = (filters.OrderingFilter,)
 
     def get_queryset(self):
         queryset = Person.objects.all().prefetch_related('memberships',
@@ -122,6 +124,7 @@ class OrganizationList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     serializer_class = SimpleOrganizationSerializer
     full_serializer_class = FullOrganizationSerializer
+    filter_backends = (filters.OrderingFilter,)
 
     def get_queryset(self):
         queryset = Organization.objects.all().select_related('jurisdiction',
@@ -147,6 +150,7 @@ class MembershipList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     serializer_class = SimpleMembershipSerializer
     full_serializer_class = FullMembershipSerializer
+    filter_backends = (filters.OrderingFilter,)
 
     def get_queryset(self):
         queryset = Membership.objects.all().select_related('organization', 'post')
@@ -180,6 +184,7 @@ class BillList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     serializer_class = SimpleBillSerializer
     full_serializer_class = FullBillSerializer
+    filter_backends = (filters.OrderingFilter,)
 
     def get_queryset(self):
         queryset = Bill.objects.all().select_related('legislative_session__jurisdiction',
@@ -256,6 +261,7 @@ class VoteList(AllowFieldLimitingMixin, generics.ListAPIView):
     """
     serializer_class = SimpleVoteSerializer
     full_serializer_class = FullVoteSerializer
+    filter_backends = (filters.OrderingFilter,)
 
     def get_queryset(self):
         queryset = VoteEvent.objects.all().select_related('bill__legislative_session__jurisdiction',

@@ -166,6 +166,7 @@ BOUNDARY_MAPPINGS = {
 # API stuff
 REST_FRAMEWORK = {
     'PAGE_SIZE': 50,
+    'ORDERING_PARAM': 'sort',
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework_json_api.pagination.PageNumberPagination',
     'URL_FIELD_NAME': 'resource_url',
