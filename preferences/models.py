@@ -30,17 +30,32 @@ class Preferences(models.Model):
     email_type = models.CharField(max_length=1, choices=EMAIL_TYPES,
                                   default='T')
 
+    def __str__(self):
+        return 'Preferences for {}'.format(self.user)
+
+    class Meta:
+        verbose_name_plural = 'preferences'
+
 
 class PersonFollow(models.Model):
     user = models.ForeignKey(User, related_name='person_follows')
     person = models.ForeignKey(Person, related_name='follows')
+
+    def __str__(self):
+        return '{} follows {}'.format(self.user, self.person)
 
 
 class TopicFollow(models.Model):
     user = models.ForeignKey(User, related_name='topic_follows')
     topic = models.CharField(max_length=100)
 
+    def __str__(self):
+        return '{} follows {}'.format(self.user, self.topic)
+
 
 class LocationFollow(models.Model):
     user = models.ForeignKey(User, related_name='location_follows')
     location = models.CharField(max_length=100)
+
+    def __str__(self):
+        return '{} follows {}'.format(self.user, self.location)
