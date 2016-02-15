@@ -149,6 +149,32 @@ $(document).ready(function() {
         </div>
         <hr/>
 
+        <h4> Email Preferences </h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <p class="lead">Email Frequency</p>
+                    <select name="email_frequency">
+                        {% for value, name in email_frequencies %}
+                        <option value="{{ value }}" {% if preferences.email_frequency == value %} selected {% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div>
+                    <p class="lead">Email Type</p>
+                    <select name="email_type">
+                        {% for value, name in email_types %}
+                            <option value="{{ value }}" {% if preferences.email_type == value %} selected {% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <hr/>
+
         <div class="row">
             <div class="col-md-12">
                 <input class="btn" type="submit"/>
@@ -163,8 +189,9 @@ $(document).ready(function() {
     Your API Key is
     <input readonly size="40" value="{{user.preferences.apikey}}" />.
 
+    <p>
     For details on using the API visit the <a href="/api/">Tabs on Tallahassee API documentation</a>.
-
+    </p>
 {% endblock %}
 
 

@@ -8,7 +8,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from opencivicdata.models import Organization
 from bills.utils import get_all_subjects, get_all_locations
-from preferences.models import PersonFollow, LocationFollow, TopicFollow, Preferences
+from preferences.models import (PersonFollow, LocationFollow, TopicFollow,
+                                Preferences, EMAIL_FREQUENCIES, EMAIL_TYPES)
 from registration.backends.default.views import RegistrationView
 from registration.forms import RegistrationFormUniqueEmail
 
@@ -85,6 +86,10 @@ def user_preferences(request):
             for subject in request.POST.getlist('subjects'):
                 TopicFollow.objects.create(user=user, topic=subject)
 
+            preferences.email_frequency = request.POST.get('email_frequency')
+            preferences.email_type = request.POST.get('email_type')
+            preferences.save()
+
         return redirect('.')
 
     return render(
@@ -101,7 +106,10 @@ def user_preferences(request):
             'address_representative': address_representative,
             'error_message': error_message,
             'lat': lat,
-            'lng': lng
+            'lng': lng,
+            'preferences': preferences,
+            'email_frequencies': EMAIL_FREQUENCIES,
+            'email_types': EMAIL_TYPES,
         }
     )
 
