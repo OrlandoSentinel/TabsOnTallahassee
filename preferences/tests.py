@@ -77,7 +77,10 @@ class PreferencesTests(StaticLiveServerTestCase):
 
         self.client.login(username='devon', password='dudley')
         subjects = ['get', 'the', 'tables']
-        self.client.post(reverse('preferences'), {'subjects': subjects})
+        self.client.post(reverse('preferences'), {'subjects': subjects,
+                                                  'email_frequency': 'D',
+                                                  'email_type': 'N',
+                                                  })
 
         topics_followed = TopicFollow.objects.filter(user=self.user)
         self.assertEqual(len(topics_followed), 3)
@@ -88,7 +91,10 @@ class PreferencesTests(StaticLiveServerTestCase):
 
         self.client.login(username='devon', password='dudley')
         locations = ['dudleyville', 'USA']
-        self.client.post(reverse('preferences'), {'locations': locations})
+        self.client.post(reverse('preferences'), {'locations': locations,
+                                                  'email_frequency': 'D',
+                                                  'email_type': 'N',
+                                                  })
 
         locations_followed = LocationFollow.objects.filter(user=self.user)
         self.assertEqual(len(locations_followed), 2)
@@ -100,7 +106,11 @@ class PreferencesTests(StaticLiveServerTestCase):
         self.client.login(username='devon', password='dudley')
         representatives = ['ocd-person/016cf1f8-94ea-49a2-b1df-2701cee64ad2']
         senators = ['ocd-person/0c627de0-fa4b-4646-9a94-4d145e361efa']
-        self.client.post(reverse('preferences'), {'representatives': representatives, 'senators': senators})
+        self.client.post(reverse('preferences'), {'representatives': representatives,
+                                                  'senators': senators,
+                                                  'email_frequency': 'D',
+                                                  'email_type': 'N',
+                                                  })
 
         people_followed = PersonFollow.objects.filter(user=self.user)
         self.assertEqual(len(people_followed), 2)
