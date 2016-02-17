@@ -1,20 +1,28 @@
 import datetime
 from collections import defaultdict
-from django.core.management.base import BaseCommand, CommandError
-from opencivicdata.models import Bill
 
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.mail import EmailMultiAlternatives
+from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
+from django.template.loader import get_template
+
+from opencivicdata.models import Bill
+from ...models import EmailRecord
 
 class BillAccumulator:
     def __init__(self, days):
         self.days = days
         bills = self.get_bills_with_actions_since(days)
+        print('Accumulated {} bills for {} days...'.format(len(bills), days))
         self.make_buckets(bills)
 
     def get_bills_with_actions_since(self, days):
         """ get list of all bills w/ actions in last N days """
         today = datetime.date.today()
-        yesterday = (today - datetime.timedelta(days=days)).strftime('%Y%m%d')
-        today = today.strftime('%Y%m%d')
+        yesterday = (today - datetime.timedelta(days=days)).strftime('%Y-%m-%d')
+        today = today.strftime('%Y-%m-%d')
         bills = Bill.objects.filter(actions__date__range=(yesterday, today))
         # check created/updated date on root bill?
         return bills
@@ -58,7 +66,7 @@ class Command(BaseCommand):
     help = 'Send emails for all updates in last N days'
 
     def add_arguments(self, parser):
-        parser.add_argument('--week', type=bool, action=store_true,
+        parser.add_argument('--week', action='store_true',
                             default=False)
 
     def handle(self, *args, **options):
@@ -67,17 +75,46 @@ class Command(BaseCommand):
         if week:
             days = 7
             email_freq = 'W'
+            subject = 'Tabs on Tallahasse: Week of {}'.format(
+                datetime.date.today().strftime('%B %d, %Y')
+            )
         else:
             days = 1
             email_freq = 'D'
+            subject = 'Tabs on Tallahasse: {}'.format(
+                datetime.date.today().strftime('%B %d, %Y')
+            )
 
         # get all modified bills
         bill_accumulator = BillAccumulator(days)
 
         # email users that get emails on this interval
-        for user in User.objects.get(preferences__email_frequency=email_freq):
+        users = User.objects.filter(preferences__email_frequency=email_freq)
+        print('{} users to process...'.format(len(users)))
+        for user in users:
             bills = bill_accumulator.bills_for_user(user)
-            count = len(bills)
-            # in transaction
-                # create EmailRecord
-                # send email (rollback if fail)
+            if not bills:
+                continue
+            with transaction.atomic():
+                EmailRecord.objects.create(
+                    user=user,
+                    bills=len(bills),
+                )
+
+                text_template = get_template('email/updates.txt')
+                text_content = text_template.render({
+                    'bills': bills,
+                })
+                msg = EmailMultiAlternatives(subject,
+                                             text_content,
+                                             settings.DEFAULT_FROM_EMAIL,
+                                             [user.email]
+                                             )
+                # add html if user prefers it
+                if user.preferences.email_type == 'H':
+                    html_template = get_template('email/updates.html')
+                    html_content = html_template.render({
+                        'bills': bills,
+                    })
+                    msg.attach_alternative(html_content, "text/html")
+                msg.send()
