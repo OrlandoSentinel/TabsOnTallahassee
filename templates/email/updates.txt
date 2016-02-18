@@ -1,3 +1,8 @@
+{{ subject }}
 {% for bill in bills %}
-    {{ bill }}
+=================
+
+{{ bill.identifier }} - {{ bill.title }}
+    https://tabsontallhassee.com{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}
+    Latest Action: {{ bill.latest_action.description }} ({{ bill.latest_action.date }})
 {% endfor %}

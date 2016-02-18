@@ -25,6 +25,10 @@ class BillAccumulator:
         today = today.strftime('%Y-%m-%d')
         bills = Bill.objects.filter(actions__date__range=(yesterday, today))
         # check created/updated date on root bill?
+
+        # annotate bills w/ actions
+        for bill in bills:
+            bill.latest_action = bill.actions.all().order_by('-order')[0]
         return bills
 
     def make_buckets(self, bills):
@@ -104,6 +108,7 @@ class Command(BaseCommand):
                 text_template = get_template('email/updates.txt')
                 text_content = text_template.render({
                     'bills': bills,
+                    'subject': subject,
                 })
                 msg = EmailMultiAlternatives(subject,
                                              text_content,
@@ -115,6 +120,7 @@ class Command(BaseCommand):
                     html_template = get_template('email/updates.html')
                     html_content = html_template.render({
                         'bills': bills,
+                        'subject': subject,
                     })
                     msg.attach_alternative(html_content, "text/html")
                 msg.send()
