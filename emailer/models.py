@@ -8,7 +8,7 @@ class EmailRecord(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '{} updates for {} [{}]'.format(self.updates,
+        return '{} updates for {} [{}]'.format(self.bills,
                                                self.user,
                                                self.created_at,
                                                )
