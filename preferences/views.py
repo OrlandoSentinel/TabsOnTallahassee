@@ -86,8 +86,8 @@ def user_preferences(request):
             for subject in request.POST.getlist('subjects'):
                 TopicFollow.objects.create(user=user, topic=subject)
 
-            preferences.email_frequency = request.POST.get('email_frequency')
-            preferences.email_type = request.POST.get('email_type')
+            preferences.email_frequency = request.POST.get('email_frequency', 'N')
+            preferences.email_type = request.POST.get('email_type', 'T')
             preferences.save()
 
         return redirect('.')
