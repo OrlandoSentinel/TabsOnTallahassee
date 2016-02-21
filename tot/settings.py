@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'legislators',
     'bills',
     'api',
+    'emailer',
     'rest_framework',
     'corsheaders',
     'debug_toolbar',
