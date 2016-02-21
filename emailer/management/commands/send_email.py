@@ -1,4 +1,5 @@
 import datetime
+import pytz
 from collections import defaultdict
 
 from django.conf import settings
@@ -96,9 +97,22 @@ class Command(BaseCommand):
         # email users that get emails on this interval
         users = User.objects.filter(preferences__email_frequency=email_freq)
         print('{} users to process...'.format(len(users)))
+
+        sent_recently = 0
+        no_bills = 0
+        sent = 0
+
         for user in users:
+            # skip user if last email was sent in the last [1|7] days
+            last_email = user.email_tasks.latest('created_at')
+            now = pytz.utc.localize(datetime.datetime.utcnow())
+            if now - last_email.created_at < datetime.timedelta(days=days):
+                sent_recently += 1
+                continue
+
             bills = bill_accumulator.bills_for_user(user)
             if not bills:
+                no_bills += 1
                 continue
 
             # build email message
@@ -127,29 +141,10 @@ class Command(BaseCommand):
                     user=user,
                     bills=len(bills),
                 )
-<<<<<<< HEAD
                 # if this fails it'll break the transaction & roll it back
-=======
-
-                text_template = get_template('email/updates.txt')
-                text_content = text_template.render({
-                    'bills': bills,
-                    'subject': subject,
-                    'unsubscribe_guid': er.unsubscribe_guid,
-                })
-                msg = EmailMultiAlternatives(subject,
-                                             text_content,
-                                             settings.DEFAULT_FROM_EMAIL,
-                                             [user.email]
-                                             )
-                # add html if user prefers it
-                if user.preferences.email_type == 'H':
-                    html_template = get_template('email/updates.html')
-                    html_content = html_template.render({
-                        'bills': bills,
-                        'subject': subject,
-                        'unsubscribe_guid': er.unsubscribe_guid,
-                    })
-                    msg.attach_alternative(html_content, "text/html")
->>>>>>> email-unsub
                 msg.send()
+                sent += 1
+        print('''{} users sent too recently...
+{} users w/ no bills...
+{} emails sent...'''.format(sent_recently, no_bills, sent)
+              )
