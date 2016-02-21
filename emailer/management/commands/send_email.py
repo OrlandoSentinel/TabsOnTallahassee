@@ -123,9 +123,33 @@ class Command(BaseCommand):
 
             # send & record sending together
             with transaction.atomic():
-                EmailRecord.objects.create(
+                er = EmailRecord.objects.create(
                     user=user,
                     bills=len(bills),
                 )
+<<<<<<< HEAD
                 # if this fails it'll break the transaction & roll it back
+=======
+
+                text_template = get_template('email/updates.txt')
+                text_content = text_template.render({
+                    'bills': bills,
+                    'subject': subject,
+                    'unsubscribe_guid': er.unsubscribe_guid,
+                })
+                msg = EmailMultiAlternatives(subject,
+                                             text_content,
+                                             settings.DEFAULT_FROM_EMAIL,
+                                             [user.email]
+                                             )
+                # add html if user prefers it
+                if user.preferences.email_type == 'H':
+                    html_template = get_template('email/updates.html')
+                    html_content = html_template.render({
+                        'bills': bills,
+                        'subject': subject,
+                        'unsubscribe_guid': er.unsubscribe_guid,
+                    })
+                    msg.attach_alternative(html_content, "text/html")
+>>>>>>> email-unsub
                 msg.send()
