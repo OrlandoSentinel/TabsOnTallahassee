@@ -11,6 +11,7 @@ from django.template.loader import get_template
 from opencivicdata.models import Bill
 from ...models import EmailRecord
 
+
 class BillAccumulator:
     def __init__(self, days):
         self.days = days
@@ -99,28 +100,32 @@ class Command(BaseCommand):
             bills = bill_accumulator.bills_for_user(user)
             if not bills:
                 continue
+
+            # build email message
+            text_template = get_template('email/updates.txt')
+            text_content = text_template.render({
+                'bills': bills,
+                'subject': subject,
+            })
+            msg = EmailMultiAlternatives(subject,
+                                            text_content,
+                                            settings.DEFAULT_FROM_EMAIL,
+                                            [user.email]
+                                            )
+            # add html if user prefers it
+            if user.preferences.email_type == 'H':
+                html_template = get_template('email/updates.html')
+                html_content = html_template.render({
+                    'bills': bills,
+                    'subject': subject,
+                })
+                msg.attach_alternative(html_content, "text/html")
+
+            # send & record sending together
             with transaction.atomic():
                 EmailRecord.objects.create(
                     user=user,
                     bills=len(bills),
                 )
-
-                text_template = get_template('email/updates.txt')
-                text_content = text_template.render({
-                    'bills': bills,
-                    'subject': subject,
-                })
-                msg = EmailMultiAlternatives(subject,
-                                             text_content,
-                                             settings.DEFAULT_FROM_EMAIL,
-                                             [user.email]
-                                             )
-                # add html if user prefers it
-                if user.preferences.email_type == 'H':
-                    html_template = get_template('email/updates.html')
-                    html_content = html_template.render({
-                        'bills': bills,
-                        'subject': subject,
-                    })
-                    msg.attach_alternative(html_content, "text/html")
+                # if this fails it'll break the transaction & roll it back
                 msg.send()
