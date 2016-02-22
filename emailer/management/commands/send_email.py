@@ -119,32 +119,32 @@ class Command(BaseCommand):
                 no_bills += 1
                 continue
 
-            # build email message
-            text_template = get_template('email/updates.txt')
-            text_content = text_template.render({
-                'bills': bills,
-                'subject': subject,
-            })
-            msg = EmailMultiAlternatives(subject,
-                                            text_content,
-                                            settings.DEFAULT_FROM_EMAIL,
-                                            [user.email]
-                                            )
-            # add html if user prefers it
-            if user.preferences.email_type == 'H':
-                html_template = get_template('email/updates.html')
-                html_content = html_template.render({
-                    'bills': bills,
-                    'subject': subject,
-                })
-                msg.attach_alternative(html_content, "text/html")
-
             # send & record sending together
             with transaction.atomic():
                 er = EmailRecord.objects.create(
                     user=user,
                     bills=len(bills),
                 )
+
+                # build email message
+                text_template = get_template('email/updates.txt')
+                context = {
+                    'bills': bills,
+                    'subject': subject,
+                    'unsubscribe_guid': er.unsubscribe_guid,
+                }
+                text_content = text_template.render(context)
+                msg = EmailMultiAlternatives(subject,
+                                                text_content,
+                                                settings.DEFAULT_FROM_EMAIL,
+                                                [user.email]
+                                                )
+                # add html if user prefers it
+                if user.preferences.email_type == 'H':
+                    html_template = get_template('email/updates.html')
+                    html_content = html_template.render(context)
+                    msg.attach_alternative(html_content, "text/html")
+
                 # if this fails it'll break the transaction & roll it back
                 msg.send()
                 sent += 1
