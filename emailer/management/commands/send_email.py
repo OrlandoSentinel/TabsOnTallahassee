@@ -74,9 +74,12 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--week', action='store_true',
                             default=False)
+        parser.add_argument('--force', action='store_true',
+                            default=False)
 
     def handle(self, *args, **options):
         week = options['week']
+        force = options['force']
 
         if week:
             days = 7
@@ -106,7 +109,8 @@ class Command(BaseCommand):
             # skip user if last email was sent in the last [1|7] days
             last_email = user.email_tasks.latest('created_at')
             now = pytz.utc.localize(datetime.datetime.utcnow())
-            if now - last_email.created_at < datetime.timedelta(days=days):
+
+            if not force and now - last_email.created_at < datetime.timedelta(days=days):
                 sent_recently += 1
                 continue
 
