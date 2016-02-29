@@ -100,7 +100,7 @@ class Command(BaseCommand):
             if not bills:
                 continue
             with transaction.atomic():
-                EmailRecord.objects.create(
+                er = EmailRecord.objects.create(
                     user=user,
                     bills=len(bills),
                 )
@@ -109,6 +109,7 @@ class Command(BaseCommand):
                 text_content = text_template.render({
                     'bills': bills,
                     'subject': subject,
+                    'unsubscribe_guid': er.unsubscribe_guid,
                 })
                 msg = EmailMultiAlternatives(subject,
                                              text_content,
@@ -121,6 +122,7 @@ class Command(BaseCommand):
                     html_content = html_template.render({
                         'bills': bills,
                         'subject': subject,
+                        'unsubscribe_guid': er.unsubscribe_guid,
                     })
                     msg.attach_alternative(html_content, "text/html")
                 msg.send()
