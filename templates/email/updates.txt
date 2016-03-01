@@ -6,3 +6,10 @@
     https://tabsontallhassee.com{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}
     Latest Action: {{ bill.latest_action.description }} ({{ bill.latest_action.date }})
 {% endfor %}
+
+
+You are receiving this email because you signed up for updates from Tabs on Tallahassee.
+
+Change your preferences here: https://tabsontallahassee.com/preferences/
+
+Disable all emails: http://tabsontallahassee.com/unsubscribe/{{unsubscribe_guid}}
