@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div>
+{% if unsubscribed %}
+  <h3>Unsubscribed!</h3>
+  <p>Unsubscribed from all emails!</p>
+
+  <p>
+    To resubscribe or adjust email preferences visit your <a href="/preferences/">preferences</a>.
+  </p>
+{% else %}
+  <h3>Unsubscribe from all activity notifications?</h3>
+  <p>
+    Do you wish to unsubscribe {{ user.email }} from all emails?
+  </p>
+
+  <p>
+    To instead adjust email preferences visit your <a href="/preferences/">preferences</a>.
+  </p>
+
+    <form method="POST">
+      {% csrf_token %}
+      <input type="submit" value="Confirm" />
+    </form>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -5,6 +5,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from preferences.views import EmailRegistrationView, user_preferences, set_user_latlon
 from bills.views import bill_list_latest
+from emailer.views import unsubscribe
 
 admin.site.site_header = 'Tabs on Tallahassee Admin'
 
@@ -17,6 +18,7 @@ urlpatterns = [
     url(r'^accounts/register/', EmailRegistrationView.as_view(), name='registration_register'),
     url(r'^preferences/', user_preferences, name='preferences'),
     url(r'^set_user_latlon/', set_user_latlon, name='set_user_latlon'),
+    url(r'^unsubscribe/(?P<guid>[-a-f0-9]+)/', unsubscribe),
     url('^', include('legislators.urls')),
     url('bills/', include('bills.urls')),
     url(r'^tot-admin/', include('opencivicdata.admin.urls')),
