@@ -84,9 +84,19 @@
   command: /home/tot/virt/bin/python manage.py collectstatic --settings=tot.settings --noinput chdir=/home/tot/src/tot
   environment: django_environment
 
-# cron
+# cron jobs
 - name: write run-scrapers.sh
   template: src=run-scrapers.sh dest=/home/tot/ mode="a+x"
-- name: add cron
+- name: write daily-email.sh
+  template: src=daily-email.sh dest=/home/tot/ mode="a+x"
+- name: write weekly-email.sh
+  template: src=weekly-email.sh dest=/home/tot/ mode="a+x"
+- name: add run scrapers cron
   cron: name="run scrapers" minute="0" hour="1,6,11,16" job="/home/tot/run-scrapers.sh"
+  sudo_user: "tot"
+- name: add daily email cron
+  cron: name="daily email" minute="0" hour="10" day="1,2,3,4,5" job="/home/tot/daily-email.sh"
+  sudo_user: "tot"
+- name: add weekly email cron
+  cron: name="weekly email" minute="0" hour="10" day="6" job="/home/tot/weekly-email.sh"
   sudo_user: "tot"
