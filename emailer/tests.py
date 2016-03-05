@@ -45,7 +45,7 @@ class EmailerTestCase(TestCase):
         # HB2 - Tallahasse, school, gators, Liz, Jack
         # HB3 - Orlando, Miami, bees, Jack
         # all actions are today
-        today = datetime.datetime.today().strftime('%Y%m%d')
+        today = datetime.datetime.today().strftime('%Y-%m-%d')
         self.hb1.actions.create(date=today, description='action', order=1, organization=org)
         self.hb2.actions.create(date=today, description='action', order=1, organization=org)
         self.hb3.actions.create(date=today, description='action', order=1, organization=org)
