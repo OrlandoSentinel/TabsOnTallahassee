@@ -107,12 +107,15 @@ class Command(BaseCommand):
 
         for user in users:
             # skip user if last email was sent in the last [1|7] days
-            last_email = user.email_tasks.latest('created_at')
-            now = pytz.utc.localize(datetime.datetime.utcnow())
+            try:
+                last_email = user.email_tasks.latest('created_at')
+                now = pytz.utc.localize(datetime.datetime.utcnow())
 
-            if not force and now - last_email.created_at < datetime.timedelta(days=days):
-                sent_recently += 1
-                continue
+                if not force and now - last_email.created_at < datetime.timedelta(days=days):
+                    sent_recently += 1
+                    continue
+            except EmailRecord.DoesNotExist:
+                pass
 
             bills = bill_accumulator.bills_for_user(user)
             if not bills:
