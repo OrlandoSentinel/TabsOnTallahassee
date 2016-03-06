@@ -4,6 +4,46 @@
 
 {% load bills %}
 
+{% block head %}
+<script>
+var bt_action;
+{% if bill_followed %}
+    bt_action = "remove";
+{% else %}
+    bt_action = "add";
+{% endif %}
+
+function update_btn() {
+    if(bt_action == "remove") {
+        $('#bill-track-btn').val("Stop Tracking This Bill");
+    } else {
+        $('#bill-track-btn').val("Track This Bill");
+    }
+}
+
+$(document).ready(function() {
+    update_btn();
+
+    $('#bill-track-btn').click(function(e) {
+        var bill_id = $(this).data('bill-id');
+        $.post("{% url 'update_bill_follow' %}",
+               {bill_id: bill_id,
+                action: bt_action,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+               },
+               function(data) {
+                   bt_action = {
+                       'add': 'remove',
+                       'remove': 'add'
+                   }[data['action']];
+                   update_btn();
+               }
+       );
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 
 
@@ -14,6 +54,20 @@
 <div>
     <p class="lead">{{ bill.identifier }}</p>
 </div>
+
+{% if not user.is_anonymous %}
+<div>
+    {% csrf_token %}
+    <input
+    id="bill-track-btn"
+    class="btn btn-primary"
+    data-bill-id="{{bill.id}}"
+    type="submit"
+    value="-"
+    >
+</div>
+<br/>
+{% endif %}
 
 <div><a href="#bill_embed" role="button" data-toggle="collapse">View Latest</a></div>
 <div id="bill_embed" class="collapse">

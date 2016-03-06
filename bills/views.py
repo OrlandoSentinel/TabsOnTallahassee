@@ -1,12 +1,15 @@
 import time
+import json
 import string
 
-from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
-
 from django.contrib.auth.models import User
+from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.http import require_POST
 
 from tot import settings
+from preferences.models import BillFollow
 from preferences.views import _mark_selected, _get_current_people
 from bills.utils import get_all_subjects, get_all_locations
 
@@ -365,9 +368,28 @@ def filter_organize_bills(topics_followed, locations_followed):
     return organized_subjects, organized_locations
 
 
+@require_POST
+def update_bill_follow(request):
+    bill_id = request.POST.get('bill_id')
+    action = request.POST.get('action')
+    if action == 'add':
+        BillFollow.objects.create(user=request.user, bill_id=bill_id)
+    elif action == 'remove':
+        BillFollow.objects.filter(user=request.user, bill_id=bill_id).delete()
+
+    return HttpResponse(
+        json.dumps({'action': action}),
+        content_type='application/json'
+    )
+
+
 def bill_detail(request, bill_session, bill_identifier):
     bill = get_object_or_404(Bill, legislative_session__identifier=bill_session, identifier=bill_identifier)
     sponsors = bill.sponsorships.all().select_related('person', 'organization')
+
+    bill_followed = (
+        BillFollow.objects.filter(user=request.user, bill=bill).count() > 0
+    )
 
     for sponsor in sponsors:
         if sponsor.person:
@@ -407,7 +429,8 @@ def bill_detail(request, bill_session, bill_identifier):
         'documents': documents,
         'versions': versions,
         'votes': votes,
-        'people_votes': people_votes
+        'people_votes': people_votes,
+        'bill_followed': bill_followed
     }
 
     return render(
