@@ -106,5 +106,15 @@ class EmailerTestCase(TestCase):
         bills = ba.bills_for_user(u)
         self.assertEquals(bills, {self.hb1, self.hb2, self.hb3})
 
+    def test_bill_follows(self):
+        u = User.objects.create(username='user')
+
+        # actions in the last day
+        ba = BillAccumulator(1)
+
+        u.bill_follows.create(bill=self.hb1)
+        bills = ba.bills_for_user(u)
+        self.assertEquals(bills, {self.hb1})
+
     # test older actions don't show up
     # test future actions don't show up

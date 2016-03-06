@@ -36,12 +36,13 @@ class BillAccumulator:
     def make_buckets(self, bills):
         """
             given list of modified bills, return mappings by
-            legislator, location, and subject
+            legislator, location, subject and bill_id
         """
         # map bills
         self.by_legislator = defaultdict(list)
         self.by_location = defaultdict(list)
         self.by_subject = defaultdict(list)
+        self.by_id = {}
 
         for bill in bills:
             for sponsor_id in bill.sponsorships.values_list('person_id', flat=True):
@@ -50,12 +51,14 @@ class BillAccumulator:
                 self.by_location[location].append(bill)
             for subject in bill.subject:
                 self.by_subject[subject].append(bill)
+            self.by_id[bill.id] = bill
 
     def bills_for_user(self, user):
         """ for a user's interests, get all relevant bills """
         people = user.person_follows.values_list('person_id', flat=True)
         locations = user.location_follows.values_list('location', flat=True)
         topics = user.topic_follows.values_list('topic', flat=True)
+        bills_followed = user.bill_follows.values_list('bill', flat=True)
 
         bills = set()
         for person_id in people:
@@ -64,6 +67,8 @@ class BillAccumulator:
             bills.update(self.by_location[location])
         for topic in topics:
             bills.update(self.by_subject[topic])
+        for bill_followed in bills_followed:
+            bills.add(self.by_id[bill_followed])
 
         return bills
 
