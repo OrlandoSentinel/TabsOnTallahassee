@@ -21,9 +21,9 @@ $(document).ready(function() {
        lng: {{ lng }}
     });
 
-    GMaps.geolocate({
-        success: function(position) {
-            $("#locate").click(function() {
+    $("#locate").click(function() {
+        GMaps.geolocate({
+            success: function(position) {
                 var lat = position.coords.latitude;
                 var lon = position.coords.longitude;
                 $.get('../get_latlon/', {
@@ -35,8 +35,9 @@ $(document).ready(function() {
                     location.reload();
                 });
                 return false;
-            });
-        }
+            }
+        });
+        return false;
     });
 
     $('#enter_location').submit(function(e){
