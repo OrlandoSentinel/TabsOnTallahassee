@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from opencivicdata.models import Organization
 from bills.utils import get_all_subjects, get_all_locations
-from preferences.models import (PersonFollow, LocationFollow, TopicFollow,
+from preferences.models import (PersonFollow, LocationFollow, TopicFollow, BillFollow,
                                 Preferences, EMAIL_FREQUENCIES, EMAIL_TYPES)
 from registration.backends.default.views import RegistrationView
 from registration.forms import RegistrationFormUniqueEmail
@@ -51,6 +51,7 @@ def user_preferences(request):
     people_followed = [individual.person for individual in PersonFollow.objects.filter(user=user)]
     subjects_followed = [subject.topic for subject in TopicFollow.objects.filter(user=user)]
     locations_followed = [location.location for location in LocationFollow.objects.filter(user=user)]
+    bills_followed = [bill.bill for bill in BillFollow.objects.filter(user=user)]
 
     selected_reps = _mark_selected(representatives, people_followed)
     selected_senators = _mark_selected(senators, people_followed)
@@ -110,6 +111,7 @@ def user_preferences(request):
             'preferences': preferences,
             'email_frequencies': EMAIL_FREQUENCIES,
             'email_types': EMAIL_TYPES,
+            'bills_followed': bills_followed
         }
     )
 
