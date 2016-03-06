@@ -41,6 +41,20 @@ $(document).ready(function() {
             }
         });
     });
+
+    $('.remove_bill_follow').click(function(e){
+        var bill_id = $(this).data('bill-id');
+        var parent = $(this).parent();
+        $.post("{% url 'update_bill_follow' %}",
+               {bill_id: bill_id,
+                action: "remove",
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+               },
+               function(data) {
+                   parent.remove();
+               }
+       );
+    });
 });
 </script>
 {% endblock %}
@@ -145,6 +159,21 @@ $(document).ready(function() {
                         {% endfor %}
                     </select>
                 </div>
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row">
+            <div class="col-md-12">
+                <p class="lead" id="bills">Bills</p>
+                {% for bill in bills_followed %}
+                <div>
+                    <a href="#remove" class="remove_bill_follow" data-bill-id="{{bill.id}}">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                    <a href="{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}" > {{ bill.identifier }} </a> - {{ bill.title }} 
+                </div>
+                {% endfor %}
             </div>
         </div>
         <hr/>
