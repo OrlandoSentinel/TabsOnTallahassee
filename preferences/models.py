@@ -1,7 +1,9 @@
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
+from opencivicdata.models import Bill
 from opencivicdata.models.people_orgs import Person
+
 
 EMAIL_FREQUENCIES = (
     ('N', 'Never'),
@@ -59,3 +61,11 @@ class LocationFollow(models.Model):
 
     def __str__(self):
         return '{} follows {}'.format(self.user, self.location)
+
+
+class BillFollow(models.Model):
+    user = models.ForeignKey(User, related_name='bill_follows')
+    bill = models.ForeignKey(Bill, related_name='follows')
+
+    def __str__(self):
+        return '{} follows {}'.format(self.user, self.bill)
