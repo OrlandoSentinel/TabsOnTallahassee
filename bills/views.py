@@ -387,9 +387,12 @@ def bill_detail(request, bill_session, bill_identifier):
     bill = get_object_or_404(Bill, legislative_session__identifier=bill_session, identifier=bill_identifier)
     sponsors = bill.sponsorships.all().select_related('person', 'organization')
 
-    bill_followed = (
-        BillFollow.objects.filter(user=request.user, bill=bill).count() > 0
-    )
+    if request.user.is_anonymous():
+        bill_followed = False
+    else:
+        bill_followed = (
+            BillFollow.objects.filter(user=request.user, bill=bill).count() > 0
+        )
 
     for sponsor in sponsors:
         if sponsor.person:
