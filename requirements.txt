@@ -8,6 +8,7 @@ Django==1.9.3
 django-debug-toolbar==1.4
 djangorestframework==3.3.2
 django-cors-headers==1.1.0
+django-registration-redux==1.4
 whitenoise==2.0.6
 
 # scraper
@@ -22,9 +23,6 @@ newrelic
 
 # needs my commits, should be in 2.0.0a3 or later
 -e git://github.com/django-json-api/django-rest-framework-json-api.git@ce945f2a9bbd9b8bae3b8def0bff119a99f3c369#egg=rest_framework_json_api
-
-# needs my commits, should be in 1.3
--e git://github.com/macropin/django-registration.git@d217ba8ee8bd06b770a94660c752ad456878aadb#egg=registration
 
 # for tests
 mock==1.3.0
