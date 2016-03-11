@@ -1,4 +1,4 @@
-function glossary_replace() {
+function glossary_replace(then) {
   $.getJSON('/glossary/json/', function(data) {
     if($.isEmptyObject(data)) {
       return;
@@ -12,5 +12,8 @@ function glossary_replace() {
     $('div').html(function(i, html) {
       return html.replace(re, span_wrap);
     });
+    if(then) {
+      then();
+    }
   });
 };

@@ -251,25 +251,28 @@ function toggle(div_id) {
     $("#" + div_id).toggle();
 }
 
-glossary_replace();
-
 update_btn();
 
-$('#bill-track-btn').click(function(e) {
-    var bill_id = $(this).data('bill-id');
-    $.post("{% url 'update_bill_follow' %}",
-           {bill_id: bill_id,
-            action: bt_action,
-            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-           },
-           function(data) {
-               bt_action = {
-                   'add': 'remove',
-                   'remove': 'add'
-               }[data['action']];
-               update_btn();
-           }
-   );
-});
+bind_btn = function() {
+    $('#bill-track-btn').click(function(e) {
+        var bill_id = $(this).data('bill-id');
+        $.post("{% url 'update_bill_follow' %}",
+               {bill_id: bill_id,
+                action: bt_action,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+               },
+               function(data) {
+                   bt_action = {
+                       'add': 'remove',
+                       'remove': 'add'
+                   }[data['action']];
+                   update_btn();
+               }
+       );
+    });
+};
 
+// call bind btn, and if glossary replace messes w/ page, rebind it
+bind_btn();
+glossary_replace(bind_btn);
 {% endblock %}
