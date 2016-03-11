@@ -20,27 +20,6 @@ function update_btn() {
         $('#bill-track-btn').val("Track This Bill");
     }
 }
-
-$(document).ready(function() {
-    update_btn();
-
-    $('#bill-track-btn').click(function(e) {
-        var bill_id = $(this).data('bill-id');
-        $.post("{% url 'update_bill_follow' %}",
-               {bill_id: bill_id,
-                action: bt_action,
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-               },
-               function(data) {
-                   bt_action = {
-                       'add': 'remove',
-                       'remove': 'add'
-                   }[data['action']];
-                   update_btn();
-               }
-       );
-    });
-});
 </script>
 {% endblock %}
 
@@ -273,5 +252,24 @@ function toggle(div_id) {
 }
 
 glossary_replace();
+
+update_btn();
+
+$('#bill-track-btn').click(function(e) {
+    var bill_id = $(this).data('bill-id');
+    $.post("{% url 'update_bill_follow' %}",
+           {bill_id: bill_id,
+            action: bt_action,
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+           },
+           function(data) {
+               bt_action = {
+                   'add': 'remove',
+                   'remove': 'add'
+               }[data['action']];
+               update_btn();
+           }
+   );
+});
 
 {% endblock %}
