@@ -4,7 +4,7 @@ opencivicdata-django==0.8.2
 represent-boundaries==0.7.4
 
 # Django
-Django==1.9.3
+Django==1.9.4
 django-debug-toolbar==1.4
 djangorestframework==3.3.2
 djangorestframework-jsonapi==2.0.0-beta.2
