@@ -55,24 +55,33 @@ class BillAccumulator:
 
     def bills_for_user(self, user):
         """ for a user's interests, get all relevant bills """
-        people = user.person_follows.values_list('person_id', flat=True)
+        people = user.person_follows.values_list('person_id', 'person__name',
+                                                 )
         locations = user.location_follows.values_list('location', flat=True)
         topics = user.topic_follows.values_list('topic', flat=True)
         bills_followed = user.bill_follows.values_list('bill', flat=True)
 
         bills = set()
-        for person_id in people:
-            bills.update(self.by_legislator[person_id])
+        reasons = defaultdict(list)
+        for person_id, person_name in people:
+            for bill in self.by_legislator[person_id]:
+                bills.add(bill)
+                reasons[bill.id].append(('person', person_name))
         for location in locations:
-            bills.update(self.by_location[location])
+            for bill in self.by_location[location]:
+                bills.add(bill)
+                reasons[bill.id].append(('location', location))
         for topic in topics:
-            bills.update(self.by_subject[topic])
+            for bill in self.by_subject[topic]:
+                bills.add(bill)
+                reasons[bill.id].append(('topic', topic))
         for bill_followed in bills_followed:
             bill = self.by_id.get(bill_followed)
             if bill:
                 bills.add(bill)
+                reasons[bill.id].append(('bill', bill_followed))
 
-        return bills
+        return bills, reasons
 
 
 class Command(BaseCommand):
@@ -124,7 +133,7 @@ class Command(BaseCommand):
             except EmailRecord.DoesNotExist:
                 pass
 
-            bills = bill_accumulator.bills_for_user(user)
+            bills, reasons = bill_accumulator.bills_for_user(user)
             if not bills:
                 no_bills += 1
                 continue

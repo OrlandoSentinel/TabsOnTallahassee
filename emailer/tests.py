@@ -36,19 +36,49 @@ class EmailerTestCase(TestCase):
             extras={'places': ['Orlando', 'Miami']},
             subject=['bees'],
         )
+        # this bill hasn't been updated in a month
+        self.hb4 = Bill.objects.create(
+            identifier='HB 4',
+            legislative_session=session,
+            extras={'places': ['Orlando', 'Miami']},
+            subject=['bees', 'school'],
+        )
+        # this bill only has updates in the future
+        self.hb5 = Bill.objects.create(
+            identifier='HB 5',
+            legislative_session=session,
+            extras={'places': ['Orlando', 'Miami']},
+            subject=['bees', 'school'],
+        )
         self.hb1.sponsorships.create(person=self.liz)
         self.hb2.sponsorships.create(person=self.liz)
         self.hb2.sponsorships.create(person=self.jack)
         self.hb3.sponsorships.create(person=self.jack)
+        self.hb4.sponsorships.create(person=self.jack)
+        self.hb5.sponsorships.create(person=self.jack)
 
         # HB1 - Orlando, gators, Liz
         # HB2 - Tallahasse, school, gators, Liz, Jack
         # HB3 - Orlando, Miami, bees, Jack
         # all actions are today
         today = datetime.datetime.today().strftime('%Y-%m-%d')
-        self.hb1.actions.create(date=today, description='action', order=1, organization=org)
-        self.hb2.actions.create(date=today, description='action', order=1, organization=org)
-        self.hb3.actions.create(date=today, description='action', order=1, organization=org)
+        month_ago = (datetime.datetime.today() - datetime.timedelta(days=30)
+                     ).strftime('%Y-%m-%d')
+        self.hb1.actions.create(date=today, description='action', order=1,
+                                organization=org)
+        self.hb2.actions.create(date=today, description='action', order=1,
+                                organization=org)
+        self.hb3.actions.create(date=today, description='action', order=1,
+                                organization=org)
+        # 4 and 5 are same as 3 but w/ actions at other times
+        month_ago = (datetime.datetime.today() - datetime.timedelta(days=30)
+                     ).strftime('%Y-%m-%d')
+        self.hb4.actions.create(date=month_ago, description='action', order=1,
+                                organization=org)
+        future = (datetime.datetime.today() + datetime.timedelta(days=30)
+                     ).strftime('%Y-%m-%d')
+        self.hb5.actions.create(date=future, description='action', order=1,
+                                organization=org)
 
     def test_location_follows(self):
         u = User.objects.create(username='user')
@@ -57,22 +87,22 @@ class EmailerTestCase(TestCase):
         ba = BillAccumulator(1)
 
         # no followed items, nothing back
-        bills = ba.bills_for_user(u)
+        bills, reasons = ba.bills_for_user(u)
         self.assertEquals(bills, set())
 
         # one location w/ two
         u.location_follows.create(location='Orlando')
-        bills = ba.bills_for_user(u)
+        bills, reasons = ba.bills_for_user(u)
         self.assertEquals(bills, {self.hb1, self.hb3})
 
         # add second location
         u.location_follows.create(location='Tallahassee')
-        bills = ba.bills_for_user(u)
+        bills, reasons = ba.bills_for_user(u)
         self.assertEquals(bills, {self.hb1, self.hb2, self.hb3})
 
         # Orlando only
         u.location_follows.filter(location='Orlando').delete()
-        bills = ba.bills_for_user(u)
+        bills, reasons = ba.bills_for_user(u)
         self.assertEquals(bills, {self.hb2})
 
 
@@ -84,12 +114,12 @@ class EmailerTestCase(TestCase):
 
         # one topic w/ two
         u.topic_follows.create(topic='gators')
-        bills = ba.bills_for_user(u)
+        bills, reasons = ba.bills_for_user(u)
         self.assertEquals(bills, {self.hb1, self.hb2})
 
         # add second topic
         u.topic_follows.create(topic='bees')
-        bills = ba.bills_for_user(u)
+        bills, reasons = ba.bills_for_user(u)
         self.assertEquals(bills, {self.hb1, self.hb2, self.hb3})
 
     def test_sponsor_follows(self):
@@ -99,11 +129,11 @@ class EmailerTestCase(TestCase):
         ba = BillAccumulator(1)
 
         u.person_follows.create(person=self.liz)
-        bills = ba.bills_for_user(u)
+        bills, reasons = ba.bills_for_user(u)
         self.assertEquals(bills, {self.hb1, self.hb2})
 
         u.person_follows.create(person=self.jack)
-        bills = ba.bills_for_user(u)
+        bills, reasons = ba.bills_for_user(u)
         self.assertEquals(bills, {self.hb1, self.hb2, self.hb3})
 
     def test_bill_follows(self):
@@ -113,8 +143,24 @@ class EmailerTestCase(TestCase):
         ba = BillAccumulator(1)
 
         u.bill_follows.create(bill=self.hb1)
-        bills = ba.bills_for_user(u)
+        u.bill_follows.create(bill=self.hb4)
+        bills, reasons = ba.bills_for_user(u)
         self.assertEquals(bills, {self.hb1})
 
-    # test older actions don't show up
-    # test future actions don't show up
+
+    def test_bill_reasons(self):
+        u = User.objects.create(username='user')
+
+        # actions in the last day
+        ba = BillAccumulator(1)
+
+        u.person_follows.create(person=self.liz)
+        u.bill_follows.create(bill=self.hb1)
+        u.topic_follows.create(topic='gators')
+        u.location_follows.create(location='Orlando')
+        bills, reasons = ba.bills_for_user(u)
+
+        self.assertIn(('person', self.liz.name), reasons[self.hb1.id])
+        self.assertIn(('bill', self.hb1.id), reasons[self.hb1.id])
+        self.assertIn(('location', 'Orlando'), reasons[self.hb1.id])
+        self.assertIn(('topic', 'gators'), reasons[self.hb1.id])
