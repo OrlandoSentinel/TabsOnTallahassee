@@ -61,27 +61,22 @@ class BillAccumulator:
         topics = user.topic_follows.values_list('topic', flat=True)
         bills_followed = user.bill_follows.values_list('bill', flat=True)
 
-        bills = set()
         reasons = defaultdict(list)
         for person_id, person_name in people:
             for bill in self.by_legislator[person_id]:
-                bills.add(bill)
-                reasons[bill.id].append(('person', person_name))
+                reasons[bill].append(('person', person_name))
         for location in locations:
             for bill in self.by_location[location]:
-                bills.add(bill)
-                reasons[bill.id].append(('location', location))
+                reasons[bill].append(('location', location))
         for topic in topics:
             for bill in self.by_subject[topic]:
-                bills.add(bill)
-                reasons[bill.id].append(('topic', topic))
+                reasons[bill].append(('topic', topic))
         for bill_followed in bills_followed:
             bill = self.by_id.get(bill_followed)
             if bill:
-                bills.add(bill)
-                reasons[bill.id].append(('bill', bill_followed))
+                reasons[bill].append(('bill', bill_followed))
 
-        return bills, reasons
+        return reasons
 
 
 class Command(BaseCommand):

@@ -87,22 +87,22 @@ class EmailerTestCase(TestCase):
         ba = BillAccumulator(1)
 
         # no followed items, nothing back
-        bills, reasons = ba.bills_for_user(u)
+        bills = set(ba.bills_for_user(u))
         self.assertEquals(bills, set())
 
         # one location w/ two
         u.location_follows.create(location='Orlando')
-        bills, reasons = ba.bills_for_user(u)
+        bills = set(ba.bills_for_user(u))
         self.assertEquals(bills, {self.hb1, self.hb3})
 
         # add second location
         u.location_follows.create(location='Tallahassee')
-        bills, reasons = ba.bills_for_user(u)
+        bills = set(ba.bills_for_user(u))
         self.assertEquals(bills, {self.hb1, self.hb2, self.hb3})
 
         # Orlando only
         u.location_follows.filter(location='Orlando').delete()
-        bills, reasons = ba.bills_for_user(u)
+        bills = set(ba.bills_for_user(u))
         self.assertEquals(bills, {self.hb2})
 
 
@@ -114,12 +114,12 @@ class EmailerTestCase(TestCase):
 
         # one topic w/ two
         u.topic_follows.create(topic='gators')
-        bills, reasons = ba.bills_for_user(u)
+        bills = set(ba.bills_for_user(u))
         self.assertEquals(bills, {self.hb1, self.hb2})
 
         # add second topic
         u.topic_follows.create(topic='bees')
-        bills, reasons = ba.bills_for_user(u)
+        bills = set(ba.bills_for_user(u))
         self.assertEquals(bills, {self.hb1, self.hb2, self.hb3})
 
     def test_sponsor_follows(self):
@@ -129,11 +129,11 @@ class EmailerTestCase(TestCase):
         ba = BillAccumulator(1)
 
         u.person_follows.create(person=self.liz)
-        bills, reasons = ba.bills_for_user(u)
+        bills = set(ba.bills_for_user(u))
         self.assertEquals(bills, {self.hb1, self.hb2})
 
         u.person_follows.create(person=self.jack)
-        bills, reasons = ba.bills_for_user(u)
+        bills = set(ba.bills_for_user(u))
         self.assertEquals(bills, {self.hb1, self.hb2, self.hb3})
 
     def test_bill_follows(self):
@@ -144,7 +144,7 @@ class EmailerTestCase(TestCase):
 
         u.bill_follows.create(bill=self.hb1)
         u.bill_follows.create(bill=self.hb4)
-        bills, reasons = ba.bills_for_user(u)
+        bills = set(ba.bills_for_user(u))
         self.assertEquals(bills, {self.hb1})
 
 
@@ -158,9 +158,9 @@ class EmailerTestCase(TestCase):
         u.bill_follows.create(bill=self.hb1)
         u.topic_follows.create(topic='gators')
         u.location_follows.create(location='Orlando')
-        bills, reasons = ba.bills_for_user(u)
+        bills = ba.bills_for_user(u)
 
-        self.assertIn(('person', self.liz.name), reasons[self.hb1.id])
-        self.assertIn(('bill', self.hb1.id), reasons[self.hb1.id])
-        self.assertIn(('location', 'Orlando'), reasons[self.hb1.id])
-        self.assertIn(('topic', 'gators'), reasons[self.hb1.id])
+        self.assertIn(('person', self.liz.name), bills[self.hb1])
+        self.assertIn(('bill', self.hb1.id), bills[self.hb1])
+        self.assertIn(('location', 'Orlando'), bills[self.hb1])
+        self.assertIn(('topic', 'gators'), bills[self.hb1])
