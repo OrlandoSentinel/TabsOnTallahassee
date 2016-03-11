@@ -95,8 +95,8 @@
   cron: name="run scrapers" minute="0" hour="1,6,11,16" job="/home/tot/run-scrapers.sh"
   sudo_user: "tot"
 - name: add daily email cron
-  cron: name="daily email" minute="0" hour="10" day="1,2,3,4,5" job="/home/tot/daily-email.sh"
+  cron: name="daily email" minute="0" hour="10" dow="1,2,3,4,5" job="/home/tot/daily-email.sh"
   sudo_user: "tot"
 - name: add weekly email cron
-  cron: name="weekly email" minute="0" hour="10" day="6" job="/home/tot/weekly-email.sh"
+  cron: name="weekly email" minute="0" hour="10" dow="6" job="/home/tot/weekly-email.sh"
   sudo_user: "tot"
