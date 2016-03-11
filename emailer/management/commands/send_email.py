@@ -68,7 +68,9 @@ class BillAccumulator:
         for topic in topics:
             bills.update(self.by_subject[topic])
         for bill_followed in bills_followed:
-            bills.add(self.by_id[bill_followed])
+            bill = self.by_id.get(bill_followed)
+            if bill:
+                bills.add(bill)
 
         return bills
 
