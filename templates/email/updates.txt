@@ -12,4 +12,4 @@ You are receiving this email because you signed up for updates from Tabs on Tall
 
 Change your preferences here: https://tabsontallahassee.com/preferences/
 
-Disable all emails: http://tabsontallahassee.com/unsubscribe/{{unsubscribe_guid}}
+Disable all emails: https://tabsontallahassee.com/unsubscribe/{{unsubscribe_guid}}
