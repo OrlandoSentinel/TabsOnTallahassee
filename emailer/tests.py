@@ -160,7 +160,7 @@ class EmailerTestCase(TestCase):
         u.location_follows.create(location='Orlando')
         bills = ba.bills_for_user(u)
 
-        self.assertIn(('person', self.liz.name), bills[self.hb1])
-        self.assertIn(('bill', self.hb1.id), bills[self.hb1])
-        self.assertIn(('location', 'Orlando'), bills[self.hb1])
-        self.assertIn(('topic', 'gators'), bills[self.hb1])
+        self.assertIn(self.liz.name, bills[self.hb1])
+        self.assertIn(self.hb1.id, bills[self.hb1])
+        self.assertIn('Orlando', bills[self.hb1])
+        self.assertIn('gators', bills[self.hb1])

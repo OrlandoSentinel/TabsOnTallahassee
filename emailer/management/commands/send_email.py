@@ -61,20 +61,20 @@ class BillAccumulator:
         topics = user.topic_follows.values_list('topic', flat=True)
         bills_followed = user.bill_follows.values_list('bill', flat=True)
 
-        reasons = defaultdict(list)
+        reasons = defaultdict(set)
         for person_id, person_name in people:
             for bill in self.by_legislator[person_id]:
-                reasons[bill].append(('person', person_name))
+                reasons[bill].add(person_name)
         for location in locations:
             for bill in self.by_location[location]:
-                reasons[bill].append(('location', location))
+                reasons[bill].add(location)
         for topic in topics:
             for bill in self.by_subject[topic]:
-                reasons[bill].append(('topic', topic))
+                reasons[bill].add(topic)
         for bill_followed in bills_followed:
             bill = self.by_id.get(bill_followed)
             if bill:
-                reasons[bill].append(('bill', bill_followed))
+                reasons[bill].add(bill_followed)
 
         return reasons
 
@@ -128,7 +128,7 @@ class Command(BaseCommand):
             except EmailRecord.DoesNotExist:
                 pass
 
-            bills, reasons = bill_accumulator.bills_for_user(user)
+            bills = bill_accumulator.bills_for_user(user)
             if not bills:
                 no_bills += 1
                 continue
@@ -143,7 +143,7 @@ class Command(BaseCommand):
                 # build email message
                 text_template = get_template('email/updates.txt')
                 context = {
-                    'bills': bills,
+                    'bills': dict(bills),
                     'subject': subject,
                     'unsubscribe_guid': er.unsubscribe_guid,
                 }

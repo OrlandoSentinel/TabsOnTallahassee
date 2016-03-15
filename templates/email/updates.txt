@@ -1,10 +1,13 @@
+{% load names %}
+
 {{ subject }}
-{% for bill in bills %}
+{% for bill, reasons in bills.items %}
 =================
 
 {{ bill.identifier }} - {{ bill.title }}
     https://tabsontallahassee.com{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}
     Latest Action: {{ bill.latest_action.description }} ({{ bill.latest_action.date }})
+    Included because you follow {% for reason in reasons %}{{reason|name_swap}}{%if forloop.last %}.{% else %},{% endif %} {% endfor %}
 {% endfor %}
 
 
