@@ -1,5 +1,195 @@
-<ul>
-{% for bill in bills %}
-  <li>{{ bill }}</li>
+{% load names %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="viewport" content="width=device-width"/>
+
+      <style type="text/css">
+      	table.columns .text-pad {
+         	padding-left: 10px;
+         	padding-right: 10px;
+         }
+
+         table.columns .left-text-pad {
+         	padding-left: 10px;
+         }
+
+         table.columns .right-text-pad {
+         	padding-right: 10px;
+         }
+
+         .template-label {
+         	color: #ffffff;
+         	font-weight: bold;
+         	font-size: 11px;
+         }
+
+      	.logo {
+      	 	text-decoration: none;
+      	 }
+
+      	 .logo img {
+      	 	border: none;
+      	 }
+
+         .date {
+         	font-family: Georgia, serif;
+         	font-size: 24px;
+         	text-align: center;
+         }
+
+         .bill-title {
+         	font-family: Arial, Helvetica, sans-serif;
+         	font-size: 18px;
+         	margin-top: 20px;
+         }
+
+         .bill-title a {
+         	color: #009fda;
+         }
+
+         .bold-label {
+         	font-weight: bold;
+         	text-transform: uppercase;
+         	font-family: Arial, Helvetica, sans-serif;
+         	font-size: 11px;
+         	margin: 0;
+         }
+
+         .body-text {
+         	margin-top: 3px;
+         	font-family: Arial, Helvetica, sans-serif;
+         	color: #555;
+         	font-size: 16px;
+         }
+
+         .body-text.last {
+         	padding-bottom: 20px;
+         	border-bottom: 2px solid #DCDCDC;
+         }
+
+         .footer .wrapper {
+         	background: #ebebeb;
+         	padding: 0;
+         }
+
+         .footer-links {
+         	font-family: Arial, Helvetica, sans-serif;
+         	margin: 10px 0 0 0;
+         }
+
+         .footer-links a {
+         	color: #000;
+         	font-size: 14px;
+         }
+
+         .footer-disclaimer {
+         	font-family: Arial, Helvetica, sans-serif;
+         	margin: 10px 0 0 0;
+         	font-size: 12px;
+         	color: #666;
+         }
+
+         .footer-disclaimer a {
+         	text-decoration: underline;
+         	color: inherit;
+         }
+
+         @media only screen and (max-width: 600px) {
+         	table[class="body"] .right-text-pad {
+         		padding-left: 10px !important;
+         	}
+
+         	table[class="body"] .left-text-pad {
+         		padding-right: 10px !important;
+         	}
+         }
+      </style>
+   </head>
+   <body>
+      <table class="body">
+         <tr>
+            <td class="center" align="center" valign="top">
+               <center>
+                  <table class="row header">
+                     <tr>
+                        <td class="center" align="center">
+                           <center>
+                              <table class="container">
+                                 <tr>
+                                    <td class="wrapper last">
+                                       <table class="twelve columns">
+                                        	<tr>
+                                             	<td class="six sub-columns">
+                                                	<a class="logo" target="_blank" href="https://tabsontallahassee.com/"><img src="http://www.trbimg.com/img-56ec0ecf/turbine/os-tabs-tallahassee-logo/600"></a>
+                                             	</td>
+
+                                             	<td class="expander"></td>
+                                          	</tr>
+                                       </table>
+                                    </td>
+                                 </tr>
+                              </table>
+                           </center>
+                        </td>
+                     </tr>
+                  </table>
+                  <table class="container">
+                     <tr>
+                        <td>
+                           <table class="row">
+                              <tr>
+                                 <td class="wrapper last">
+                                    <table class="twelve columns">
+                                       <tr>
+                                        	<td>
+                                                <h1 class="date">{{ subject }}</h1>
+
+
+{% for bill, reasons in bills.items %}
+<h2 class="bill-title"><a target="_blank" href="https://tabsontallahassee.com{% url 'bill_detail' bill.legislative_session.identifier bill.identifier %}">
+    {{ bill.identifier }} - {{ bill.title }}
+</a></h2>
+
+<p class="bold-label">Last action:</p>
+<p class="body-text">{{ bill.latest_action.description }} ({{ bill.latest_action.date }})</p>
+
+<p class="bold-label">Included because:</p>
+<p class="body-text last">you follow {% for reason in reasons %}{{reason|name_swap}}{%if forloop.last %}.{% else %},{% endif %} {% endfor %}</p>
 {% endfor %}
-</ul>
+
+                                            </td>
+
+                                          	<td class="expander"></td>
+                                       </tr>
+                                    </table>
+                                 </td>
+                              </tr>
+                           </table>
+                           <table class="row">
+                              <tr>
+                                 <td class="wrapper last">
+                                    <table class="twelve columns">
+                                       <tr>
+                                          <td>
+                                                <p class="footer-links"><a target="_blank" href="http://www.tribpub.com/central-terms-of-service/">Terms</a> | <a target="_blank" href="http://www.tribpub.com/privacy-policy-and-your-privacy-rights/">Privacy</a> | <a target="_blank" href="https://tabsontallahassee.com/unsubscribe/{{unsubscribe_guid}}">Unsubscribe</a></p>
+                                                <p class="footer-disclaimer">
+                                                	Built with <a target="_blank" href="https://github.com/zurb/foundation-emails">Foundation for Emails</a> under the MIT license
+                                                </p>
+                                          </td>
+                                          <td class="expander"></td>
+                                       </tr>
+                                    </table>
+                                 </td>
+                              </tr>
+                           </table>
+                        </td>
+                     </tr>
+                  </table>
+               </center>
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>
