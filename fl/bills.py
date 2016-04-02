@@ -141,7 +141,7 @@ class BillDetail(Page):
 
             actor = tr.xpath("string(td[2])")
             if not actor:
-                continue
+                actor = None
             chamber = {'Senate': 'upper', 'House': 'lower'}.get(actor, None)
             if chamber:
                 actor = None
