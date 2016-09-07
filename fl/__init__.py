@@ -29,6 +29,7 @@ class Florida(Jurisdiction):
         {'name': '2015 Special Session B', 'identifier': '2015B', 'classification': 'special'},
         {'name': '2015 Special Session C', 'identifier': '2015C', 'classification': 'special'},
         {'name': '2016 Regular Session', 'identifier': '2016', 'classification': 'primary'},
+        {'name': '2017 Regular Session', 'identifier': '2017', 'classification': 'primary'},
     ]
 
     def get_organizations(self):
