@@ -212,7 +212,7 @@ CSRF_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = 'DENY'
 
 # tot-specific
-CURRENT_SESSION = '2016 Regular Session'
+CURRENT_SESSION = '2017 Regular Session'
 
 # Number of latest actions to display
 NUMBER_OF_LATEST_ACTIONS = 50
